@@ -1,0 +1,21 @@
+import * as migration_20260917_224816_phase3_schema from './20260917_224816_phase3_schema';
+import * as migration_20260917_233253_public_content_system from './20260917_233253_public_content_system';
+import * as migration_20260917_234746_cleanup_treatments_and_youtube from './20260917_234746_cleanup_treatments_and_youtube';
+
+export const migrations = [
+  {
+    up: migration_20260917_224816_phase3_schema.up,
+    down: migration_20260917_224816_phase3_schema.down,
+    name: '20260917_224816_phase3_schema',
+  },
+  {
+    up: migration_20260917_233253_public_content_system.up,
+    down: migration_20260917_233253_public_content_system.down,
+    name: '20260917_233253_public_content_system',
+  },
+  {
+    up: migration_20260917_234746_cleanup_treatments_and_youtube.up,
+    down: migration_20260917_234746_cleanup_treatments_and_youtube.down,
+    name: '20260917_234746_cleanup_treatments_and_youtube'
+  },
+];

@@ -1,0 +1,779 @@
+/* ==========================================================================
+   DR. JOHN SEVO DENTAL CLINIC — DESIGN SYSTEM FOUNDATION
+   Authority: brand-guidelines/ & docs/CLINIC_PROJECT_CONSTITUTION.md
+   Version: Phase 2 Foundation
+   ========================================================================== */
+
+/* --------------------------------------------------------------------------
+   1. APPROVED LOCAL FONT DECLARATIONS (@font-face)
+   Source: brand-guidelines/typography/Fonts/
+   -------------------------------------------------------------------------- */
+@font-face {
+  font-family: 'Americana';
+  src: url('/Fonts/americana-bt-bold_[allfont.net]-the master.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Perpetua';
+  src: url('/Fonts/PER_____.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Perpetua';
+  src: url('/Fonts/PERB____.TTF') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Castelar';
+  src: url('/Fonts/CASTELAR.TTF') format('truetype');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'GE Dinar Two';
+  src: url('/Fonts/GE-Dinar-Two-Medium.otf') format('opentype');
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@tailwind base;
+@tailwind components;
+
+/* --------------------------------------------------------------------------
+   2. DESIGN TOKENS (:root)
+   Strictly derived from brand-guidelines/colors/colors.md and CLINIC_DESIGN_SYSTEM.md
+   -------------------------------------------------------------------------- */
+:root {
+  /* --- Approved Brand Color Palette --- */
+  --color-primary-brown: #b1957b;
+  --color-deep-brown: #36302f;
+  --color-primary-gold: #b58a48;
+  --color-light-gold: #e1c38c;
+  --color-light-neutral: #f5f5f5;
+
+  /* --- Semantic & Surface Colors --- */
+  --color-bg-app: #f5f5f5;
+  --color-surface-clean: #ffffff;
+  --color-surface-soft: #f0ebe5;
+  --color-surface-warm: #eae2d9;
+  --color-surface-deep: #36302f;
+  --color-surface-deep-card: #433c3a;
+
+  /* --- Text Hierarchy --- */
+  --color-text: #36302f;
+  --color-text-muted: rgba(54, 48, 47, 0.72);
+  --color-text-subtle: rgba(54, 48, 47, 0.52);
+  --color-text-light: #f5f5f5;
+  --color-text-light-muted: rgba(245, 245, 245, 0.78);
+  --color-text-gold: #b58a48;
+  --color-text-gold-light: #e1c38c;
+
+  /* --- Borders & Outlines --- */
+  --color-border: rgba(177, 149, 123, 0.28);
+  --color-border-subtle: rgba(54, 48, 47, 0.1);
+  --color-border-strong: rgba(181, 138, 72, 0.45);
+  --color-border-deep: rgba(225, 195, 140, 0.22);
+  --color-error-border: rgba(185, 75, 60, 0.7);
+  --color-error-text: #a83224;
+
+  /* --- shadcn/ui Brand Integration Tokens --- */
+  --background: 40 33% 98%;
+  --foreground: 15 8% 20%;
+  --card: 0 0% 100%;
+  --card-foreground: 15 8% 20%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 15 8% 20%;
+  --primary: 28 27% 43%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 35 25% 90%;
+  --secondary-foreground: 15 8% 20%;
+  --muted: 33 24% 92%;
+  --muted-foreground: 15 7% 40%;
+  --accent: 38 48% 72%;
+  --accent-foreground: 15 8% 20%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --input: 28 27% 58% / 0.28;
+  --ring: 38 44% 49%;
+  --radius: 0.75rem;
+
+  /* --- Typography Families --- */
+  --font-display: 'Americana', 'Perpetua', Georgia, serif;
+  --font-serif: 'Perpetua', Georgia, serif;
+  --font-castelar: 'Castelar', 'Perpetua', serif;
+  --font-arabic: 'GE Dinar Two', 'Segoe UI', Tahoma, sans-serif;
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  /* --- Spacing Scale --- */
+  --space-3xs: 2px;
+  --space-2xs: 4px;
+  --space-xs: 8px;
+  --space-sm: 12px;
+  --space-md: 16px;
+  --space-lg: 24px;
+  --space-xl: 32px;
+  --space-2xl: 48px;
+  --space-3xl: 64px;
+  --space-4xl: 96px;
+
+  /* --- Border Radius Scale (CLINIC_DESIGN_SYSTEM §9: Soft, refined, never childish) --- */
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+  --radius-xl: 22px;
+  --radius-pill: 9999px;
+
+  /* --- Subtle Elevation / Shadows (CLINIC_DESIGN_SYSTEM §11: Restrained, never noisy) --- */
+  --shadow-subtle: 0 1px 3px rgba(54, 48, 47, 0.05), 0 1px 2px rgba(54, 48, 47, 0.03);
+  --shadow-card: 0 4px 20px rgba(54, 48, 47, 0.06), 0 1px 3px rgba(54, 48, 47, 0.03);
+  --shadow-card-hover: 0 8px 30px rgba(54, 48, 47, 0.1), 0 2px 6px rgba(54, 48, 47, 0.05);
+  --shadow-deep: 0 16px 40px rgba(0, 0, 0, 0.35);
+
+  /* --- Motion & Transitions (CLINIC_DESIGN_SYSTEM §16, §17: Quietly polished) --- */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+  --transition-smooth: 350ms cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* --- Layout Bounds --- */
+  --container-max-width: 1200px;
+  --container-padding: var(--space-lg);
+}
+
+/* --------------------------------------------------------------------------
+   3. BASE RESET & ELEMENT DEFAULTS
+   -------------------------------------------------------------------------- */
+*, *::before, *::after {
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 16px;
+  background-color: var(--color-bg-app);
+  color: var(--color-text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  font-family: var(--font-serif);
+  font-size: 1.0625rem; /* ~17px */
+  line-height: 1.65;
+  background-color: var(--color-bg-app);
+  color: var(--color-text);
+}
+
+img, picture, svg {
+  max-width: 100%;
+  display: block;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color var(--transition-fast), opacity var(--transition-fast);
+}
+
+/* --------------------------------------------------------------------------
+   4. SURFACE SYSTEM
+   CLINIC_DESIGN_SYSTEM §3, §6: Controlled rhythm across light, soft, & deep brand surfaces
+   -------------------------------------------------------------------------- */
+.surface-light-neutral {
+  background-color: var(--color-light-neutral);
+  color: var(--color-text);
+}
+
+.surface-soft-neutral {
+  background-color: var(--color-surface-soft);
+  color: var(--color-text);
+}
+
+.surface-warm-tint {
+  background-color: var(--color-surface-warm);
+  color: var(--color-text);
+}
+
+.surface-content {
+  background-color: var(--color-surface-clean);
+  color: var(--color-text);
+}
+
+.surface-deep-brown {
+  background-color: var(--color-surface-deep);
+  color: var(--color-text-light);
+}
+
+.surface-deep-abstract {
+  background-color: var(--color-deep-brown);
+  background-image: url('../../../brand-guidelines/bg-for-sec-and identty/primary-brown-abstract-background.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  color: var(--color-text-light);
+  position: relative;
+}
+
+/* --------------------------------------------------------------------------
+   5. TYPOGRAPHY SCALE (CLINIC_DESIGN_SYSTEM §12)
+   -------------------------------------------------------------------------- */
+.text-display {
+  font-family: var(--font-display);
+  font-size: clamp(2.5rem, 5vw, 4rem);
+  font-weight: 700;
+  line-height: 1.12;
+  letter-spacing: -0.015em;
+  margin: 0 0 var(--space-md) 0;
+}
+
+.text-h1 {
+  font-family: var(--font-serif);
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  font-weight: 700;
+  line-height: 1.2;
+  letter-spacing: -0.01em;
+  margin: 0 0 var(--space-md) 0;
+}
+
+.text-h2 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.5rem, 2.5vw, 2.125rem);
+  font-weight: 700;
+  line-height: 1.28;
+  margin: 0 0 var(--space-sm) 0;
+}
+
+.text-h3 {
+  font-family: var(--font-serif);
+  font-size: clamp(1.2rem, 1.8vw, 1.45rem);
+  font-weight: 700;
+  line-height: 1.35;
+  margin: 0 0 var(--space-xs) 0;
+}
+
+.text-body {
+  font-family: var(--font-serif);
+  font-size: 1.0625rem;
+  line-height: 1.65;
+  margin: 0 0 var(--space-md) 0;
+}
+
+.text-body-sm {
+  font-family: var(--font-serif);
+  font-size: 0.9375rem;
+  line-height: 1.55;
+  color: var(--color-text-muted);
+}
+
+.text-label {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-primary-gold);
+}
+
+.text-caption {
+  font-family: var(--font-sans);
+  font-size: 0.75rem;
+  line-height: 1.4;
+  color: var(--color-text-subtle);
+}
+
+.font-arabic {
+  font-family: var(--font-arabic);
+  direction: rtl;
+}
+
+.gold-accent {
+  color: var(--color-primary-gold);
+}
+
+.light-gold-accent {
+  color: var(--color-light-gold);
+}
+
+/* --------------------------------------------------------------------------
+   6. CONTAINER & LAYOUT FOUNDATION (CLINIC_DESIGN_SYSTEM §7)
+   -------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container-max-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--container-padding);
+  padding-right: var(--container-padding);
+}
+
+.section {
+  padding-top: var(--space-3xl);
+  padding-bottom: var(--space-3xl);
+}
+
+@media (max-width: 768px) {
+  .section {
+    padding-top: var(--space-2xl);
+    padding-bottom: var(--space-2xl);
+  }
+}
+
+.grid-2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: var(--space-lg);
+}
+
+.grid-4 {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: var(--space-md);
+}
+
+@media (max-width: 1024px) {
+  .grid-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .grid-4 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .grid-2, .grid-3, .grid-4 {
+    grid-template-columns: 1fr;
+  }
+}
+
+.flex-row {
+  display: flex;
+  align-items: center;
+}
+
+.flex-col {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gap-sm { gap: var(--space-sm); }
+.gap-md { gap: var(--space-md); }
+.gap-lg { gap: var(--space-lg); }
+.gap-xl { gap: var(--space-xl); }
+
+/* --------------------------------------------------------------------------
+   7. BUTTON FOUNDATION (CLINIC_DESIGN_SYSTEM §13)
+   Warm gold/brown, comfortable padding, subtle rounding, visible focus ring
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-xs);
+  padding: 13px 26px;
+  font-family: var(--font-sans);
+  font-size: 0.9375rem;
+  font-weight: 600;
+  line-height: 1.2;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: all var(--transition-base);
+  text-align: center;
+  white-space: nowrap;
+}
+
+.btn:focus-visible {
+  outline: 2px solid var(--color-primary-gold);
+  outline-offset: 3px;
+}
+
+.btn:disabled, .btn[aria-disabled="true"] {
+  opacity: 0.55;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #b58a48 0%, #9e7536 100%);
+  color: #ffffff;
+  border-color: #a87d39;
+  box-shadow: 0 2px 8px rgba(181, 138, 72, 0.28);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg, #c49957 0%, #ab803f 100%);
+  box-shadow: 0 4px 14px rgba(181, 138, 72, 0.38);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 1px 4px rgba(181, 138, 72, 0.2);
+}
+
+.btn-secondary {
+  background-color: var(--color-surface-clean);
+  color: var(--color-deep-brown);
+  border-color: var(--color-border);
+  box-shadow: var(--shadow-subtle);
+}
+
+.btn-secondary:hover {
+  background-color: var(--color-surface-soft);
+  border-color: var(--color-primary-brown);
+  transform: translateY(-1px);
+}
+
+.btn-ghost {
+  background-color: transparent;
+  color: var(--color-text);
+  border-color: transparent;
+}
+
+.btn-ghost:hover {
+  background-color: rgba(177, 149, 123, 0.12);
+  color: var(--color-deep-brown);
+}
+
+.btn-ghost-light {
+  background-color: transparent;
+  color: var(--color-text-light);
+  border-color: rgba(225, 195, 140, 0.35);
+}
+
+.btn-ghost-light:hover {
+  background-color: rgba(225, 195, 140, 0.15);
+  border-color: var(--color-light-gold);
+}
+
+/* --------------------------------------------------------------------------
+   8. CARD FOUNDATION (CLINIC_DESIGN_SYSTEM §10)
+   Calm surfaces, subtle rounding, gentle borders, spacious breathing room
+   -------------------------------------------------------------------------- */
+.card {
+  background-color: var(--color-surface-clean);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-xl);
+  box-shadow: var(--shadow-card);
+  transition: transform var(--transition-smooth), box-shadow var(--transition-smooth), border-color var(--transition-smooth);
+}
+
+.card-interactive:hover {
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-card-hover);
+  border-color: var(--color-border-strong);
+}
+
+.card-soft {
+  background-color: var(--color-surface-soft);
+  border-color: rgba(177, 149, 123, 0.2);
+}
+
+.card-deep {
+  background-color: var(--color-surface-deep-card);
+  border-color: var(--color-border-deep);
+  color: var(--color-text-light);
+  box-shadow: var(--shadow-deep);
+}
+
+/* --------------------------------------------------------------------------
+   9. FORM FOUNDATION (CLINIC_DESIGN_SYSTEM §14)
+   Calm, non-hostile, reassuring form controls with visible focus states
+   -------------------------------------------------------------------------- */
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-xs);
+  margin-bottom: var(--space-md);
+}
+
+.label {
+  font-family: var(--font-sans);
+  font-size: 0.875rem;
+  font-weight: 600;
+  color: var(--color-text);
+  margin-bottom: 2px;
+}
+
+.label-light {
+  color: var(--color-text-light);
+}
+
+.input, .textarea, .select {
+  width: 100%;
+  padding: 12px 16px;
+  font-family: var(--font-serif);
+  font-size: 1rem;
+  color: var(--color-text);
+  background-color: var(--color-surface-clean);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-subtle);
+  transition: border-color var(--transition-base), box-shadow var(--transition-base);
+}
+
+.input:focus-visible, .textarea:focus-visible, .select:focus-visible {
+  outline: none;
+  border-color: var(--color-primary-gold);
+  box-shadow: 0 0 0 3px rgba(181, 138, 72, 0.18);
+}
+
+.input-error {
+  border-color: var(--color-error-border);
+}
+
+.input-error:focus-visible {
+  border-color: var(--color-error-text);
+  box-shadow: 0 0 0 3px rgba(185, 75, 60, 0.15);
+}
+
+.form-helper {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--color-text-muted);
+}
+
+.form-error {
+  font-family: var(--font-sans);
+  font-size: 0.8125rem;
+  color: var(--color-error-text);
+  margin-top: 2px;
+}
+
+/* --------------------------------------------------------------------------
+   10. MOTION & ACCESSIBILITY (CLINIC_DESIGN_SYSTEM §16, §20)
+   -------------------------------------------------------------------------- */
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUpSmall {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.reveal-fade {
+  animation: fadeIn var(--transition-smooth) forwards;
+}
+
+.reveal-up {
+  animation: slideUpSmall var(--transition-smooth) forwards;
+}
+
+/* --- Cinematic Mobile Nav Animations --- */
+@keyframes cinematicSheetEnter {
+  0% {
+    opacity: 0;
+    transform: scale(0.96) translateY(-16px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
+}
+
+@keyframes cinematicHop {
+  0% {
+    opacity: 0;
+    transform: translateY(28px) scale(0.94);
+  }
+  65% {
+    opacity: 0.95;
+    transform: translateY(-3px) scale(1.015);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+@keyframes shimmerBeam {
+  0% {
+    transform: translateX(-150%) skewX(-25deg);
+  }
+  50%, 100% {
+    transform: translateX(250%) skewX(-25deg);
+  }
+}
+
+@keyframes auraOrbPulse {
+  0%, 100% {
+    opacity: 0.35;
+    transform: scale(1);
+  }
+  50% {
+    opacity: 0.65;
+    transform: scale(1.15);
+  }
+}
+
+.animate-cinematic-sheet {
+  animation: cinematicSheetEnter 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+.animate-shimmer-beam {
+  animation: shimmerBeam 3.5s cubic-bezier(0.4, 0, 0.2, 1) infinite;
+}
+
+.animate-aura-orb {
+  animation: auraOrbPulse 6s ease-in-out infinite;
+}
+
+/* --- Ultra-Smooth 60fps Cinematic Mobile Nav Lateral Sweep Exit --- */
+@keyframes goldenLateralExit {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  30% {
+    opacity: 0.98;
+  }
+  75% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(100%, 0, 0);
+  }
+}
+
+@keyframes headerSweepLateral {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(45px, 0, 0);
+  }
+}
+
+@keyframes footerSweepLateral {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(45px, 0, 0);
+  }
+}
+
+@keyframes navItemSlideOutLateral {
+  0% {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+  100% {
+    opacity: 0;
+    transform: translate3d(55px, 0, 0);
+  }
+}
+
+@keyframes goldenAuraFlash {
+  0% {
+    opacity: 0;
+  }
+  35% {
+    opacity: 0.55;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes goldenShimmerWipe {
+  0% {
+    transform: translate3d(-100%, 0, 0) skewX(-20deg);
+    opacity: 0;
+  }
+  30% {
+    opacity: 0.8;
+  }
+  100% {
+    transform: translate3d(120%, 0, 0) skewX(-20deg);
+    opacity: 0;
+  }
+}
+
+.animate-golden-aurora-exit {
+  animation: goldenLateralExit 0.35s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  pointer-events: none;
+}
+
+.animate-header-sweep-up {
+  animation: headerSweepLateral 0.26s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-footer-sweep-down {
+  animation: footerSweepLateral 0.28s cubic-bezier(0.32, 0.72, 0, 1) forwards;
+  will-change: transform, opacity;
+}
+
+.animate-golden-aura-flash {
+  animation: goldenAuraFlash 0.32s ease-out forwards;
+  will-change: opacity;
+}
+
+.animate-golden-shimmer-wipe {
+  animation: goldenShimmerWipe 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+  will-change: transform, opacity;
+}
+
+/* Strict prefers-reduced-motion override */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --------------------------------------------------------------------------
+   11. TAILWIND UTILITIES LAYER
+   Allows composition using Tailwind utilities (mx-auto, flex, grid, etc.)
+   -------------------------------------------------------------------------- */
+@tailwind utilities;
+

@@ -1,0 +1,56 @@
+import React from 'react'
+import Image from 'next/image'
+
+export interface ClinicLogoProps {
+  className?: string
+  variant?: 'default' | 'emblem-only' | 'text-only' | 'full-dark-text' | 'light' | 'light-vertecal' | 'badge'
+  height?: number
+}
+
+export function ClinicLogo({
+  className = '',
+  variant = 'default',
+  height = 70,
+}: ClinicLogoProps) {
+  // Determine which SVG asset to load based on variant
+  let src = '/logos/logo-gold-dark-text.svg'
+  let aspectRatio = 80.97 / 104.87 // ≈ 0.772
+
+  if (variant === 'emblem-only') {
+    src = '/logos/logo-emblem-gold.svg'
+    aspectRatio = 80.97 / 83 // ≈ 0.975
+  } else if (variant === 'text-only') {
+    src = '/logos/logo-gold-dark-text-only.svg'
+    aspectRatio = 81 / 16.5 // ≈ 4.909
+  } else if (variant === 'light') {
+    src = '/logos/logo-gold-and-wihte.svg'
+    aspectRatio = 80.97 / 104.87
+  } else if (variant === 'light-vertecal') {
+    src = '/logos/logo-gold-and-wihte-vertecal.svg'
+    aspectRatio = 250 / 167 // ≈ 1.497
+  } else if (variant === 'badge') {
+    src = '/logos/logo-with-grediant-brown-bg.svg'
+    aspectRatio = 149.76 / 167.04
+  }
+
+  const width = Math.round(height * aspectRatio)
+
+  return (
+    <a
+      href="#"
+      aria-label="Dr. John Sevo Dental Clinic Home"
+      className={`inline-flex items-center justify-center no-underline group transition-transform duration-200 hover:scale-105 ${className}`}
+    >
+      <Image
+        src={src}
+        alt="Dr. John Sevo Dental Clinic"
+        width={width}
+        height={height}
+        priority
+        style={{ height: `${height}px`, width: 'auto' }}
+        className="object-contain transition-transform duration-300"
+      />
+    </a>
+  )
+}
+
