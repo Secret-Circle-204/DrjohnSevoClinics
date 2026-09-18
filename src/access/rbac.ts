@@ -23,6 +23,14 @@ export const isAdminFieldLevel: FieldAccess = ({ req: { user } }) => {
 }
 
 /**
+ * Field-level access: Only admin or staff can read/update this field.
+ * Prevents non-staff / public / unauthorized access to clinic-controlled fields.
+ */
+export const isAdminOrStaffFieldLevel: FieldAccess = ({ req: { user } }) => {
+  return Boolean(user && (user.role === 'admin' || user.role === 'staff'))
+}
+
+/**
  * User collection access:
  * - Admin can read/update all users.
  * - Non-admin users can only read/update their own profile.

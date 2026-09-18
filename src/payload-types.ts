@@ -75,6 +75,7 @@ export interface Config {
     'blog-posts': BlogPost;
     'youtube-videos': YoutubeVideo;
     inquiries: Inquiry;
+    clients: Client;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -90,6 +91,7 @@ export interface Config {
     'blog-posts': BlogPostsSelect<false> | BlogPostsSelect<true>;
     'youtube-videos': YoutubeVideosSelect<false> | YoutubeVideosSelect<true>;
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
+    clients: ClientsSelect<false> | ClientsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -371,6 +373,39 @@ export interface Inquiry {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients".
+ */
+export interface Client {
+  id: number;
+  fullName: string;
+  phone: string;
+  email?: string | null;
+  dateOfBirth?: string | null;
+  gender?: ('male' | 'female') | null;
+  address?: string | null;
+  emergencyContact?: {
+    name?: string | null;
+    relationship?: string | null;
+    phone?: string | null;
+  };
+  status: 'active' | 'inactive' | 'archived';
+  /**
+   * Administrative and operational clinic notes only. Strictly hidden from patient.
+   */
+  internalNotes?: string | null;
+  /**
+   * Optional web authentication account.
+   */
+  user?: (number | null) | User;
+  notificationPreferences?: {
+    emailNotifications?: boolean | null;
+    dashboardNotifications?: boolean | null;
+  };
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -424,6 +459,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'inquiries';
         value: number | Inquiry;
+      } | null)
+    | ({
+        relationTo: 'clients';
+        value: number | Client;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -605,6 +644,36 @@ export interface InquiriesSelect<T extends boolean = true> {
   message?: T;
   status?: T;
   internalNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "clients_select".
+ */
+export interface ClientsSelect<T extends boolean = true> {
+  fullName?: T;
+  phone?: T;
+  email?: T;
+  dateOfBirth?: T;
+  gender?: T;
+  address?: T;
+  emergencyContact?:
+    | T
+    | {
+        name?: T;
+        relationship?: T;
+        phone?: T;
+      };
+  status?: T;
+  internalNotes?: T;
+  user?: T;
+  notificationPreferences?:
+    | T
+    | {
+        emailNotifications?: T;
+        dashboardNotifications?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
 }

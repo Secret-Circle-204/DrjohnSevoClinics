@@ -13,6 +13,7 @@ import { Categories } from './collections/Categories'
 import { BlogPosts } from './collections/BlogPosts'
 import { YouTubeVideos } from './collections/YouTubeVideos'
 import { Inquiries } from './collections/Inquiries'
+import { Clients } from './collections/Clients'
 
 import { Home } from './globals/Home'
 import { About } from './globals/About'
@@ -42,6 +43,7 @@ export default buildConfig({
     BlogPosts,
     YouTubeVideos,
     Inquiries,
+    Clients,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
