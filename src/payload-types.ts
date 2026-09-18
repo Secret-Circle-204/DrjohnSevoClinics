@@ -76,6 +76,7 @@ export interface Config {
     'youtube-videos': YoutubeVideo;
     inquiries: Inquiry;
     clients: Client;
+    appointments: Appointment;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -92,6 +93,7 @@ export interface Config {
     'youtube-videos': YoutubeVideosSelect<false> | YoutubeVideosSelect<true>;
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     clients: ClientsSelect<false> | ClientsSelect<true>;
+    appointments: AppointmentsSelect<false> | AppointmentsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -406,6 +408,56 @@ export interface Client {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "appointments".
+ */
+export interface Appointment {
+  id: number;
+  /**
+   * Authoritative patient identity record.
+   */
+  client: number | Client;
+  /**
+   * Assigned specialist or attending dentist (optional until scheduled).
+   */
+  doctor?: (number | null) | Doctor;
+  /**
+   * Associated clinical service context (optional).
+   */
+  service?: (number | null) | Service;
+  dateTime: string;
+  /**
+   * Initial operational visit classification.
+   */
+  appointmentType: 'consultation' | 'treatment' | 'followup' | 'routine_checkup' | 'emergency';
+  /**
+   * Server-enforced operational lifecycle state.
+   */
+  status: 'scheduled' | 'confirmed' | 'completed' | 'cancelled' | 'no_show';
+  /**
+   * Operational appointment metadata (does not prevent scheduling conflicts).
+   */
+  duration?: number | null;
+  /**
+   * Administrative and operational notes for the encounter.
+   */
+  notes?: string | null;
+  /**
+   * Mandatory documentation when appointment is cancelled.
+   */
+  cancellationReason?: string | null;
+  /**
+   * Flag indicating post-encounter follow-up action is needed.
+   */
+  followUpRequired?: boolean | null;
+  /**
+   * Clinical or administrative follow-up instructions.
+   */
+  followUpNotes?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -463,6 +515,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'clients';
         value: number | Client;
+      } | null)
+    | ({
+        relationTo: 'appointments';
+        value: number | Appointment;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -674,6 +730,25 @@ export interface ClientsSelect<T extends boolean = true> {
         emailNotifications?: T;
         dashboardNotifications?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "appointments_select".
+ */
+export interface AppointmentsSelect<T extends boolean = true> {
+  client?: T;
+  doctor?: T;
+  service?: T;
+  dateTime?: T;
+  appointmentType?: T;
+  status?: T;
+  duration?: T;
+  notes?: T;
+  cancellationReason?: T;
+  followUpRequired?: T;
+  followUpNotes?: T;
   updatedAt?: T;
   createdAt?: T;
 }

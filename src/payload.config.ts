@@ -14,6 +14,7 @@ import { BlogPosts } from './collections/BlogPosts'
 import { YouTubeVideos } from './collections/YouTubeVideos'
 import { Inquiries } from './collections/Inquiries'
 import { Clients } from './collections/Clients'
+import { Appointments } from './collections/Appointments'
 
 import { Home } from './globals/Home'
 import { About } from './globals/About'
@@ -44,6 +45,7 @@ export default buildConfig({
     YouTubeVideos,
     Inquiries,
     Clients,
+    Appointments,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

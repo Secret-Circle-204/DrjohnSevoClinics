@@ -2,6 +2,7 @@ import * as migration_20260917_224816_phase3_schema from './20260917_224816_phas
 import * as migration_20260917_233253_public_content_system from './20260917_233253_public_content_system';
 import * as migration_20260917_234746_cleanup_treatments_and_youtube from './20260917_234746_cleanup_treatments_and_youtube';
 import * as migration_20260918_003214_phase5_client_foundation from './20260918_003214_phase5_client_foundation';
+import * as migration_20260918_004426_phase6_appointment_foundation from './20260918_004426_phase6_appointment_foundation';
 
 export const migrations = [
   {
@@ -22,6 +23,11 @@ export const migrations = [
   {
     up: migration_20260918_003214_phase5_client_foundation.up,
     down: migration_20260918_003214_phase5_client_foundation.down,
-    name: '20260918_003214_phase5_client_foundation'
+    name: '20260918_003214_phase5_client_foundation',
+  },
+  {
+    up: migration_20260918_004426_phase6_appointment_foundation.up,
+    down: migration_20260918_004426_phase6_appointment_foundation.down,
+    name: '20260918_004426_phase6_appointment_foundation'
   },
 ];
