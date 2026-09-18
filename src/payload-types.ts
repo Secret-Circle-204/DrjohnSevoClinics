@@ -77,6 +77,7 @@ export interface Config {
     inquiries: Inquiry;
     clients: Client;
     appointments: Appointment;
+    'follow-ups': FollowUp;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -94,6 +95,7 @@ export interface Config {
     inquiries: InquiriesSelect<false> | InquiriesSelect<true>;
     clients: ClientsSelect<false> | ClientsSelect<true>;
     appointments: AppointmentsSelect<false> | AppointmentsSelect<true>;
+    'follow-ups': FollowUpsSelect<false> | FollowUpsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -458,6 +460,47 @@ export interface Appointment {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "follow-ups".
+ */
+export interface FollowUp {
+  id: number;
+  /**
+   * Authoritative patient identity record.
+   */
+  client: number | Client;
+  /**
+   * Associated appointment encounter context (optional).
+   */
+  appointment?: (number | null) | Appointment;
+  /**
+   * Target date for the follow-up interaction. Purely operational metadata.
+   */
+  dueDate: string;
+  /**
+   * Operational classification of the follow-up action.
+   */
+  followUpType: 'clinical_check' | 'suture_removal' | 'treatment_review' | 'routine_recall' | 'administrative';
+  /**
+   * Server-enforced operational lifecycle state.
+   */
+  status: 'pending' | 'contacted' | 'completed' | 'cancelled';
+  /**
+   * Administrative and operational notes regarding this follow-up.
+   */
+  notes?: string | null;
+  /**
+   * Operational result of the contact/interaction. Must not be used for clinical diagnoses or medical records.
+   */
+  outcome?: string | null;
+  /**
+   * Mandatory documentation when follow-up is cancelled.
+   */
+  cancellationReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -519,6 +562,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'appointments';
         value: number | Appointment;
+      } | null)
+    | ({
+        relationTo: 'follow-ups';
+        value: number | FollowUp;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -749,6 +796,22 @@ export interface AppointmentsSelect<T extends boolean = true> {
   cancellationReason?: T;
   followUpRequired?: T;
   followUpNotes?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "follow-ups_select".
+ */
+export interface FollowUpsSelect<T extends boolean = true> {
+  client?: T;
+  appointment?: T;
+  dueDate?: T;
+  followUpType?: T;
+  status?: T;
+  notes?: T;
+  outcome?: T;
+  cancellationReason?: T;
   updatedAt?: T;
   createdAt?: T;
 }

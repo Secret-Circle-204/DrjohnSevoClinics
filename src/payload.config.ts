@@ -15,6 +15,7 @@ import { YouTubeVideos } from './collections/YouTubeVideos'
 import { Inquiries } from './collections/Inquiries'
 import { Clients } from './collections/Clients'
 import { Appointments } from './collections/Appointments'
+import { FollowUps } from './collections/FollowUps'
 
 import { Home } from './globals/Home'
 import { About } from './globals/About'
@@ -46,6 +47,7 @@ export default buildConfig({
     Inquiries,
     Clients,
     Appointments,
+    FollowUps,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
