@@ -1,4 +1,5 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import { HeroSection } from '@/components/sections/HeroSection'
 import { ServicesSection } from '@/components/sections/ServicesSection'
 import { ExperienceSection } from '@/components/sections/ExperienceSection'
@@ -6,6 +7,13 @@ import { TrustStatsSection } from '@/components/sections/TrustStatsSection'
 import { BeforeAfterSection } from '@/components/sections/BeforeAfterSection'
 import { BookingSection } from '@/components/sections/BookingSection'
 import { getHomeContent, getServices } from '@/repositories/clinic'
+
+export const metadata: Metadata = {
+  title: 'Exclusive Dental Care & Aesthetics',
+  alternates: {
+    canonical: '/',
+  },
+}
 
 export default async function HomePage() {
   const [homeContent, servicesResult] = await Promise.all([

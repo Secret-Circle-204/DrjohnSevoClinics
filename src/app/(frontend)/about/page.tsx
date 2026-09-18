@@ -1,13 +1,17 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Award, Compass, Heart, ShieldCheck } from 'lucide-react'
 import { getAboutContent, getMedicalTeam } from '@/repositories/clinic'
 import type { Media } from '@/payload-types'
 
-export const metadata = {
-  title: 'About Us — Dr. John Sevo Dental Clinic',
+export const metadata: Metadata = {
+  title: 'About Us',
   description: 'Learn about our clinic heritage, mission, philosophy of care, and specialized medical team.',
+  alternates: {
+    canonical: '/about',
+  },
 }
 
 function getMediaUrl(media?: number | Media | null): string | null {

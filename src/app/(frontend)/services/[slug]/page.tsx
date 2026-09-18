@@ -3,8 +3,11 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowRight, CheckCircle2, Clock, UserCheck } from 'lucide-react'
+import type { Metadata } from 'next'
 import { getServiceBySlug, getMedicalTeam } from '@/repositories/clinic'
 import type { Media, Doctor } from '@/payload-types'
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com'
 
 interface ServiceDetailPageProps {
   params: Promise<{ slug: string }>
@@ -17,15 +20,25 @@ function getMediaUrl(media?: number | Media | null): string | null {
   return null
 }
 
-export async function generateMetadata(props: ServiceDetailPageProps) {
+export async function generateMetadata(props: ServiceDetailPageProps): Promise<Metadata> {
   const params = await props.params
   const service = await getServiceBySlug(params.slug)
   if (!service) {
     return { title: 'Service Not Found' }
   }
+  const imageUrl = getMediaUrl(service.featuredImage)
   return {
-    title: `${service.title} — Dr. John Sevo Dental Clinic`,
+    title: service.title,
     description: service.shortDescription,
+    alternates: {
+      canonical: `/services/${service.slug}`,
+    },
+    openGraph: {
+      title: service.title,
+      description: service.shortDescription,
+      url: `/services/${service.slug}`,
+      images: imageUrl ? [{ url: imageUrl, alt: service.title }] : undefined,
+    },
   }
 }
 
@@ -41,8 +54,26 @@ export default async function ServiceDetailPage(props: ServiceDetailPageProps) {
   const medicalTeam = await getMedicalTeam({ limit: 4 })
   const doctors: Doctor[] = medicalTeam.docs
 
+  const serviceJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'Service',
+    name: service.title,
+    description: service.shortDescription,
+    url: `${siteUrl}/services/${service.slug}`,
+    image: imageUrl || undefined,
+    provider: {
+      '@type': 'Dentist',
+      name: 'Dr. John Sevo Dental Clinic',
+      url: siteUrl,
+    },
+  }
+
   return (
     <div className="bg-[#fdfcf9] min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(serviceJsonLd) }}
+      />
       {/* Detail Hero Header */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#fdfcf9] via-[#f7f2ec] to-[#eee5dc] pt-12 pb-16 border-b border-[rgba(54,48,47,0.08)]">
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 relative z-10">

@@ -1,12 +1,16 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import Link from 'next/link'
 import { ArrowRight, Smile, ShieldCheck, Clock } from 'lucide-react'
 import { getServices } from '@/repositories/clinic'
 import type { Service } from '@/payload-types'
 
-export const metadata = {
-  title: 'Our Dental Services — Dr. John Sevo Dental Clinic',
+export const metadata: Metadata = {
+  title: 'Specialized Dental Services',
   description: 'Explore our complete range of specialized dental treatments, from preventative care to cosmetic dentistry and implants.',
+  alternates: {
+    canonical: '/services',
+  },
 }
 
 function getServiceIcon(iconName?: string | null, title?: string): React.ReactNode {

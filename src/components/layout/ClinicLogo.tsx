@@ -1,17 +1,21 @@
 import React from 'react'
 import Image from 'next/image'
+import Link from 'next/link'
 
 export interface ClinicLogoProps {
   className?: string
-  variant?: 'default' | 'emblem-only' | 'text-only' | 'full-dark-text' | 'light' | 'light-vertecal' | 'badge'
+  variant?:
+    | 'default'
+    | 'emblem-only'
+    | 'text-only'
+    | 'full-dark-text'
+    | 'light'
+    | 'light-vertecal'
+    | 'badge'
   height?: number
 }
 
-export function ClinicLogo({
-  className = '',
-  variant = 'default',
-  height = 70,
-}: ClinicLogoProps) {
+export function ClinicLogo({ className = '', variant = 'default', height = 70 }: ClinicLogoProps) {
   // Determine which SVG asset to load based on variant
   let src = '/logos/logo-gold-dark-text.svg'
   let aspectRatio = 80.97 / 104.87 // ≈ 0.772
@@ -36,8 +40,8 @@ export function ClinicLogo({
   const width = Math.round(height * aspectRatio)
 
   return (
-    <a
-      href="#"
+    <Link
+      href="/"
       aria-label="Dr. John Sevo Dental Clinic Home"
       className={`inline-flex items-center justify-center no-underline group transition-transform duration-200 hover:scale-105 ${className}`}
     >
@@ -50,7 +54,6 @@ export function ClinicLogo({
         style={{ height: `${height}px`, width: 'auto' }}
         className="object-contain transition-transform duration-300"
       />
-    </a>
+    </Link>
   )
 }
-

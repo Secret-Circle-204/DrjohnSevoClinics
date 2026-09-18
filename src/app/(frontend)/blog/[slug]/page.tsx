@@ -3,9 +3,12 @@ import Image from 'next/image'
 import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, Calendar, User } from 'lucide-react'
+import type { Metadata } from 'next'
 import { format } from 'date-fns'
 import { getPostBySlug } from '@/repositories/blog'
 import type { Media, Doctor } from '@/payload-types'
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com'
 
 interface BlogPostPageProps {
   params: Promise<{ slug: string }>
@@ -18,15 +21,27 @@ function getMediaUrl(media?: number | Media | null): string | null {
   return null
 }
 
-export async function generateMetadata(props: BlogPostPageProps) {
+export async function generateMetadata(props: BlogPostPageProps): Promise<Metadata> {
   const params = await props.params
   const post = await getPostBySlug(params.slug)
   if (!post) {
     return { title: 'Post Not Found' }
   }
+  const imageUrl = getMediaUrl(post.featuredImage)
   return {
-    title: `${post.title} — Dr. John Sevo Dental Clinic`,
+    title: post.title,
     description: post.excerpt,
+    alternates: {
+      canonical: `/blog/${post.slug}`,
+    },
+    openGraph: {
+      title: post.title,
+      description: post.excerpt,
+      type: 'article',
+      publishedTime: post.publishedAt || undefined,
+      url: `/blog/${post.slug}`,
+      images: imageUrl ? [{ url: imageUrl, alt: post.title }] : undefined,
+    },
   }
 }
 
@@ -42,8 +57,34 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
   const categoryName = typeof post.category === 'object' ? post.category?.name : null
   const author = typeof post.author === 'object' ? (post.author as Doctor) : null
 
+  const blogJsonLd = {
+    '@context': 'https://schema.org',
+    '@type': 'BlogPosting',
+    headline: post.title,
+    description: post.excerpt,
+    datePublished: post.publishedAt || post.createdAt,
+    dateModified: post.updatedAt,
+    url: `${siteUrl}/blog/${post.slug}`,
+    image: imageUrl || undefined,
+    author: author?.name
+      ? {
+          '@type': 'Person',
+          name: author.name,
+        }
+      : undefined,
+    publisher: {
+      '@type': 'Dentist',
+      name: 'Dr. John Sevo Dental Clinic',
+      url: siteUrl,
+    },
+  }
+
   return (
     <article className="bg-[#fdfcf9] min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(blogJsonLd) }}
+      />
       {/* Article Hero Header */}
       <section className="relative overflow-hidden bg-gradient-to-br from-[#fdfcf9] via-[#f7f2ec] to-[#eee5dc] pt-12 pb-16 border-b border-[rgba(54,48,47,0.08)]">
         <div className="mx-auto w-full max-w-4xl px-6 lg:px-8 relative z-10">

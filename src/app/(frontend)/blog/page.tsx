@@ -1,4 +1,5 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
 import { ArrowRight, Calendar, Play, Video, Tag } from 'lucide-react'
@@ -6,9 +7,12 @@ import { format } from 'date-fns'
 import { getBlogPosts, getCategories, getYouTubeVideos, extractYouTubeVideoId } from '@/repositories/blog'
 import type { BlogPost, Category, YoutubeVideo, Media, Doctor } from '@/payload-types'
 
-export const metadata = {
-  title: 'Blog & Clinical Media — Dr. John Sevo Dental Clinic',
+export const metadata: Metadata = {
+  title: 'Blog & Clinical Insights',
   description: 'Educational articles, clinical insights, and patient guide videos from our dental specialists.',
+  alternates: {
+    canonical: '/blog',
+  },
 }
 
 interface BlogPageProps {

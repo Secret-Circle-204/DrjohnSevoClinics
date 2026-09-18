@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload'
+import { revalidatePath } from 'next/cache'
 import { isAdminOrStaff } from '../access/rbac'
 
 export const Home: GlobalConfig = {
@@ -7,6 +8,13 @@ export const Home: GlobalConfig = {
   access: {
     read: () => true,
     update: isAdminOrStaff,
+  },
+  hooks: {
+    afterChange: [
+      () => {
+        revalidatePath('/')
+      },
+    ],
   },
   fields: [
     {

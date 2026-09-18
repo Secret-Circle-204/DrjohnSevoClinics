@@ -1,4 +1,5 @@
 import type { CollectionConfig } from 'payload'
+import { revalidatePath } from 'next/cache'
 import { isAdmin, isAdminOrStaff, isPublicActive } from '../access/rbac'
 
 export const Doctors: CollectionConfig = {
@@ -12,6 +13,18 @@ export const Doctors: CollectionConfig = {
     create: isAdminOrStaff,
     update: isAdminOrStaff,
     delete: isAdmin,
+  },
+  hooks: {
+    afterChange: [
+      () => {
+        revalidatePath('/about')
+      },
+    ],
+    afterDelete: [
+      () => {
+        revalidatePath('/about')
+      },
+    ],
   },
   fields: [
     {

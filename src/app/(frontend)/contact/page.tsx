@@ -1,11 +1,15 @@
 import React from 'react'
+import type { Metadata } from 'next'
 import { Phone, Mail, MapPin, Clock, ExternalLink } from 'lucide-react'
 import { getClinicInfo, getServices } from '@/repositories/clinic'
 import { BookingSection } from '@/components/sections/BookingSection'
 
-export const metadata = {
-  title: 'Contact & Location — Dr. John Sevo Dental Clinic',
+export const metadata: Metadata = {
+  title: 'Contact & Location',
   description: 'Reach our clinic reception, find our clinic address, opening hours, and submit an appointment inquiry.',
+  alternates: {
+    canonical: '/contact',
+  },
 }
 
 export default async function ContactPage() {
