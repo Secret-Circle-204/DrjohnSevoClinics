@@ -75,7 +75,7 @@ export function HeroSection({
                 />
               </div>
               <span className="text-sm font-medium text-[#5a5350]">
-                Trusted by <strong className="text-[#36302f]">5,000+</strong> happy patients
+                Trusted by patients seeking <strong className="text-[#36302f]">clinical excellence & gentle care</strong>
               </span>
             </div>
           </div>

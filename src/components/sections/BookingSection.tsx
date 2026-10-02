@@ -19,9 +19,15 @@ import type { Service } from '@/payload-types'
 
 interface BookingSectionProps {
   availableServices?: Service[]
+  ctaHeadline?: string | null
+  ctaSubtitle?: string | null
 }
 
-export function BookingSection({ availableServices = [] }: BookingSectionProps) {
+export function BookingSection({
+  availableServices = [],
+  ctaHeadline,
+  ctaSubtitle,
+}: BookingSectionProps) {
   const [fullName, setFullName] = useState('')
   const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
@@ -94,11 +100,11 @@ export function BookingSection({ availableServices = [] }: BookingSectionProps) 
             </span>
 
             <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f] leading-tight">
-              Book Your Appointment
+              {ctaHeadline || 'Book Your Appointment'}
             </h2>
 
             <p className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed">
-              A healthier, brighter smile is just a click away.
+              {ctaSubtitle || 'A healthier, brighter smile is just a click away.'}
             </p>
 
             {/* Checklist */}

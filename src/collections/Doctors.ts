@@ -17,12 +17,20 @@ export const Doctors: CollectionConfig = {
   hooks: {
     afterChange: [
       () => {
-        revalidatePath('/about')
+        try {
+          revalidatePath('/about')
+        } catch {
+          // Safe outside Next.js request context
+        }
       },
     ],
     afterDelete: [
       () => {
-        revalidatePath('/about')
+        try {
+          revalidatePath('/about')
+        } catch {
+          // Safe outside Next.js request context
+        }
       },
     ],
   },
@@ -73,6 +81,12 @@ export const Doctors: CollectionConfig = {
       name: 'qualifications',
       type: 'array',
       label: 'Degrees & Certifications',
+      admin: {
+        initCollapsed: true,
+        components: {
+          RowLabel: '@/components/admin/RowLabels#QualificationRowLabel',
+        },
+      },
       fields: [
         {
           name: 'degree',

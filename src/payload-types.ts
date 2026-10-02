@@ -1097,7 +1097,18 @@ export interface Home {
       }[]
     | null;
   /**
-   * Curated clinical case photos demonstrating before and after dental results.
+   * Verified operational statistics or clinic metrics. If empty, the statistics bar remains non-promissory or displays verified defaults.
+   */
+  trustStats?:
+    | {
+        value: string;
+        label: string;
+        iconKey?: ('users' | 'star' | 'award' | 'heartHandshake' | 'shield' | 'clock') | null;
+        id?: string | null;
+      }[]
+    | null;
+  /**
+   * Curated clinical case photos demonstrating before and after dental results. Click row to edit case details.
    */
   beforeAfterCases?:
     | {
@@ -1136,9 +1147,24 @@ export interface About {
     [k: string]: unknown;
   } | null;
   storyImage?: (number | null) | Media;
-  valuesTitle?: string | null;
+  founderTitle?: string | null;
+  founderQuote?: string | null;
+  founderName?: string | null;
+  founderRole?: string | null;
   mission?: string | null;
   vision?: string | null;
+  positioning?: string | null;
+  valuesTitle?: string | null;
+  /**
+   * The clinic fundamental values guiding clinical decisions and patient care.
+   */
+  coreValues?:
+    | {
+        title: string;
+        description: string;
+        id?: string | null;
+      }[]
+    | null;
   experienceNarrative?: {
     root: {
       type: string;
@@ -1164,6 +1190,12 @@ export interface About {
 export interface ClinicInfo {
   id: number;
   clinicName: string;
+  email?: string | null;
+  address?: string | null;
+  /**
+   * Google Maps embed link or directions URL.
+   */
+  locationOnMap?: string | null;
   phoneNumbers?:
     | {
         number: string;
@@ -1171,12 +1203,6 @@ export interface ClinicInfo {
         id?: string | null;
       }[]
     | null;
-  email?: string | null;
-  address?: string | null;
-  /**
-   * Google Maps embed link or directions URL.
-   */
-  locationOnMap?: string | null;
   openingHours?:
     | {
         days: string;
@@ -1215,6 +1241,14 @@ export interface HomeSelect<T extends boolean = true> {
         iconName?: T;
         id?: T;
       };
+  trustStats?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        iconKey?: T;
+        id?: T;
+      };
   beforeAfterCases?:
     | T
     | {
@@ -1238,9 +1272,21 @@ export interface AboutSelect<T extends boolean = true> {
   storyTitle?: T;
   storyContent?: T;
   storyImage?: T;
-  valuesTitle?: T;
+  founderTitle?: T;
+  founderQuote?: T;
+  founderName?: T;
+  founderRole?: T;
   mission?: T;
   vision?: T;
+  positioning?: T;
+  valuesTitle?: T;
+  coreValues?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        id?: T;
+      };
   experienceNarrative?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -1252,6 +1298,9 @@ export interface AboutSelect<T extends boolean = true> {
  */
 export interface ClinicInfoSelect<T extends boolean = true> {
   clinicName?: T;
+  email?: T;
+  address?: T;
+  locationOnMap?: T;
   phoneNumbers?:
     | T
     | {
@@ -1259,9 +1308,6 @@ export interface ClinicInfoSelect<T extends boolean = true> {
         label?: T;
         id?: T;
       };
-  email?: T;
-  address?: T;
-  locationOnMap?: T;
   openingHours?:
     | T
     | {

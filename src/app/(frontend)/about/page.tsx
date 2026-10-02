@@ -2,8 +2,9 @@ import React from 'react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
-import { ArrowRight, Award, Compass, Heart, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Award, Compass, Heart, ShieldCheck, Quote, Sparkles } from 'lucide-react'
 import { getAboutContent, getMedicalTeam } from '@/repositories/clinic'
+import { RichText } from '@/components/richText/RichText'
 import type { Media } from '@/payload-types'
 
 export const metadata: Metadata = {
@@ -29,6 +30,7 @@ export default async function AboutPage() {
 
   const storyImageUrl = getMediaUrl(aboutContent?.storyImage)
   const doctors = doctorsResult.docs
+  const coreValues = aboutContent?.coreValues || []
 
   return (
     <div className="bg-[#fdfcf9] min-h-screen">
@@ -40,11 +42,17 @@ export default async function AboutPage() {
               About Our Clinic
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-americana text-[#36302f] leading-[1.15] font-bold">
-              {aboutContent?.storyTitle || 'Artistry & Excellence in Modern Dentistry'}
+              {aboutContent?.storyTitle || 'About Dr. John Sevo Dawod Clinics'}
             </h1>
-            <p className="font-perpetua text-[#5a5350] text-lg sm:text-xl leading-relaxed">
-              Where world-class clinical precision meets an unwavering commitment to patient comfort and aesthetic perfection.
-            </p>
+            {aboutContent?.positioning ? (
+              <p className="font-perpetua text-[#5a5350] text-lg sm:text-xl leading-relaxed whitespace-pre-line">
+                {aboutContent.positioning}
+              </p>
+            ) : (
+              <p className="font-perpetua text-[#5a5350] text-lg sm:text-xl leading-relaxed">
+                Where world-class clinical precision meets an unwavering commitment to patient comfort and aesthetic perfection.
+              </p>
+            )}
           </div>
         </div>
       </section>
@@ -60,14 +68,19 @@ export default async function AboutPage() {
               <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f] leading-tight">
                 Personalized Care Built on Decades of Trust
               </h2>
-              <div className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed space-y-4">
-                <p>
-                  At Dr. John Sevo Dental Clinic, our clinical ethos is anchored in delivering restorative and cosmetic dentistry of the highest standard. We believe every patient deserves compassionate, tailored treatment supported by modern digital diagnostic technologies.
-                </p>
-                <p>
-                  From preventative dental health to full-mouth implant rehabilitation and aesthetic transformations, we combine gentle hands with advanced clinical methodologies.
-                </p>
-              </div>
+
+              {aboutContent?.storyContent ? (
+                <RichText data={aboutContent.storyContent} />
+              ) : (
+                <div className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed space-y-4">
+                  <p>
+                    At Dr. John Sevo Dental Clinic, our clinical ethos is anchored in delivering restorative and cosmetic dentistry of the highest standard. We believe every patient deserves compassionate, tailored treatment supported by modern digital diagnostic technologies.
+                  </p>
+                  <p>
+                    From preventative dental health to full-mouth implant rehabilitation and aesthetic transformations, we combine gentle hands with advanced clinical methodologies.
+                  </p>
+                </div>
+              )}
 
               <div className="pt-2">
                 <Link
@@ -105,15 +118,52 @@ export default async function AboutPage() {
         </div>
       </section>
 
+      {/* Founder's Message Section */}
+      {aboutContent?.founderQuote ? (
+        <section className="section bg-[#fbf8f4] border-t border-b border-[rgba(54,48,47,0.08)] py-16 lg:py-24">
+          <div className="mx-auto w-full max-w-5xl px-6 lg:px-8">
+            <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[rgba(54,48,47,0.08)] shadow-lg relative overflow-hidden">
+              <div className="absolute top-6 right-8 text-[#b58a48]/15 pointer-events-none select-none">
+                <Quote className="w-24 h-24" />
+              </div>
+
+              <div className="relative z-10 space-y-6">
+                <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block">
+                  {aboutContent.founderTitle || 'A Word from the Founder'}
+                </span>
+
+                <div className="font-perpetua text-[#36302f] text-lg sm:text-xl leading-relaxed whitespace-pre-line italic">
+                  &ldquo;{aboutContent.founderQuote}&rdquo;
+                </div>
+
+                <div className="pt-4 border-t border-[rgba(54,48,47,0.08)] flex items-center justify-between">
+                  <div>
+                    <h3 className="font-americana font-bold text-lg text-[#36302f]">
+                      {aboutContent.founderName || 'Dr. John Sevo Dawod'}
+                    </h3>
+                    <p className="text-xs font-perpetua text-[#8e6e4f] tracking-wide">
+                      {aboutContent.founderRole || 'Founder & Medical Director'}
+                    </p>
+                  </div>
+                  <div className="w-10 h-10 rounded-full bg-[#faf6f0] border border-[#b58a48]/20 flex items-center justify-center text-[#b58a48]">
+                    <Sparkles className="w-5 h-5" />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      ) : null}
+
       {/* Mission & Vision Pillars */}
       <section className="section bg-[#f4eee7] border-t border-b border-[rgba(54,48,47,0.08)] py-16">
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12">
             <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block mb-2">
-              Our Core Philosophy
+              Our Direction
             </span>
             <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f]">
-              {aboutContent?.valuesTitle || 'Mission, Vision & Principles'}
+              Mission & Vision
             </h2>
           </div>
 
@@ -125,8 +175,8 @@ export default async function AboutPage() {
               <h3 className="text-2xl font-perpetua font-bold text-[#36302f]">
                 Our Mission
               </h3>
-              <p className="text-sm font-perpetua text-[#706865] leading-relaxed">
-                {aboutContent?.mission || 'To provide comprehensive, state-of-the-art dental solutions with unparalleled gentleness, restoring confidence and long-term oral health for every patient.'}
+              <p className="text-base font-perpetua text-[#706865] leading-relaxed">
+                {aboutContent?.mission || 'To provide comprehensive, state-of-the-art dental care with empathy, clinical precision, and the highest standards of safety and comfort — empowering our patients with healthy, beautiful smiles and renewed confidence through personalized treatment experiences.'}
               </p>
             </div>
 
@@ -137,13 +187,73 @@ export default async function AboutPage() {
               <h3 className="text-2xl font-perpetua font-bold text-[#36302f]">
                 Our Vision
               </h3>
-              <p className="text-sm font-perpetua text-[#706865] leading-relaxed">
-                {aboutContent?.vision || 'To be the benchmark of aesthetic excellence and personalized dental care in the region, recognized for clinical integrity and exceptional patient comfort.'}
+              <p className="text-base font-perpetua text-[#706865] leading-relaxed">
+                {aboutContent?.vision || 'To be the benchmark of excellence and the premier destination for advanced, aesthetic, and compassionate dentistry in the region, recognized for exceptional clinical outcomes, pioneering innovation, and an unwavering commitment to patient well-being.'}
               </p>
             </div>
           </div>
         </div>
       </section>
+
+      {/* Core Values Section */}
+      {coreValues.length > 0 ? (
+        <section className="section py-16 lg:py-24 bg-white">
+          <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
+            <div className="text-center max-w-2xl mx-auto mb-14">
+              <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block mb-2">
+                Guiding Principles
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f]">
+                {aboutContent?.valuesTitle || 'Our Core Values'}
+              </h2>
+              <p className="text-base text-[#706865] mt-2 font-perpetua">
+                The fundamental principles guiding every clinical decision and patient interaction.
+              </p>
+            </div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {coreValues.map((value, idx) => (
+                <div
+                  key={`${value.title}-${idx}`}
+                  className="p-6 rounded-3xl bg-[#fdfcf9] border border-[rgba(54,48,47,0.08)] shadow-sm hover:shadow-md transition-all space-y-3"
+                >
+                  <div className="flex items-center justify-between">
+                    <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl bg-[#b58a48]/10 text-[#8e6e4f] text-xs font-bold font-mono">
+                      0{idx + 1}
+                    </span>
+                    <Sparkles className="w-4 h-4 text-[#b58a48]/60" />
+                  </div>
+                  <h3 className="font-perpetua font-bold text-xl text-[#36302f]">
+                    {value.title}
+                  </h3>
+                  <p className="text-sm font-perpetua text-[#706865] leading-relaxed">
+                    {value.description}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </section>
+      ) : null}
+
+      {/* Philosophy & Narrative Section */}
+      {aboutContent?.experienceNarrative ? (
+        <section className="section py-16 lg:py-24 bg-[#faf6f0] border-t border-[rgba(54,48,47,0.08)]">
+          <div className="mx-auto w-full max-w-4xl px-6 lg:px-8 space-y-8">
+            <div className="text-center">
+              <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block mb-2">
+                Clinical Philosophy
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f]">
+                Excellence, Innovation & Care
+              </h2>
+            </div>
+            <div className="bg-white rounded-3xl p-8 sm:p-12 border border-[rgba(54,48,47,0.08)] shadow-sm">
+              <RichText data={aboutContent.experienceNarrative} />
+            </div>
+          </div>
+        </section>
+      ) : null}
 
       {/* Medical Team Section */}
       <section className="section py-16 lg:py-24">

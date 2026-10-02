@@ -5,6 +5,7 @@ import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowRight, CheckCircle2, Clock, UserCheck } from 'lucide-react'
 import type { Metadata } from 'next'
 import { getServiceBySlug, getMedicalTeam } from '@/repositories/clinic'
+import { RichText } from '@/components/richText/RichText'
 import type { Media, Doctor } from '@/payload-types'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com'
@@ -121,14 +122,18 @@ export default async function ServiceDetailPage(props: ServiceDetailPageProps) {
                 <h2 className="text-2xl sm:text-3xl font-perpetua font-bold text-[#36302f]">
                   Procedure Overview & Clinical Method
                 </h2>
-                <div className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed space-y-4">
-                  <p>
-                    {service.shortDescription}
-                  </p>
-                  <p>
-                    Our clinical specialists utilize high-magnification dental loupes, digital impression scanners, and bio-compatible materials to ensure long-lasting structural integrity and seamless aesthetics.
-                  </p>
-                </div>
+                {service.description ? (
+                  <RichText data={service.description} />
+                ) : (
+                  <div className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed space-y-4">
+                    <p>
+                      {service.shortDescription}
+                    </p>
+                    <p>
+                      Our clinical specialists utilize high-magnification dental loupes, digital impression scanners, and bio-compatible materials to ensure long-lasting structural integrity and seamless aesthetics.
+                    </p>
+                  </div>
+                )}
               </div>
 
               {/* Specialists Performing this Treatment */}

@@ -21,6 +21,14 @@ import { StrikethroughFeatureClient as StrikethroughFeatureClient_e70f5e05f09f93
 import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
+import { QualificationRowLabel as QualificationRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
+import { PillarRowLabel as PillarRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
+import { TrustStatRowLabel as TrustStatRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
+import { CaseRowLabel as CaseRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
+import { CoreValueRowLabel as CoreValueRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
+import { PhoneRowLabel as PhoneRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
+import { OpeningHoursRowLabel as OpeningHoursRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
+import { SocialLinkRowLabel as SocialLinkRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 
 /** @type import('payload').ImportMap */
@@ -48,5 +56,13 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#UnderlineFeatureClient": UnderlineFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
+  "@/components/admin/RowLabels#QualificationRowLabel": QualificationRowLabel_602181e9d445b98d48bce238807017cb,
+  "@/components/admin/RowLabels#PillarRowLabel": PillarRowLabel_602181e9d445b98d48bce238807017cb,
+  "@/components/admin/RowLabels#TrustStatRowLabel": TrustStatRowLabel_602181e9d445b98d48bce238807017cb,
+  "@/components/admin/RowLabels#CaseRowLabel": CaseRowLabel_602181e9d445b98d48bce238807017cb,
+  "@/components/admin/RowLabels#CoreValueRowLabel": CoreValueRowLabel_602181e9d445b98d48bce238807017cb,
+  "@/components/admin/RowLabels#PhoneRowLabel": PhoneRowLabel_602181e9d445b98d48bce238807017cb,
+  "@/components/admin/RowLabels#OpeningHoursRowLabel": OpeningHoursRowLabel_602181e9d445b98d48bce238807017cb,
+  "@/components/admin/RowLabels#SocialLinkRowLabel": SocialLinkRowLabel_602181e9d445b98d48bce238807017cb,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1
 }

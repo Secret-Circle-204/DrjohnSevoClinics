@@ -17,12 +17,20 @@ export const Services: CollectionConfig = {
   hooks: {
     afterChange: [
       () => {
-        revalidatePath('/')
+        try {
+          revalidatePath('/')
+        } catch {
+          // Safe outside Next.js request context
+        }
       },
     ],
     afterDelete: [
       () => {
-        revalidatePath('/')
+        try {
+          revalidatePath('/')
+        } catch {
+          // Safe outside Next.js request context
+        }
       },
     ],
   },

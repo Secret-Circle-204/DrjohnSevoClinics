@@ -37,11 +37,17 @@ export default async function HomePage() {
         overviewTitle={homeContent?.overviewTitle}
         overviewText={homeContent?.overviewText}
         overviewImageUrl={overviewImageUrl}
+        whyChooseTitle={homeContent?.whyChooseTitle}
+        whyChooseSubtitle={homeContent?.whyChooseSubtitle}
         pillars={homeContent?.whyChooseItems}
       />
-      <TrustStatsSection />
+      <TrustStatsSection stats={homeContent?.trustStats} />
       <BeforeAfterSection cases={homeContent?.beforeAfterCases} />
-      <BookingSection availableServices={servicesResult.docs} />
+      <BookingSection
+        availableServices={servicesResult.docs}
+        ctaHeadline={homeContent?.ctaHeadline}
+        ctaSubtitle={homeContent?.ctaSubtitle}
+      />
     </>
   )
 }
