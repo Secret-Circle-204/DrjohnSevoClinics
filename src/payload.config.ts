@@ -18,6 +18,8 @@ import { Appointments } from './collections/Appointments'
 import { FollowUps } from './collections/FollowUps'
 import { Consultations } from './collections/Consultations'
 import { Reports } from './collections/Reports'
+import { EmailOutbox } from './collections/EmailOutbox'
+import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 import { Home } from './globals/Home'
 import { About } from './globals/About'
@@ -52,7 +54,24 @@ export default buildConfig({
     FollowUps,
     Consultations,
     Reports,
+    EmailOutbox,
   ],
+  email: nodemailerAdapter({
+    defaultFromAddress: process.env.FROM_EMAIL || 'info@drjohnsevo.com',
+    defaultFromName: process.env.FROM_NAME || 'Dr. John Sevo Dental Clinic',
+    skipVerify: !process.env.SMTP_USER || process.env.NODE_ENV === 'test',
+    transportOptions: {
+      host: process.env.SMTP_HOST || 'smtp.gmail.com',
+      port: Number(process.env.SMTP_PORT) || 587,
+      secure: process.env.SMTP_SECURE === 'true',
+      auth: process.env.SMTP_USER
+        ? {
+            user: process.env.SMTP_USER,
+            pass: process.env.SMTP_PASSWORD || '',
+          }
+        : undefined,
+    },
+  }),
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',
   typescript: {

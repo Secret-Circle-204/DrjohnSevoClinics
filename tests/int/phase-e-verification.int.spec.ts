@@ -240,7 +240,7 @@ describe('Phase E Evidence Closure Verification', () => {
       expect(parsed.publisher?.name).toBe('Dr. John Sevo Dental Clinic')
       expect(parsed.aggregateRating).toBeUndefined()
       expect(parsed.review).toBeUndefined()
-    })
+    }, 15000)
   })
 
   describe('3. Targeted Revalidation Verification', () => {

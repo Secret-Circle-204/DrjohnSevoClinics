@@ -80,6 +80,7 @@ export interface Config {
     'follow-ups': FollowUp;
     consultations: Consultation;
     reports: Report;
+    'email-outbox': EmailOutbox;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -100,6 +101,7 @@ export interface Config {
     'follow-ups': FollowUpsSelect<false> | FollowUpsSelect<true>;
     consultations: ConsultationsSelect<false> | ConsultationsSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
+    'email-outbox': EmailOutboxSelect<false> | EmailOutboxSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -611,6 +613,45 @@ export interface Report {
   createdAt: string;
 }
 /**
+ * Internal transactional email delivery outbox for reliable, durable, and retryable email notifications.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-outbox".
+ */
+export interface EmailOutbox {
+  id: number;
+  /**
+   * Destination email address.
+   */
+  to: string;
+  subject: string;
+  html: string;
+  text?: string | null;
+  /**
+   * Unique business event reference (e.g. inquiry-123) to prevent duplicate delivery.
+   */
+  referenceId?: string | null;
+  status: 'pending' | 'processing' | 'sent' | 'failed';
+  /**
+   * Number of SMTP transmission attempts made (max: 3).
+   */
+  attempts: number;
+  /**
+   * Error diagnostics recorded from the last failed delivery attempt.
+   */
+  lastError?: string | null;
+  /**
+   * Scheduled timestamp for the next automated retry attempt.
+   */
+  nextRetryAt?: string | null;
+  /**
+   * Timestamp when the message was successfully accepted by SMTP.
+   */
+  sentAt?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -685,6 +726,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'reports';
         value: number | Report;
+      } | null)
+    | ({
+        relationTo: 'email-outbox';
+        value: number | EmailOutbox;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -968,6 +1013,24 @@ export interface ReportsSelect<T extends boolean = true> {
   summary?: T;
   attachment?: T;
   cancellationReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "email-outbox_select".
+ */
+export interface EmailOutboxSelect<T extends boolean = true> {
+  to?: T;
+  subject?: T;
+  html?: T;
+  text?: T;
+  referenceId?: T;
+  status?: T;
+  attempts?: T;
+  lastError?: T;
+  nextRetryAt?: T;
+  sentAt?: T;
   updatedAt?: T;
   createdAt?: T;
 }

@@ -1,5 +1,6 @@
 import type { CollectionConfig } from 'payload'
 import { isAdmin, isAdminOrStaff } from '../access/rbac'
+import { queueInquiryNotification } from '../lib/email/dispatcher'
 
 export const Inquiries: CollectionConfig = {
   slug: 'inquiries',
@@ -14,6 +15,19 @@ export const Inquiries: CollectionConfig = {
     read: isAdminOrStaff,
     update: isAdminOrStaff,
     delete: isAdmin,
+  },
+  hooks: {
+    afterChange: [
+      async ({ doc, operation, req }) => {
+        if (operation === 'create') {
+          try {
+            await queueInquiryNotification(doc, req.payload)
+          } catch (err: any) {
+            req.payload.logger.error(`[Inquiries] Error in afterChange email hook: ${err?.message || err}`)
+          }
+        }
+      },
+    ],
   },
   fields: [
     {
