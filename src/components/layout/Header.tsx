@@ -60,9 +60,7 @@ export function Header() {
 
             {/* Enlarged Centered Pure Gold Emblem */}
             <div className="flex-shrink-0 px-2 lg:px-4">
-              <Link href="/">
-                <ClinicLogo variant="emblem-only" height={68} />
-              </Link>
+              <ClinicLogo variant="emblem-only" height={68} />
             </div>
 
             {/* Right 3 Links */}
