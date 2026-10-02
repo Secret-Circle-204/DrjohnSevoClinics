@@ -17,6 +17,7 @@ import { Clients } from './collections/Clients'
 import { Appointments } from './collections/Appointments'
 import { FollowUps } from './collections/FollowUps'
 import { Consultations } from './collections/Consultations'
+import { Reports } from './collections/Reports'
 
 import { Home } from './globals/Home'
 import { About } from './globals/About'
@@ -50,6 +51,7 @@ export default buildConfig({
     Appointments,
     FollowUps,
     Consultations,
+    Reports,
   ],
   editor: lexicalEditor(),
   secret: process.env.PAYLOAD_SECRET || '',

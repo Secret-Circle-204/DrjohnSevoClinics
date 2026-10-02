@@ -5,6 +5,7 @@ import * as migration_20260918_003214_phase5_client_foundation from './20260918_
 import * as migration_20260918_004426_phase6_appointment_foundation from './20260918_004426_phase6_appointment_foundation';
 import * as migration_20260918_005931_phase7_followup_foundation from './20260918_005931_phase7_followup_foundation';
 import * as migration_20261002_184742_phase8_consultation_foundation from './20261002_184742_phase8_consultation_foundation';
+import * as migration_20261002_191829_phase9_reports_foundation from './20261002_191829_phase9_reports_foundation';
 
 export const migrations = [
   {
@@ -40,6 +41,11 @@ export const migrations = [
   {
     up: migration_20261002_184742_phase8_consultation_foundation.up,
     down: migration_20261002_184742_phase8_consultation_foundation.down,
-    name: '20261002_184742_phase8_consultation_foundation'
+    name: '20261002_184742_phase8_consultation_foundation',
+  },
+  {
+    up: migration_20261002_191829_phase9_reports_foundation.up,
+    down: migration_20261002_191829_phase9_reports_foundation.down,
+    name: '20261002_191829_phase9_reports_foundation'
   },
 ];

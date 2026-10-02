@@ -79,6 +79,7 @@ export interface Config {
     appointments: Appointment;
     'follow-ups': FollowUp;
     consultations: Consultation;
+    reports: Report;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -98,6 +99,7 @@ export interface Config {
     appointments: AppointmentsSelect<false> | AppointmentsSelect<true>;
     'follow-ups': FollowUpsSelect<false> | FollowUpsSelect<true>;
     consultations: ConsultationsSelect<false> | ConsultationsSelect<true>;
+    reports: ReportsSelect<false> | ReportsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -557,6 +559,59 @@ export interface Consultation {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reports".
+ */
+export interface Report {
+  id: number;
+  /**
+   * Official document title (e.g. Comprehensive Periodontal Assessment, Specialist Referral).
+   */
+  title: string;
+  /**
+   * Authoritative patient identity record.
+   */
+  client: number | Client;
+  /**
+   * Dentist or specialist issuing the report (optional).
+   */
+  doctor?: (number | null) | Doctor;
+  /**
+   * Originating clinical consultation encounter (optional).
+   */
+  consultation?: (number | null) | Consultation;
+  /**
+   * Associated appointment encounter context (optional).
+   */
+  appointment?: (number | null) | Appointment;
+  /**
+   * Official date of report issuance.
+   */
+  reportDate: string;
+  /**
+   * Official classification of the document.
+   */
+  reportType: 'clinical_summary' | 'referral_letter';
+  /**
+   * Server-enforced operational lifecycle state.
+   */
+  status: 'draft' | 'finalized' | 'cancelled';
+  /**
+   * Official text, findings summary, or clinical statement.
+   */
+  summary?: string | null;
+  /**
+   * Optional uploaded document or official signed PDF file.
+   */
+  attachment?: (number | null) | Media;
+  /**
+   * Mandatory documentation when report is cancelled.
+   */
+  cancellationReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -626,6 +681,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'consultations';
         value: number | Consultation;
+      } | null)
+    | ({
+        relationTo: 'reports';
+        value: number | Report;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -889,6 +948,25 @@ export interface ConsultationsSelect<T extends boolean = true> {
   chiefComplaint?: T;
   clinicalNotes?: T;
   recommendations?: T;
+  cancellationReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "reports_select".
+ */
+export interface ReportsSelect<T extends boolean = true> {
+  title?: T;
+  client?: T;
+  doctor?: T;
+  consultation?: T;
+  appointment?: T;
+  reportDate?: T;
+  reportType?: T;
+  status?: T;
+  summary?: T;
+  attachment?: T;
   cancellationReason?: T;
   updatedAt?: T;
   createdAt?: T;
