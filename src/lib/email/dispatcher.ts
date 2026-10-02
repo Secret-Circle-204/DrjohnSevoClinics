@@ -106,7 +106,9 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
     }
 
     // 2. Resolve Clinic Reception Email Address
-    let recipientEmail = process.env.CLINIC_RECEPTION_EMAIL || process.env.FROM_EMAIL || 'reception@drjohnsevo.com'
+    // Strictly from: (1) Primary Contact Email in Clinic Info Admin, or (2) CLINIC_RECEPTION_EMAIL in .env
+    let recipientEmail: string | undefined
+
     try {
       const clinicInfo = await payload.findGlobal({
         slug: 'clinic-info',
@@ -117,6 +119,17 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
       }
     } catch {
       // Global fetch fallback to env
+    }
+
+    if (!recipientEmail && process.env.CLINIC_RECEPTION_EMAIL && process.env.CLINIC_RECEPTION_EMAIL.trim()) {
+      recipientEmail = process.env.CLINIC_RECEPTION_EMAIL.trim()
+    }
+
+    if (!recipientEmail) {
+      payload.logger.error(
+        `[EmailOutbox] Cannot queue inquiry notification for #${inquiry.id}: No reception email found. Please configure "Primary Contact Email" in Clinic Info or set CLINIC_RECEPTION_EMAIL in .env.`,
+      )
+      return null
     }
 
     // 3. Resolve Requested Service Title if referenced
