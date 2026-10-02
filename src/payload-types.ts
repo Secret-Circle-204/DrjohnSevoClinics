@@ -78,6 +78,7 @@ export interface Config {
     clients: Client;
     appointments: Appointment;
     'follow-ups': FollowUp;
+    consultations: Consultation;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -96,6 +97,7 @@ export interface Config {
     clients: ClientsSelect<false> | ClientsSelect<true>;
     appointments: AppointmentsSelect<false> | AppointmentsSelect<true>;
     'follow-ups': FollowUpsSelect<false> | FollowUpsSelect<true>;
+    consultations: ConsultationsSelect<false> | ConsultationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -501,6 +503,60 @@ export interface FollowUp {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consultations".
+ */
+export interface Consultation {
+  id: number;
+  /**
+   * Authoritative patient identity record.
+   */
+  client: number | Client;
+  /**
+   * Attending dentist or specialist who conducted the consultation.
+   */
+  doctor?: (number | null) | Doctor;
+  /**
+   * Associated appointment encounter context (optional).
+   */
+  appointment?: (number | null) | Appointment;
+  /**
+   * Date the clinical examination was performed.
+   */
+  consultationDate: string;
+  /**
+   * Operational classification of the clinical consultation.
+   */
+  consultationType:
+    | 'initial_examination'
+    | 'comprehensive_evaluation'
+    | 'treatment_planning'
+    | 'specialist_consult'
+    | 'clinical_review';
+  /**
+   * Server-enforced operational lifecycle state.
+   */
+  status: 'draft' | 'completed' | 'cancelled';
+  /**
+   * Patient's primary stated concern or reason for visit.
+   */
+  chiefComplaint?: string | null;
+  /**
+   * General clinical examination observations and intraoral findings.
+   */
+  clinicalNotes?: string | null;
+  /**
+   * Verbal clinical recommendations and treatment plan outline discussed with the patient.
+   */
+  recommendations?: string | null;
+  /**
+   * Mandatory documentation when consultation is cancelled.
+   */
+  cancellationReason?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
 export interface PayloadKv {
@@ -566,6 +622,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'follow-ups';
         value: number | FollowUp;
+      } | null)
+    | ({
+        relationTo: 'consultations';
+        value: number | Consultation;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -811,6 +871,24 @@ export interface FollowUpsSelect<T extends boolean = true> {
   status?: T;
   notes?: T;
   outcome?: T;
+  cancellationReason?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consultations_select".
+ */
+export interface ConsultationsSelect<T extends boolean = true> {
+  client?: T;
+  doctor?: T;
+  appointment?: T;
+  consultationDate?: T;
+  consultationType?: T;
+  status?: T;
+  chiefComplaint?: T;
+  clinicalNotes?: T;
+  recommendations?: T;
   cancellationReason?: T;
   updatedAt?: T;
   createdAt?: T;

@@ -4,6 +4,7 @@ import * as migration_20260917_234746_cleanup_treatments_and_youtube from './202
 import * as migration_20260918_003214_phase5_client_foundation from './20260918_003214_phase5_client_foundation';
 import * as migration_20260918_004426_phase6_appointment_foundation from './20260918_004426_phase6_appointment_foundation';
 import * as migration_20260918_005931_phase7_followup_foundation from './20260918_005931_phase7_followup_foundation';
+import * as migration_20261002_184742_phase8_consultation_foundation from './20261002_184742_phase8_consultation_foundation';
 
 export const migrations = [
   {
@@ -34,6 +35,11 @@ export const migrations = [
   {
     up: migration_20260918_005931_phase7_followup_foundation.up,
     down: migration_20260918_005931_phase7_followup_foundation.down,
-    name: '20260918_005931_phase7_followup_foundation'
+    name: '20260918_005931_phase7_followup_foundation',
+  },
+  {
+    up: migration_20261002_184742_phase8_consultation_foundation.up,
+    down: migration_20261002_184742_phase8_consultation_foundation.down,
+    name: '20261002_184742_phase8_consultation_foundation'
   },
 ];
