@@ -23,6 +23,7 @@ interface BookingSectionProps {
 
 export function BookingSection({ availableServices = [] }: BookingSectionProps) {
   const [fullName, setFullName] = useState('')
+  const [email, setEmail] = useState('')
   const [phone, setPhone] = useState('')
   const [selectedService, setSelectedService] = useState<string>('')
   const [selectedDate, setSelectedDate] = useState<Date | undefined>()
@@ -46,6 +47,7 @@ export function BookingSection({ availableServices = [] }: BookingSectionProps) 
 
     const res = await submitInquiryAction({
       fullName,
+      email,
       phone,
       service: serviceId,
       preferredDate: selectedDate ? selectedDate.toISOString() : undefined,
@@ -61,6 +63,7 @@ export function BookingSection({ availableServices = [] }: BookingSectionProps) 
 
     if (res.success) {
       setFullName('')
+      setEmail('')
       setPhone('')
       setSelectedService('')
       setSelectedDate(undefined)
@@ -164,12 +167,29 @@ export function BookingSection({ availableServices = [] }: BookingSectionProps) 
                         type="text"
                         value={fullName}
                         onChange={(e) => setFullName(e.target.value)}
-                        placeholder="Your name"
+                        placeholder="Your full name"
                         required
                         className="w-full h-11 px-3.5 rounded-xl border border-[rgba(54,48,47,0.15)] focus:border-[#b58a48] focus:outline-none focus:ring-1 focus:ring-[#b58a48] text-sm text-[#36302f] bg-[#fcfbf9] transition-colors"
                       />
                     </div>
 
+                    <div>
+                      <label htmlFor="email" className="block text-xs font-semibold text-[#5a5350] mb-1.5">
+                        Email Address *
+                      </label>
+                      <input
+                        id="email"
+                        type="email"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
+                        placeholder="your.email@example.com"
+                        required
+                        className="w-full h-11 px-3.5 rounded-xl border border-[rgba(54,48,47,0.15)] focus:border-[#b58a48] focus:outline-none focus:ring-1 focus:ring-[#b58a48] text-sm text-[#36302f] bg-[#fcfbf9] transition-colors"
+                      />
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label htmlFor="phone" className="block text-xs font-semibold text-[#5a5350] mb-1.5">
                         Phone Number *
@@ -179,14 +199,12 @@ export function BookingSection({ availableServices = [] }: BookingSectionProps) 
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="Your phone number"
+                        placeholder="+971 50 123 4567"
                         required
                         className="w-full h-11 px-3.5 rounded-xl border border-[rgba(54,48,47,0.15)] focus:border-[#b58a48] focus:outline-none focus:ring-1 focus:ring-[#b58a48] text-sm text-[#36302f] bg-[#fcfbf9] transition-colors"
                       />
                     </div>
-                  </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     {/* Service selection */}
                     <div>
                       <label htmlFor="service-trigger" className="block text-xs font-semibold text-[#5a5350] mb-1.5">

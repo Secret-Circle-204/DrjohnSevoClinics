@@ -45,6 +45,7 @@ export const Inquiries: CollectionConfig = {
     {
       name: 'email',
       type: 'email',
+      required: true,
       label: 'Email Address',
     },
     {

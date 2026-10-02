@@ -135,26 +135,27 @@ describe('Phase E Evidence Closure Verification', () => {
 
       // Assertions
       const urls = entries.map((e) => e.url)
+      const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com'
 
       // Static routes present
-      expect(urls).toContain('https://drjohnsevo.com')
-      expect(urls).toContain('https://drjohnsevo.com/about')
-      expect(urls).toContain('https://drjohnsevo.com/services')
-      expect(urls).toContain('https://drjohnsevo.com/blog')
-      expect(urls).toContain('https://drjohnsevo.com/contact')
+      expect(urls).toContain(`${baseUrl}`)
+      expect(urls).toContain(`${baseUrl}/about`)
+      expect(urls).toContain(`${baseUrl}/services`)
+      expect(urls).toContain(`${baseUrl}/blog`)
+      expect(urls).toContain(`${baseUrl}/contact`)
 
       // Dynamic active service present with correct priority
-      const serviceEntry = entries.find((e) => e.url === 'https://drjohnsevo.com/services/evidence-active-service')
+      const serviceEntry = entries.find((e) => e.url === `${baseUrl}/services/evidence-active-service`)
       expect(serviceEntry).toBeDefined()
       expect(serviceEntry?.priority).toBe(0.8)
 
       // Dynamic active blog article present with correct priority
-      const postEntry = entries.find((e) => e.url === 'https://drjohnsevo.com/blog/evidence-active-article')
+      const postEntry = entries.find((e) => e.url === `${baseUrl}/blog/evidence-active-article`)
       expect(postEntry).toBeDefined()
       expect(postEntry?.priority).toBe(0.7)
 
       // INACTIVE service strictly excluded
-      expect(urls).not.toContain('https://drjohnsevo.com/services/evidence-inactive-service')
+      expect(urls).not.toContain(`${baseUrl}/services/evidence-inactive-service`)
     })
   })
 

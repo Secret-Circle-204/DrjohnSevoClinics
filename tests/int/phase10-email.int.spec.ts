@@ -53,7 +53,7 @@ describe('Phase 10 — Production Email Delivery Foundation Integration Tests', 
     expect(typeof payload.sendEmail).toBe('function')
   })
 
-  it('2: Creating an Inquiry triggers hook and creates exactly one EmailOutbox record', async () => {
+  it('2: Creating an Inquiry triggers hook and creates reception and patient confirmation EmailOutbox records', async () => {
     const inquiry = await payload.create({
       collection: 'inquiries',
       data: {
@@ -68,8 +68,8 @@ describe('Phase 10 — Production Email Delivery Foundation Integration Tests', 
     })
     createdInquiryIds.push(inquiry.id)
 
-    // Verify EmailOutbox record was created by the hook
-    const outboxDocs = await payload.find({
+    // Verify Reception EmailOutbox record was created by the hook
+    const receptionOutboxDocs = await payload.find({
       collection: 'email-outbox',
       where: {
         referenceId: {
@@ -79,15 +79,33 @@ describe('Phase 10 — Production Email Delivery Foundation Integration Tests', 
       overrideAccess: true,
     })
 
-    expect(outboxDocs.docs.length).toBe(1)
-    const outboxRecord = outboxDocs.docs[0]
-    expect(outboxRecord.subject).toContain('New Patient Inquiry')
-    expect(outboxRecord.subject).toContain('Phase 10 Test Patient')
-    expect(outboxRecord.html).toContain('Phase 10 Test Patient')
-    expect(outboxRecord.html).toContain('+971505556677')
-    expect(outboxRecord.referenceId).toBe(`inquiry-${inquiry.id}`)
+    expect(receptionOutboxDocs.docs.length).toBe(1)
+    const receptionRecord = receptionOutboxDocs.docs[0]
+    expect(receptionRecord.subject).toContain('New Patient Inquiry')
+    expect(receptionRecord.subject).toContain('Phase 10 Test Patient')
+    expect(receptionRecord.html).toContain('Phase 10 Test Patient')
+    expect(receptionRecord.html).toContain('+971505556677')
+    expect(receptionRecord.referenceId).toBe(`inquiry-${inquiry.id}`)
+    createdOutboxIds.push(receptionRecord.id)
 
-    createdOutboxIds.push(outboxRecord.id)
+    // Verify Patient Confirmation EmailOutbox record was created by the hook
+    const confirmationOutboxDocs = await payload.find({
+      collection: 'email-outbox',
+      where: {
+        referenceId: {
+          equals: `inquiry-confirmation-${inquiry.id}`,
+        },
+      },
+      overrideAccess: true,
+    })
+
+    expect(confirmationOutboxDocs.docs.length).toBe(1)
+    const confirmationRecord = confirmationOutboxDocs.docs[0]
+    expect(confirmationRecord.to).toBe('patient.phase10@example.com')
+    expect(confirmationRecord.subject).toContain('Appointment Request Received')
+    expect(confirmationRecord.html).toContain('Dear Phase 10 Test Patient')
+    expect(confirmationRecord.referenceId).toBe(`inquiry-confirmation-${inquiry.id}`)
+    createdOutboxIds.push(confirmationRecord.id)
   })
 
   it('3: EmailOutbox record starts as pending with attempts = 0', async () => {
@@ -350,12 +368,26 @@ describe('Phase 10 — Production Email Delivery Foundation Integration Tests', 
       data: {
         fullName: 'Preserved Patient Despite Email Failure',
         phone: '+971509988776',
+        email: 'preserved.patient@example.com',
         status: 'new',
         message: 'Ensure patient inquiry remains safely stored in PostgreSQL.',
       },
       overrideAccess: true,
     })
     createdInquiryIds.push(inquiry.id)
+
+    // Track created outbox records for cleanup
+    const queuedOutbox = await payload.find({
+      collection: 'email-outbox',
+      where: {
+        or: [
+          { referenceId: { equals: `inquiry-${inquiry.id}` } },
+          { referenceId: { equals: `inquiry-confirmation-${inquiry.id}` } },
+        ],
+      },
+      overrideAccess: true,
+    })
+    queuedOutbox.docs.forEach((doc) => createdOutboxIds.push(doc.id))
 
     // Verify the inquiry is 100% saved in the database
     const savedInquiry = await payload.findByID({

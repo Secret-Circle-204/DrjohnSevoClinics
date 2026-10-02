@@ -2,6 +2,8 @@ import type { Payload } from 'payload'
 import {
   formatInquiryNotificationHtml,
   formatInquiryNotificationText,
+  formatPatientConfirmationHtml,
+  formatPatientConfirmationText,
 } from './templates/inquiryNotification'
 
 export const MAX_DELIVERY_ATTEMPTS = 3
@@ -108,9 +110,10 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
     // 2. Resolve Clinic Reception Email Address
     // Strictly from: (1) Primary Contact Email in Clinic Info Admin, or (2) CLINIC_RECEPTION_EMAIL in .env
     let recipientEmail: string | undefined
+    let clinicInfo: any = null
 
     try {
-      const clinicInfo = await payload.findGlobal({
+      clinicInfo = await payload.findGlobal({
         slug: 'clinic-info',
         overrideAccess: true,
       })
@@ -151,7 +154,7 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
       }
     }
 
-    // 4. Render Email Template
+    // 4. Render Reception Email Template
     const templateData = {
       inquiryId: inquiry.id,
       fullName: inquiry.fullName,
@@ -169,7 +172,7 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
     const html = formatInquiryNotificationHtml(templateData)
     const text = formatInquiryNotificationText(templateData)
 
-    // 5. Persist into EmailOutbox
+    // 5. Persist Reception Notification into EmailOutbox
     const outboxDoc = await payload.create({
       collection: 'email-outbox',
       data: {
@@ -185,10 +188,72 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
       overrideAccess: true,
     })
 
-    // 6. Trigger non-blocking asynchronous dispatch
+    // 6. Trigger non-blocking asynchronous dispatch for Reception Notification
     void dispatchOutboxRecord(outboxDoc.id, payload).catch((err) => {
-      payload.logger.error(`[EmailOutbox] Background dispatch error for #${outboxDoc.id}: ${err?.message || err}`)
+      payload.logger.error(`[EmailOutbox] Background dispatch error for reception #${outboxDoc.id}: ${err?.message || err}`)
     })
+
+    // 7. Patient Confirmation Email: Queue confirmation directly to patient
+    if (inquiry.email && typeof inquiry.email === 'string' && inquiry.email.includes('@')) {
+      const confirmationRefId = `inquiry-confirmation-${inquiry.id}`
+      try {
+        const existingConfirmation = await payload.find({
+          collection: 'email-outbox',
+          where: {
+            referenceId: {
+              equals: confirmationRefId,
+            },
+          },
+          limit: 1,
+          overrideAccess: true,
+        })
+
+        if (existingConfirmation.docs.length === 0) {
+          const patientTemplateData = {
+            inquiryId: inquiry.id,
+            fullName: inquiry.fullName,
+            email: inquiry.email.trim(),
+            phone: inquiry.phone,
+            serviceTitle,
+            preferredDate: inquiry.preferredDate,
+            preferredTime: inquiry.preferredTime,
+            clinicPhone: clinicInfo?.phoneNumbers?.[0]?.number || null,
+            clinicEmail: recipientEmail,
+            clinicAddress: clinicInfo?.address || null,
+            siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com',
+          }
+
+          const patientSubject = `Appointment Request Received — Dr. John Sevo Dental Clinic (#${inquiry.id})`
+          const patientHtml = formatPatientConfirmationHtml(patientTemplateData)
+          const patientText = formatPatientConfirmationText(patientTemplateData)
+
+          const patientDoc = await payload.create({
+            collection: 'email-outbox',
+            data: {
+              to: inquiry.email.trim(),
+              subject: patientSubject,
+              html: patientHtml,
+              text: patientText,
+              referenceId: confirmationRefId,
+              status: 'pending',
+              attempts: 0,
+              nextRetryAt: new Date().toISOString(),
+            },
+            overrideAccess: true,
+          })
+
+          void dispatchOutboxRecord(patientDoc.id, payload).catch((err) => {
+            payload.logger.error(
+              `[EmailOutbox] Background dispatch error for patient confirmation #${patientDoc.id}: ${err?.message || err}`,
+            )
+          })
+        }
+      } catch (confirmErr: any) {
+        payload.logger.error(
+          `[EmailOutbox] Failed to queue patient confirmation for inquiry #${inquiry.id}: ${confirmErr?.message || confirmErr}`,
+        )
+      }
+    }
 
     return outboxDoc.id
   } catch (err: any) {

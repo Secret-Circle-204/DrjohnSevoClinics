@@ -365,7 +365,7 @@ export interface Inquiry {
   id: number;
   fullName: string;
   phone: string;
-  email?: string | null;
+  email: string;
   service?: (number | null) | Service;
   preferredDate?: string | null;
   preferredTime?: ('morning' | 'afternoon' | 'evening') | null;

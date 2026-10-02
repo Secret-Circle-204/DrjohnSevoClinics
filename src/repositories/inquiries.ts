@@ -4,7 +4,7 @@ import configPromise from '@payload-config'
 export interface CreateInquiryInput {
   fullName: string
   phone: string
-  email?: string
+  email: string
   service?: number
   preferredDate?: string
   preferredTime?: 'morning' | 'afternoon' | 'evening'
@@ -24,9 +24,15 @@ export interface CreateInquiryResult {
 export async function createInquiry(input: CreateInquiryInput): Promise<CreateInquiryResult> {
   const trimmedName = input.fullName?.trim()
   const trimmedPhone = input.phone?.trim()
+  const trimmedEmail = input.email?.trim()
 
   if (!trimmedName || trimmedName.length < 2) {
     return { success: false, error: 'Full name is required.' }
+  }
+
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
+  if (!trimmedEmail || !emailRegex.test(trimmedEmail)) {
+    return { success: false, error: 'A valid email address is required.' }
   }
 
   if (!trimmedPhone || trimmedPhone.length < 7) {
@@ -41,7 +47,7 @@ export async function createInquiry(input: CreateInquiryInput): Promise<CreateIn
       data: {
         fullName: trimmedName,
         phone: trimmedPhone,
-        email: input.email?.trim() || undefined,
+        email: trimmedEmail,
         service: input.service || undefined,
         preferredDate: input.preferredDate ? new Date(input.preferredDate).toISOString() : undefined,
         preferredTime: input.preferredTime || undefined,
@@ -55,10 +61,11 @@ export async function createInquiry(input: CreateInquiryInput): Promise<CreateIn
       success: true,
       id: doc.id,
     }
-  } catch (err: any) {
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : 'Failed to submit inquiry. Please try again.'
     return {
       success: false,
-      error: err?.message || 'Failed to submit inquiry. Please try again.',
+      error: message,
     }
   }
 }

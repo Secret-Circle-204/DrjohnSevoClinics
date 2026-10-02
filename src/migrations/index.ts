@@ -7,6 +7,7 @@ import * as migration_20260918_005931_phase7_followup_foundation from './2026091
 import * as migration_20261002_184742_phase8_consultation_foundation from './20261002_184742_phase8_consultation_foundation';
 import * as migration_20261002_191829_phase9_reports_foundation from './20261002_191829_phase9_reports_foundation';
 import * as migration_20261002_201213_phase10_email_outbox from './20261002_201213_phase10_email_outbox';
+import * as migration_20261003_001500_phase10_inquiries_email_required from './20261003_001500_phase10_inquiries_email_required';
 
 export const migrations = [
   {
@@ -53,5 +54,10 @@ export const migrations = [
     up: migration_20261002_201213_phase10_email_outbox.up,
     down: migration_20261002_201213_phase10_email_outbox.down,
     name: '20261002_201213_phase10_email_outbox'
+  },
+  {
+    up: migration_20261003_001500_phase10_inquiries_email_required.up,
+    down: migration_20261003_001500_phase10_inquiries_email_required.down,
+    name: '20261003_001500_phase10_inquiries_email_required'
   },
 ];
