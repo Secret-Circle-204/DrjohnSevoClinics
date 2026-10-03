@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useState, useCallback, useMemo } from 'react'
+import React, { useState, useCallback, useMemo, useEffect, useRef } from 'react'
 import {
   Drawer,
   RenderFields,
@@ -12,16 +12,18 @@ import {
 import type { ArrayFieldClientComponent, ClientField } from 'payload'
 import {
   ArrowDown,
+  ArrowRight,
   ArrowUp,
-  CheckCircle2,
-  Clock,
-  ExternalLink,
-  FileText,
+  ChevronRight,
   Image as ImageIcon,
+  MoreHorizontal,
   Plus,
-  Sparkles,
   Trash2,
 } from 'lucide-react'
+
+/* ==========================================================================
+   Helpers
+   ========================================================================== */
 
 function getFieldLabel(label: unknown): string {
   if (!label) return 'Item'
@@ -41,6 +43,67 @@ function getSingularLabel(label: string): string {
   return label
 }
 
+const mediaUrlCache = new Map<string | number, string>()
+
+function getDirectMediaUrl(val: unknown): string | null {
+  if (!val) return null
+  if (typeof val === 'object' && val !== null) {
+    if ('url' in val && typeof (val as Record<string, unknown>).url === 'string') {
+      return (val as Record<string, unknown>).url as string
+    }
+    if ('filename' in val && typeof (val as Record<string, unknown>).filename === 'string') {
+      return `/media/${(val as Record<string, unknown>).filename}`
+    }
+  }
+  const id = typeof val === 'object' && val !== null && 'id' in val ? (val as Record<string, unknown>).id : val
+  if ((typeof id === 'string' || typeof id === 'number') && mediaUrlCache.has(id)) {
+    return mediaUrlCache.get(id)!
+  }
+  return null
+}
+
+/**
+ * Resolves a Media field value (either populated object or ID) into a displayable thumbnail URL.
+ */
+function useResolvedMediaUrl(val: unknown): string | null {
+  const directUrl = getDirectMediaUrl(val)
+  const [asyncUrl, setAsyncUrl] = useState<string | null>(null)
+
+  const id = typeof val === 'object' && val !== null && 'id' in val ? (val as Record<string, unknown>).id : val
+
+  useEffect(() => {
+    if (!id || directUrl) return
+    const idKey = id as string | number
+    if (mediaUrlCache.has(idKey)) return
+
+    let isMounted = true
+    fetch(`/api/media/${idKey}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((doc) => {
+        if (!isMounted) return
+        if (doc?.url) {
+          mediaUrlCache.set(idKey, doc.url)
+          setAsyncUrl(doc.url)
+        } else if (doc?.filename) {
+          const direct = `/media/${doc.filename}`
+          mediaUrlCache.set(idKey, direct)
+          setAsyncUrl(direct)
+        }
+      })
+      .catch(() => {})
+
+    return () => {
+      isMounted = false
+    }
+  }, [id, directUrl])
+
+  return directUrl || asyncUrl
+}
+
+/* ==========================================================================
+   Reusable Content Card Component
+   ========================================================================== */
+
 interface ReusableContentCardProps {
   path: string
   index: number
@@ -56,10 +119,6 @@ interface ReusableContentCardProps {
   readOnly?: boolean
 }
 
-/**
- * Reusable Content Card that dynamically renders overview information
- * based on the fields present in the schema (titles, descriptions, uploads, badges).
- */
 function ReusableContentCard({
   path,
   index,
@@ -73,7 +132,25 @@ function ReusableContentCard({
   canMoveDown,
   readOnly,
 }: ReusableContentCardProps) {
-  // Check schema capabilities to determine appropriate visual card badges
+  // Action Menu dropdown state
+  const [menuOpen, setMenuOpen] = useState(false)
+  const menuRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setMenuOpen(false)
+      }
+    }
+    if (menuOpen) {
+      document.addEventListener('mousedown', handleClickOutside)
+    }
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
+  }, [menuOpen])
+
+  // Check schema capabilities to determine visual preview
   const hasBeforeAfterUploads = useMemo(() => {
     const names = new Set(fields.map((f) => ('name' in f ? f.name : '')))
     return names.has('beforeImage') && names.has('afterImage')
@@ -82,7 +159,9 @@ function ReusableContentCard({
   const hasSingleUpload = useMemo(() => {
     if (hasBeforeAfterUploads) return false
     return fields.some(
-      (f) => 'type' in f && f.type === 'upload' || ('name' in f && (f.name === 'image' || f.name === 'photo'))
+      (f) =>
+        ('type' in f && f.type === 'upload') ||
+        ('name' in f && (f.name === 'image' || f.name === 'photo'))
     )
   }, [fields, hasBeforeAfterUploads])
 
@@ -109,189 +188,239 @@ function ReusableContentCard({
     rowValues.note ||
     rowValues.text) as string | undefined
 
-  // Before & After photo status (when applicable)
-  const hasBefore = Boolean(rowValues.beforeImage)
-  const hasAfter = Boolean(rowValues.afterImage)
+  // Resolve thumbnail URLs
+  const beforeUrl = useResolvedMediaUrl(rowValues.beforeImage)
+  const afterUrl = useResolvedMediaUrl(rowValues.afterImage)
+
+  const hasBefore = Boolean(beforeUrl || rowValues.beforeImage)
+  const hasAfter = Boolean(afterUrl || rowValues.afterImage)
   const hasBoth = hasBefore && hasAfter
 
-  // Single upload status (when applicable)
+  // Single upload resolution
   const singleImageVal = hasSingleUpload
-    ? Object.entries(rowValues).find(([k, v]) => k.toLowerCase().includes('image') || k.toLowerCase().includes('photo') || Boolean(v && typeof v === 'object'))?.[1]
+    ? Object.entries(rowValues).find(
+        ([k, v]) =>
+          k.toLowerCase().includes('image') ||
+          k.toLowerCase().includes('photo') ||
+          Boolean(v && typeof v === 'object')
+      )?.[1]
     : null
-  const hasSingleImage = Boolean(singleImageVal)
+  const singleUrl = useResolvedMediaUrl(singleImageVal)
+
+  // Formatted 2-digit sequence for clean Core Values presentation (e.g. 01, 02)
+  const sequenceStr = String(index + 1).padStart(2, '0')
 
   return (
-    <div className="bg-white rounded-2xl border border-neutral-200/90 shadow-sm hover:shadow-md hover:border-[#b58a48]/40 transition-all p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 group">
-      {/* Left Overview & Visual Metadata */}
-      <div className="flex items-start md:items-center gap-4 flex-1 min-w-0">
-        {/* Visual Badge 1: Before & After dual images */}
-        {hasBeforeAfterUploads && (
-          <div className="flex items-center gap-1.5 flex-shrink-0">
-            <div
-              className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center border text-[10px] font-bold ${
-                hasBefore
-                  ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                  : 'bg-neutral-100 text-neutral-400 border-dashed border-neutral-300'
-              }`}
-            >
-              <ImageIcon className="w-4 h-4 mb-0.5" />
-              <span>Before</span>
-            </div>
-
-            <span className="text-neutral-300 text-xs font-bold">&rarr;</span>
-
-            <div
-              className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center border text-[10px] font-bold ${
-                hasAfter
-                  ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                  : 'bg-neutral-100 text-neutral-400 border-dashed border-neutral-300'
-              }`}
-            >
-              <ImageIcon className="w-4 h-4 mb-0.5" />
-              <span>After</span>
-            </div>
-          </div>
-        )}
-
-        {/* Visual Badge 2: Single image upload */}
-        {hasSingleUpload && (
-          <div
-            className={`w-12 h-12 rounded-xl flex flex-col items-center justify-center border text-[10px] font-bold flex-shrink-0 ${
-              hasSingleImage
-                ? 'bg-emerald-50 text-emerald-800 border-emerald-300'
-                : 'bg-neutral-100 text-neutral-400 border-dashed border-neutral-300'
-            }`}
-          >
-            <ImageIcon className="w-4 h-4 mb-0.5" />
-            <span>{hasSingleImage ? 'Uploaded' : 'Pending'}</span>
-          </div>
-        )}
-
-        {/* Visual Badge 3: Pillar / Text-only record icon */}
-        {!hasBeforeAfterUploads && !hasSingleUpload && (
-          <div className="w-12 h-12 rounded-xl flex flex-col items-center justify-center border border-[#d8cec2] bg-[#fbf9f6] text-[#8e6e4f] flex-shrink-0">
-            <Sparkles className="w-5 h-5 mb-0.5 text-[#b58a48]" />
-            <span className="text-[9px] font-bold uppercase tracking-wider font-mono">#{index + 1}</span>
-          </div>
-        )}
-
-        {/* Text Information (Title, Description, Meta Badges) */}
-        <div className="space-y-1 min-w-0 flex-1">
-          <div className="flex items-center gap-2">
-            <span className="inline-flex items-center justify-center px-2 py-0.5 rounded-md bg-[#8e6e4f]/10 text-[#8e6e4f] font-mono text-xs font-bold">
-              #{index + 1}
-            </span>
-            <h4 className="font-semibold text-neutral-900 text-base truncate">
-              {title || `${singularLabel} #${index + 1}`}
-            </h4>
-          </div>
-
-          {description ? (
-            <p className="text-xs text-neutral-500 line-clamp-1">
-              {description}
-            </p>
-          ) : null}
-
-          {/* Contextual Status Badges */}
-          <div className="flex items-center gap-2 pt-0.5">
-            {hasBeforeAfterUploads ? (
-              hasBoth ? (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                  Photos Ready
-                </span>
-              ) : hasBefore || hasAfter ? (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-amber-50 text-amber-700 border border-amber-200">
-                  <Clock className="w-3 h-3 text-amber-600" />
-                  1 of 2 Photos Attached
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-100 text-neutral-500 border border-neutral-200">
-                  Photos Pending
-                </span>
-              )
-            ) : hasSingleUpload ? (
-              hasSingleImage ? (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <CheckCircle2 className="w-3 h-3 text-emerald-600" />
-                  Media Attached
-                </span>
-              ) : (
-                <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-100 text-neutral-500 border border-neutral-200">
-                  Media Pending
-                </span>
-              )
+    <div
+      className="admin-content-card"
+      onClick={onEdit}
+      role="button"
+      tabIndex={0}
+      onKeyDown={(e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault()
+          onEdit()
+        }
+      }}
+      aria-label={`Edit ${title || `${singularLabel} #${index + 1}`}`}
+    >
+      {/* 1. Left Visual Preview */}
+      {hasBeforeAfterUploads && (
+        <div className="admin-dual-thumbnails" aria-hidden="true">
+          {/* Before Thumbnail */}
+          <div className="admin-thumbnail-half">
+            {beforeUrl ? (
+              <img src={beforeUrl} alt="Before treatment" />
             ) : (
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded text-[11px] font-medium bg-neutral-50 text-neutral-600 border border-neutral-200">
-                <FileText className="w-3 h-3 text-neutral-400" />
-                {title ? 'Configured' : 'Draft'}
-              </span>
+              <div className="admin-thumbnail-placeholder">
+                <ImageIcon style={{ width: 14, height: 14, opacity: 0.6 }} />
+                <span>Before</span>
+              </div>
             )}
           </div>
+
+          {/* After Thumbnail */}
+          <div className="admin-thumbnail-half is-after">
+            {afterUrl ? (
+              <img src={afterUrl} alt="After treatment" />
+            ) : (
+              <div className="admin-thumbnail-placeholder">
+                <ImageIcon style={{ width: 14, height: 14, opacity: 0.6 }} />
+                <span>After</span>
+              </div>
+            )}
+          </div>
+
+          {/* Center Divider Arrow */}
+          <div className="admin-thumbnails-divider-arrow">
+            <ArrowRight style={{ width: 11, height: 11 }} />
+          </div>
         </div>
+      )}
+
+      {hasSingleUpload && (
+        <div className="admin-single-thumbnail" aria-hidden="true">
+          {singleUrl ? (
+            <img src={singleUrl} alt={title || 'Attached Media'} />
+          ) : (
+            <div className="admin-thumbnail-placeholder">
+              <ImageIcon style={{ width: 18, height: 18, opacity: 0.6 }} />
+              <span>Media</span>
+            </div>
+          )}
+        </div>
+      )}
+
+      {!hasBeforeAfterUploads && !hasSingleUpload && (
+        <div className="admin-sequence-badge" aria-hidden="true">
+          <span>{sequenceStr}</span>
+        </div>
+      )}
+
+      {/* 2. Middle Content Info */}
+      <div className="admin-card-content">
+        <h4 className="admin-card-title">
+          {title || `${singularLabel} #${index + 1}`}
+        </h4>
+
+        {/* Status Row with semantic dots */}
+        <div className="admin-card-status-row">
+          {hasBeforeAfterUploads ? (
+            hasBoth ? (
+              <>
+                <span className="admin-status-dot dot-ready" />
+                <span className="admin-status-text text-ready">Photos Ready</span>
+              </>
+            ) : hasBefore && !hasAfter ? (
+              <>
+                <span className="admin-status-dot dot-warning" />
+                <span className="admin-status-text text-warning">Missing After Photo</span>
+              </>
+            ) : !hasBefore && hasAfter ? (
+              <>
+                <span className="admin-status-dot dot-warning" />
+                <span className="admin-status-text text-warning">Missing Before Photo</span>
+              </>
+            ) : (
+              <>
+                <span className="admin-status-dot dot-pending" />
+                <span className="admin-status-text text-pending">Photos Pending</span>
+              </>
+            )
+          ) : hasSingleUpload ? (
+            singleUrl ? (
+              <>
+                <span className="admin-status-dot dot-ready" />
+                <span className="admin-status-text text-ready">Media Ready</span>
+              </>
+            ) : (
+              <>
+                <span className="admin-status-dot dot-pending" />
+                <span className="admin-status-text text-pending">Media Pending</span>
+              </>
+            )
+          ) : (
+            <>
+              <span className="admin-status-dot dot-ready" />
+              <span className="admin-status-text text-ready">
+                {title ? 'Configured' : 'Draft'}
+              </span>
+            </>
+          )}
+        </div>
+
+        {description ? (
+          <p className="admin-card-snippet">{description}</p>
+        ) : null}
       </div>
 
-      {/* Right Controls (Reorder, Delete, Edit in Drawer) */}
-      <div className="flex items-center gap-2 flex-shrink-0 self-end md:self-center">
-        {/* Reordering Controls */}
+      {/* 3. Right: Meta & Actions */}
+      <div className="admin-card-meta-actions">
+        {/* Index label */}
+        <span className="admin-card-index-label">#{index + 1}</span>
+
+        {/* More Actions Overflow Menu */}
         {!readOnly && (
-          <div className="flex items-center border border-neutral-200 rounded-lg overflow-hidden bg-neutral-50">
+          <div
+            className="admin-action-menu-wrapper"
+            ref={menuRef}
+            onClick={(e) => e.stopPropagation()}
+          >
             <button
               type="button"
-              onClick={onMoveUp}
-              disabled={!canMoveUp}
-              title="Move Up"
-              className="p-2 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200 disabled:opacity-30 disabled:pointer-events-none transition-colors"
+              className="admin-menu-trigger-btn"
+              onClick={() => setMenuOpen((prev) => !prev)}
+              aria-label={`Actions for ${title || `${singularLabel} #${index + 1}`}`}
+              title="More actions"
             >
-              <ArrowUp className="w-3.5 h-3.5" />
+              <MoreHorizontal style={{ width: 18, height: 18 }} />
             </button>
-            <button
-              type="button"
-              onClick={onMoveDown}
-              disabled={!canMoveDown}
-              title="Move Down"
-              className="p-2 text-neutral-500 hover:text-neutral-900 hover:bg-neutral-200 disabled:opacity-30 disabled:pointer-events-none transition-colors border-l border-neutral-200"
-            >
-              <ArrowDown className="w-3.5 h-3.5" />
-            </button>
+
+            {menuOpen && (
+              <div className="admin-menu-dropdown">
+                <button
+                  type="button"
+                  className="admin-menu-item"
+                  onClick={() => {
+                    onMoveUp()
+                    setMenuOpen(false)
+                  }}
+                  disabled={!canMoveUp}
+                >
+                  <ArrowUp style={{ width: 14, height: 14 }} />
+                  <span>Move Up</span>
+                </button>
+
+                <button
+                  type="button"
+                  className="admin-menu-item"
+                  onClick={() => {
+                    onMoveDown()
+                    setMenuOpen(false)
+                  }}
+                  disabled={!canMoveDown}
+                >
+                  <ArrowDown style={{ width: 14, height: 14 }} />
+                  <span>Move Down</span>
+                </button>
+
+                <div
+                  style={{
+                    height: 1,
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    margin: '4px 0',
+                  }}
+                />
+
+                <button
+                  type="button"
+                  className="admin-menu-item is-delete"
+                  onClick={() => {
+                    onRemove()
+                    setMenuOpen(false)
+                  }}
+                >
+                  <Trash2 style={{ width: 14, height: 14 }} />
+                  <span>Delete {singularLabel}</span>
+                </button>
+              </div>
+            )}
           </div>
         )}
 
-        {/* Delete Row */}
-        {!readOnly && (
-          <button
-            type="button"
-            onClick={onRemove}
-            title={`Delete ${singularLabel}`}
-            className="p-2 text-neutral-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-colors border border-transparent hover:border-red-200"
-          >
-            <Trash2 className="w-4 h-4" />
-          </button>
-        )}
-
-        {/* Edit in Drawer Button */}
-        <button
-          type="button"
-          onClick={onEdit}
-          className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold bg-[#8e6e4f] text-white hover:bg-[#a27e5b] shadow-sm transition-all"
-        >
-          <span>Edit Details</span>
-          <ExternalLink className="w-3 h-3" />
-        </button>
+        {/* Right Chevron indicating clickability */}
+        <div className="admin-card-chevron">
+          <ChevronRight style={{ width: 18, height: 18 }} />
+        </div>
       </div>
     </div>
   )
 }
 
-/**
- * Reusable Drawer Array Field Component.
- *
- * Provides a schema-driven Compact Content Card → Payload-native Side Drawer interaction.
- *
- * - Reusable across any complex repeated Array content (e.g. BeforeAfterCases, CoreValues, ContentPillars).
- * - Driven 100% by Payload's native form/field context and schema definition.
- * - Zero custom form engines, zero duplicate CRUD APIs, zero parallel validation layers.
- */
+/* ==========================================================================
+   Main Reusable DrawerArrayField Component
+   ========================================================================== */
+
 export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
   const {
     field,
@@ -304,7 +433,15 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
   const path = pathFromProps || field.name
   const schemaPath = schemaPathFromProps || field.name
 
-  const fieldLabel = useMemo(() => getFieldLabel(field.label), [field.label])
+  const rawFieldLabel = useMemo(() => getFieldLabel(field.label), [field.label])
+  // Strip redundant internal phrasing if present
+  const fieldLabel = useMemo(() => {
+    return rawFieldLabel
+      .replace(/Photo Showcase Cases/i, 'Cases')
+      .replace(/Showcase Cases/i, 'Cases')
+      .trim()
+  }, [rawFieldLabel])
+
   const singularLabel = useMemo(() => getSingularLabel(fieldLabel), [fieldLabel])
 
   const { rows = [] } = useField<{ id: string; collapsed?: boolean }[]>({
@@ -315,7 +452,6 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
   const { addFieldRow, removeFieldRow, moveFieldRow } = useForm()
   const { openModal, closeModal } = useModal()
 
-  // Unique drawer slug derived safely from field path to prevent modal collisions
   const drawerSlug = useMemo(
     () => `drawer-${path.replace(/[^a-zA-Z0-9_-]/g, '_')}`,
     [path]
@@ -385,18 +521,18 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
   const clientFields = (field.fields || []) as ClientField[]
 
   return (
-    <div className="space-y-4 my-6">
-      {/* Section Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-neutral-200">
-        <div>
-          <h3 className="text-lg font-bold text-neutral-900 tracking-tight flex items-center gap-2">
-            <span>{fieldLabel}</span>
-            <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-neutral-100 text-neutral-600 border border-neutral-200">
-              {rows.length} {rows.length === 1 ? 'item' : 'items'}
+    <div className="admin-reusable-field">
+      {/* Header Area */}
+      <div className="admin-reusable-header">
+        <div className="admin-reusable-title-group">
+          <div className="admin-reusable-title-row">
+            <h3 className="admin-reusable-title">{fieldLabel}</h3>
+            <span className="admin-reusable-count-pill">
+              {rows.length} {rows.length === 1 ? 'case' : 'cases'}
             </span>
-          </h3>
+          </div>
           {field.admin?.description ? (
-            <p className="text-xs text-neutral-500 mt-0.5">
+            <p className="admin-reusable-description">
               {field.admin.description as string}
             </p>
           ) : null}
@@ -406,37 +542,37 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
           <button
             type="button"
             onClick={handleAdd}
-            className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[#8e6e4f] text-white hover:bg-[#a27e5b] shadow-sm transition-all flex-shrink-0"
+            className="admin-reusable-add-btn"
           >
-            <Plus className="w-3.5 h-3.5" />
+            <Plus style={{ width: 16, height: 16 }} />
             <span>Add {singularLabel}</span>
           </button>
         )}
       </div>
 
-      {/* Cards List (Compact, no giant inline inputs) */}
+      {/* Cards List */}
       {rows.length === 0 ? (
-        <div className="text-center py-12 px-4 rounded-2xl border-2 border-dashed border-neutral-200 bg-neutral-50/50">
-          <Sparkles className="w-10 h-10 text-neutral-300 mx-auto mb-2" />
-          <p className="text-sm font-medium text-neutral-700">
+        <div className="admin-reusable-empty-state">
+          <ImageIcon style={{ width: 36, height: 36, color: '#475569' }} />
+          <h4 className="admin-reusable-empty-title">
             No {fieldLabel.toLowerCase()} added yet
-          </p>
-          <p className="text-xs text-neutral-400 mt-1 mb-4">
-            Click the button below to add your first {singularLabel.toLowerCase()} in the side drawer.
+          </h4>
+          <p className="admin-reusable-empty-text">
+            Click the button below to create your first {singularLabel.toLowerCase()} in the side drawer.
           </p>
           {!readOnly && (
             <button
               type="button"
               onClick={handleAdd}
-              className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl text-xs font-semibold bg-[#8e6e4f] text-white hover:bg-[#a27e5b] shadow-sm transition-all"
+              className="admin-reusable-add-btn"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus style={{ width: 16, height: 16 }} />
               <span>Add First {singularLabel}</span>
             </button>
           )}
         </div>
       ) : (
-        <div className="space-y-3">
+        <div className="admin-reusable-cards-list">
           {rows.map((row, idx) => (
             <ReusableContentCard
               key={row.id}
@@ -457,7 +593,7 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
         </div>
       )}
 
-      {/* Reusable Payload Side Drawer for Detailed Editing */}
+      {/* Polished Side Drawer */}
       <Drawer
         slug={drawerSlug}
         title={
@@ -468,18 +604,28 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
         className="reusable-content-drawer"
       >
         {activeRowIndex !== null && activeRowIndex < rows.length ? (
-          <div className="p-6 space-y-6">
-            <div className="bg-[#f7f2ec] p-4 rounded-xl border border-[#d8cec2] flex items-center justify-between">
+          <div className="admin-drawer-body">
+            {/* Banner info */}
+            <div className="admin-drawer-banner">
               <div>
-                <span className="text-[10px] uppercase font-bold text-[#b58a48] tracking-widest block">
-                  {singularLabel} Editor
+                <span
+                  style={{
+                    fontSize: 11,
+                    textTransform: 'uppercase',
+                    fontWeight: 700,
+                    letterSpacing: '0.08em',
+                    color: '#b58a48',
+                    display: 'block',
+                  }}
+                >
+                  Clinical Content Editor
                 </span>
-                <span className="text-sm font-semibold text-[#36302f]">
+                <span className="admin-drawer-banner-title">
                   Editing {singularLabel} #{activeRowIndex + 1}
                 </span>
               </div>
-              <span className="text-xs px-2.5 py-1 rounded-full font-mono bg-white text-[#8e6e4f] border border-[#d8cec2]">
-                Row {activeRowIndex + 1} of {rows.length}
+              <span className="admin-drawer-banner-pill">
+                Case {activeRowIndex + 1} of {rows.length}
               </span>
             </div>
 
@@ -494,26 +640,39 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
               margins="small"
             />
 
-            {/* Drawer Actions */}
-            <div className="pt-6 border-t border-neutral-200 flex items-center justify-between gap-4 mt-8">
+            {/* Sticky/Polished Footer Actions */}
+            <div className="admin-drawer-footer">
               <button
                 type="button"
                 onClick={() => handleRemove(activeRowIndex)}
-                className="text-xs text-red-600 hover:text-red-700 font-medium px-3 py-2 rounded-lg hover:bg-red-50 transition-colors"
+                className="admin-drawer-btn-delete"
               >
                 Delete This {singularLabel}
               </button>
 
-              <button
-                type="button"
-                onClick={() => {
-                  closeModal(drawerSlug)
-                  setActiveRowIndex(null)
-                }}
-                className="btn btn--style-primary px-6 py-2.5 rounded-xl font-semibold bg-[#8e6e4f] text-white hover:bg-[#a27e5b] text-xs shadow-sm transition-all"
-              >
-                Done (Save & Close Drawer)
-              </button>
+              <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeModal(drawerSlug)
+                    setActiveRowIndex(null)
+                  }}
+                  className="admin-drawer-btn-cancel"
+                >
+                  Cancel
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    closeModal(drawerSlug)
+                    setActiveRowIndex(null)
+                  }}
+                  className="admin-drawer-btn-done"
+                >
+                  Done (Save & Close)
+                </button>
+              </div>
             </div>
           </div>
         ) : null}
