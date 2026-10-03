@@ -106,11 +106,10 @@ export const About: GlobalConfig = {
               type: 'array',
               label: 'Core Value Pillars',
               admin: {
-                initCollapsed: true,
                 components: {
-                  RowLabel: '@/components/admin/RowLabels#CoreValueRowLabel',
+                  Field: '@/components/admin/DrawerArrayField#DrawerArrayField',
                 },
-                description: 'The clinic fundamental values guiding clinical decisions and patient care.',
+                description: 'The clinic fundamental values guiding clinical decisions and patient care. Click any card to edit details in the side drawer.',
               },
               fields: [
                 {

@@ -1156,7 +1156,7 @@ export interface About {
   positioning?: string | null;
   valuesTitle?: string | null;
   /**
-   * The clinic fundamental values guiding clinical decisions and patient care.
+   * The clinic fundamental values guiding clinical decisions and patient care. Click any card to edit details in the side drawer.
    */
   coreValues?:
     | {

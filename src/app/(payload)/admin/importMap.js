@@ -24,8 +24,7 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { QualificationRowLabel as QualificationRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { PillarRowLabel as PillarRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { TrustStatRowLabel as TrustStatRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
-import { BeforeAfterDrawerField as BeforeAfterDrawerField_399531409688c47853e8ab45bf3c780e } from '@/components/admin/BeforeAfterDrawerField'
-import { CoreValueRowLabel as CoreValueRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
+import { DrawerArrayField as DrawerArrayField_34672afe6859982ddf5a1488582ef667 } from '@/components/admin/DrawerArrayField'
 import { PhoneRowLabel as PhoneRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { OpeningHoursRowLabel as OpeningHoursRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { SocialLinkRowLabel as SocialLinkRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
@@ -59,8 +58,7 @@ export const importMap = {
   "@/components/admin/RowLabels#QualificationRowLabel": QualificationRowLabel_602181e9d445b98d48bce238807017cb,
   "@/components/admin/RowLabels#PillarRowLabel": PillarRowLabel_602181e9d445b98d48bce238807017cb,
   "@/components/admin/RowLabels#TrustStatRowLabel": TrustStatRowLabel_602181e9d445b98d48bce238807017cb,
-  "@/components/admin/BeforeAfterDrawerField#BeforeAfterDrawerField": BeforeAfterDrawerField_399531409688c47853e8ab45bf3c780e,
-  "@/components/admin/RowLabels#CoreValueRowLabel": CoreValueRowLabel_602181e9d445b98d48bce238807017cb,
+  "@/components/admin/DrawerArrayField#DrawerArrayField": DrawerArrayField_34672afe6859982ddf5a1488582ef667,
   "@/components/admin/RowLabels#PhoneRowLabel": PhoneRowLabel_602181e9d445b98d48bce238807017cb,
   "@/components/admin/RowLabels#OpeningHoursRowLabel": OpeningHoursRowLabel_602181e9d445b98d48bce238807017cb,
   "@/components/admin/RowLabels#SocialLinkRowLabel": SocialLinkRowLabel_602181e9d445b98d48bce238807017cb,

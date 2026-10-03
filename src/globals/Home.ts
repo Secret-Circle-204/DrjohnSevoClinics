@@ -159,7 +159,7 @@ export const Home: GlobalConfig = {
               label: 'Before & After Photo Showcase Cases',
               admin: {
                 components: {
-                  Field: '@/components/admin/BeforeAfterDrawerField#BeforeAfterDrawerField',
+                  Field: '@/components/admin/DrawerArrayField#DrawerArrayField',
                 },
                 description: 'Curated clinical case photos demonstrating before and after dental results. Click any card to edit details in the side drawer.',
               },
