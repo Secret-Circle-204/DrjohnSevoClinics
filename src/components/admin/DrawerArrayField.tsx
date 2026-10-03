@@ -21,6 +21,9 @@ import {
   Trash2,
 } from 'lucide-react'
 
+// Local scoped stylesheet strictly for DrawerArrayField
+import './DrawerArrayField.scss'
+
 /* ==========================================================================
    Helpers
    ========================================================================== */
@@ -212,7 +215,7 @@ function ReusableContentCard({
 
   return (
     <div
-      className="admin-content-card"
+      className="drawer-array-field__card"
       onClick={onEdit}
       role="button"
       tabIndex={0}
@@ -226,13 +229,13 @@ function ReusableContentCard({
     >
       {/* 1. Left Visual Preview */}
       {hasBeforeAfterUploads && (
-        <div className="admin-dual-thumbnails" aria-hidden="true">
+        <div className="drawer-array-field__dual-thumbnails" aria-hidden="true">
           {/* Before Thumbnail */}
-          <div className="admin-thumbnail-half">
+          <div className="drawer-array-field__thumbnail-half">
             {beforeUrl ? (
               <img src={beforeUrl} alt="Before treatment" />
             ) : (
-              <div className="admin-thumbnail-placeholder">
+              <div className="drawer-array-field__thumbnail-placeholder">
                 <ImageIcon style={{ width: 14, height: 14, opacity: 0.6 }} />
                 <span>Before</span>
               </div>
@@ -240,11 +243,11 @@ function ReusableContentCard({
           </div>
 
           {/* After Thumbnail */}
-          <div className="admin-thumbnail-half is-after">
+          <div className="drawer-array-field__thumbnail-half is-after">
             {afterUrl ? (
               <img src={afterUrl} alt="After treatment" />
             ) : (
-              <div className="admin-thumbnail-placeholder">
+              <div className="drawer-array-field__thumbnail-placeholder">
                 <ImageIcon style={{ width: 14, height: 14, opacity: 0.6 }} />
                 <span>After</span>
               </div>
@@ -252,18 +255,18 @@ function ReusableContentCard({
           </div>
 
           {/* Center Divider Arrow */}
-          <div className="admin-thumbnails-divider-arrow">
+          <div className="drawer-array-field__divider-arrow">
             <ArrowRight style={{ width: 11, height: 11 }} />
           </div>
         </div>
       )}
 
       {hasSingleUpload && (
-        <div className="admin-single-thumbnail" aria-hidden="true">
+        <div className="drawer-array-field__single-thumbnail" aria-hidden="true">
           {singleUrl ? (
             <img src={singleUrl} alt={title || 'Attached Media'} />
           ) : (
-            <div className="admin-thumbnail-placeholder">
+            <div className="drawer-array-field__thumbnail-placeholder">
               <ImageIcon style={{ width: 18, height: 18, opacity: 0.6 }} />
               <span>Media</span>
             </div>
@@ -272,57 +275,57 @@ function ReusableContentCard({
       )}
 
       {!hasBeforeAfterUploads && !hasSingleUpload && (
-        <div className="admin-sequence-badge" aria-hidden="true">
+        <div className="drawer-array-field__sequence-badge" aria-hidden="true">
           <span>{sequenceStr}</span>
         </div>
       )}
 
       {/* 2. Middle Content Info */}
-      <div className="admin-card-content">
-        <h4 className="admin-card-title">
+      <div className="drawer-array-field__card-content">
+        <h4 className="drawer-array-field__card-title">
           {title || `${singularLabel} #${index + 1}`}
         </h4>
 
         {/* Status Row with semantic dots */}
-        <div className="admin-card-status-row">
+        <div className="drawer-array-field__status-row">
           {hasBeforeAfterUploads ? (
             hasBoth ? (
               <>
-                <span className="admin-status-dot dot-ready" />
-                <span className="admin-status-text text-ready">Photos Ready</span>
+                <span className="drawer-array-field__status-dot dot-ready" />
+                <span className="drawer-array-field__status-text text-ready">Photos Ready</span>
               </>
             ) : hasBefore && !hasAfter ? (
               <>
-                <span className="admin-status-dot dot-warning" />
-                <span className="admin-status-text text-warning">Missing After Photo</span>
+                <span className="drawer-array-field__status-dot dot-warning" />
+                <span className="drawer-array-field__status-text text-warning">Missing After Photo</span>
               </>
             ) : !hasBefore && hasAfter ? (
               <>
-                <span className="admin-status-dot dot-warning" />
-                <span className="admin-status-text text-warning">Missing Before Photo</span>
+                <span className="drawer-array-field__status-dot dot-warning" />
+                <span className="drawer-array-field__status-text text-warning">Missing Before Photo</span>
               </>
             ) : (
               <>
-                <span className="admin-status-dot dot-pending" />
-                <span className="admin-status-text text-pending">Photos Pending</span>
+                <span className="drawer-array-field__status-dot dot-pending" />
+                <span className="drawer-array-field__status-text text-pending">Photos Pending</span>
               </>
             )
           ) : hasSingleUpload ? (
             singleUrl ? (
               <>
-                <span className="admin-status-dot dot-ready" />
-                <span className="admin-status-text text-ready">Media Ready</span>
+                <span className="drawer-array-field__status-dot dot-ready" />
+                <span className="drawer-array-field__status-text text-ready">Media Ready</span>
               </>
             ) : (
               <>
-                <span className="admin-status-dot dot-pending" />
-                <span className="admin-status-text text-pending">Media Pending</span>
+                <span className="drawer-array-field__status-dot dot-pending" />
+                <span className="drawer-array-field__status-text text-pending">Media Pending</span>
               </>
             )
           ) : (
             <>
-              <span className="admin-status-dot dot-ready" />
-              <span className="admin-status-text text-ready">
+              <span className="drawer-array-field__status-dot dot-ready" />
+              <span className="drawer-array-field__status-text text-ready">
                 {title ? 'Configured' : 'Draft'}
               </span>
             </>
@@ -330,25 +333,25 @@ function ReusableContentCard({
         </div>
 
         {description ? (
-          <p className="admin-card-snippet">{description}</p>
+          <p className="drawer-array-field__card-snippet">{description}</p>
         ) : null}
       </div>
 
       {/* 3. Right: Meta & Actions */}
-      <div className="admin-card-meta-actions">
+      <div className="drawer-array-field__meta-actions">
         {/* Index label */}
-        <span className="admin-card-index-label">#{index + 1}</span>
+        <span className="drawer-array-field__index-label">#{index + 1}</span>
 
         {/* More Actions Overflow Menu */}
         {!readOnly && (
           <div
-            className="admin-action-menu-wrapper"
+            className="drawer-array-field__menu-wrapper"
             ref={menuRef}
             onClick={(e) => e.stopPropagation()}
           >
             <button
               type="button"
-              className="admin-menu-trigger-btn"
+              className="drawer-array-field__menu-trigger"
               onClick={() => setMenuOpen((prev) => !prev)}
               aria-label={`Actions for ${title || `${singularLabel} #${index + 1}`}`}
               title="More actions"
@@ -357,10 +360,10 @@ function ReusableContentCard({
             </button>
 
             {menuOpen && (
-              <div className="admin-menu-dropdown">
+              <div className="drawer-array-field__menu-dropdown">
                 <button
                   type="button"
-                  className="admin-menu-item"
+                  className="drawer-array-field__menu-item"
                   onClick={() => {
                     onMoveUp()
                     setMenuOpen(false)
@@ -373,7 +376,7 @@ function ReusableContentCard({
 
                 <button
                   type="button"
-                  className="admin-menu-item"
+                  className="drawer-array-field__menu-item"
                   onClick={() => {
                     onMoveDown()
                     setMenuOpen(false)
@@ -387,14 +390,14 @@ function ReusableContentCard({
                 <div
                   style={{
                     height: 1,
-                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    backgroundColor: 'var(--theme-elevation-200, rgba(255, 255, 255, 0.08))',
                     margin: '4px 0',
                   }}
                 />
 
                 <button
                   type="button"
-                  className="admin-menu-item is-delete"
+                  className="drawer-array-field__menu-item is-delete"
                   onClick={() => {
                     onRemove()
                     setMenuOpen(false)
@@ -409,7 +412,7 @@ function ReusableContentCard({
         )}
 
         {/* Right Chevron indicating clickability */}
-        <div className="admin-card-chevron">
+        <div className="drawer-array-field__chevron">
           <ChevronRight style={{ width: 18, height: 18 }} />
         </div>
       </div>
@@ -521,18 +524,18 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
   const clientFields = (field.fields || []) as ClientField[]
 
   return (
-    <div className="admin-reusable-field">
+    <div className="drawer-array-field">
       {/* Header Area */}
-      <div className="admin-reusable-header">
-        <div className="admin-reusable-title-group">
-          <div className="admin-reusable-title-row">
-            <h3 className="admin-reusable-title">{fieldLabel}</h3>
-            <span className="admin-reusable-count-pill">
+      <div className="drawer-array-field__header">
+        <div className="drawer-array-field__title-group">
+          <div className="drawer-array-field__title-row">
+            <h3 className="drawer-array-field__title">{fieldLabel}</h3>
+            <span className="drawer-array-field__count-pill">
               {rows.length} {rows.length === 1 ? 'case' : 'cases'}
             </span>
           </div>
           {field.admin?.description ? (
-            <p className="admin-reusable-description">
+            <p className="drawer-array-field__description">
               {field.admin.description as string}
             </p>
           ) : null}
@@ -542,7 +545,7 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
           <button
             type="button"
             onClick={handleAdd}
-            className="admin-reusable-add-btn"
+            className="drawer-array-field__add-btn"
           >
             <Plus style={{ width: 16, height: 16 }} />
             <span>Add {singularLabel}</span>
@@ -552,19 +555,19 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
 
       {/* Cards List */}
       {rows.length === 0 ? (
-        <div className="admin-reusable-empty-state">
-          <ImageIcon style={{ width: 36, height: 36, color: '#475569' }} />
-          <h4 className="admin-reusable-empty-title">
+        <div className="drawer-array-field__empty-state">
+          <ImageIcon style={{ width: 36, height: 36, color: 'var(--theme-elevation-400, #475569)' }} />
+          <h4 className="drawer-array-field__empty-title">
             No {fieldLabel.toLowerCase()} added yet
           </h4>
-          <p className="admin-reusable-empty-text">
+          <p className="drawer-array-field__empty-text">
             Click the button below to create your first {singularLabel.toLowerCase()} in the side drawer.
           </p>
           {!readOnly && (
             <button
               type="button"
               onClick={handleAdd}
-              className="admin-reusable-add-btn"
+              className="drawer-array-field__add-btn"
             >
               <Plus style={{ width: 16, height: 16 }} />
               <span>Add First {singularLabel}</span>
@@ -572,7 +575,7 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
           )}
         </div>
       ) : (
-        <div className="admin-reusable-cards-list">
+        <div className="drawer-array-field__cards-list">
           {rows.map((row, idx) => (
             <ReusableContentCard
               key={row.id}
@@ -601,12 +604,12 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
             ? `Edit ${singularLabel} #${activeRowIndex + 1}`
             : `Edit ${singularLabel}`
         }
-        className="reusable-content-drawer"
+        className="drawer-array-field__drawer"
       >
         {activeRowIndex !== null && activeRowIndex < rows.length ? (
-          <div className="admin-drawer-body">
+          <div className="drawer-array-field__drawer-body">
             {/* Banner info */}
-            <div className="admin-drawer-banner">
+            <div className="drawer-array-field__drawer-banner">
               <div>
                 <span
                   style={{
@@ -614,17 +617,17 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
                     textTransform: 'uppercase',
                     fontWeight: 700,
                     letterSpacing: '0.08em',
-                    color: '#b58a48',
+                    color: '#b58a48', // Clinic Primary Gold
                     display: 'block',
                   }}
                 >
                   Clinical Content Editor
                 </span>
-                <span className="admin-drawer-banner-title">
+                <span className="drawer-array-field__drawer-banner-title">
                   Editing {singularLabel} #{activeRowIndex + 1}
                 </span>
               </div>
-              <span className="admin-drawer-banner-pill">
+              <span className="drawer-array-field__drawer-banner-pill">
                 Case {activeRowIndex + 1} of {rows.length}
               </span>
             </div>
@@ -641,11 +644,11 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
             />
 
             {/* Sticky/Polished Footer Actions */}
-            <div className="admin-drawer-footer">
+            <div className="drawer-array-field__drawer-footer">
               <button
                 type="button"
                 onClick={() => handleRemove(activeRowIndex)}
-                className="admin-drawer-btn-delete"
+                className="drawer-array-field__btn-delete"
               >
                 Delete This {singularLabel}
               </button>
@@ -657,7 +660,7 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
                     closeModal(drawerSlug)
                     setActiveRowIndex(null)
                   }}
-                  className="admin-drawer-btn-cancel"
+                  className="drawer-array-field__btn-cancel"
                 >
                   Cancel
                 </button>
@@ -668,7 +671,7 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
                     closeModal(drawerSlug)
                     setActiveRowIndex(null)
                   }}
-                  className="admin-drawer-btn-done"
+                  className="drawer-array-field__btn-done"
                 >
                   Done (Save & Close)
                 </button>
