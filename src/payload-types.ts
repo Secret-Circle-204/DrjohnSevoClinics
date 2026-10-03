@@ -1108,7 +1108,7 @@ export interface Home {
       }[]
     | null;
   /**
-   * Curated clinical case photos demonstrating before and after dental results. Click row to edit case details.
+   * Curated clinical case photos demonstrating before and after dental results. Click any card to edit details in the side drawer.
    */
   beforeAfterCases?:
     | {
