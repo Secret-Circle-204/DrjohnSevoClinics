@@ -110,6 +110,7 @@ export function ExperienceSection({
                 src={displayImage}
                 alt="Dr. John Sevo Clinic Reception"
                 fill
+                priority
                 className="w-full h-full object-cover"
                 sizes="(max-width: 1024px) 100vw, 40vw"
               />

@@ -65,7 +65,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
     : null
 
   return (
-    <html lang="en">
+    <html lang="en" data-scroll-behavior="smooth">
       <head>
         {clinicJsonLd && (
           <script

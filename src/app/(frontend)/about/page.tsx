@@ -100,6 +100,7 @@ export default async function AboutPage() {
                     src={storyImageUrl}
                     alt="Dr. John Sevo Dental Clinic Experience"
                     fill
+                    priority
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />
@@ -108,6 +109,7 @@ export default async function AboutPage() {
                     src="/images/clinic-reception.webp"
                     alt="Dr. John Sevo Dental Clinic Experience"
                     fill
+                    priority
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 50vw"
                   />

@@ -31,7 +31,7 @@ export function ClinicLogo({ className = '', variant = 'default', height = 70 }:
     aspectRatio = 80.97 / 104.87
   } else if (variant === 'light-vertecal') {
     src = '/logos/logo-gold-and-wihte-vertecal.svg'
-    aspectRatio = 250 / 167 // ≈ 1.497
+    aspectRatio = 270.1 / 95.3 // Exact SVG viewBox 0 0 270.1 95.3
   } else if (variant === 'badge') {
     src = '/logos/logo-with-grediant-brown-bg.svg'
     aspectRatio = 149.76 / 167.04
