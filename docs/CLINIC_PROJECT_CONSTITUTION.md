@@ -495,6 +495,61 @@ Choose the appropriate bounded retrieval strategy according to the query, UI req
 
 ---
 
+# 14.1. Scalable Repeated Public Content & Bounded Reads
+
+This principle defines how repeated public content must be modeled and queried to guarantee scalability, performance, and bounded resource consumption across the entire application lifecycle.
+
+## Architectural Rule
+
+> **Public content that is inherently bounded and local to a single document may use an Array field. Public content that represents an independently growing set of records, or whose cardinality may become materially large, MUST be modeled as a Collection rather than as an unbounded Array embedded in a Global or single document.**
+
+The distinction is semantic and scalability-based, not an arbitrary fixed numeric threshold.
+
+### Semantic Content Classification
+
+```text
+BOUNDED LOCAL CONTENT (Array is appropriate)
+  ├── Opening hours (e.g. 7 days a week)
+  ├── Small phone directory / social links
+  ├── Fixed, curated trust stats / metrics
+  └── Section-specific pillar highlights (e.g. 6-9 why-choose pillars)
+
+INDEPENDENT / GROWING / LARGE CONTENT (Collection is mandatory)
+  ├── Blog Posts (growing over years)
+  ├── Clinical Services
+  ├── Medical Team / Doctors
+  └── Clinical Transformations / Before & After Cases (may scale to hundreds or thousands)
+```
+
+## Bounded Reads Mandate
+
+1. **Bounded by Default:** Public reads MUST be bounded by default. A public page MUST NOT fetch the complete dataset merely to render its initial view.
+2. **Initial View Cardinality:** Initial requests MUST retrieve only the records required for the current user-visible experience (e.g., `limit: 6` for the homepage Theatre).
+3. **Explicit User-Driven Retrieval:** Additional records may only be retrieved through explicit user-driven operations:
+   - Pagination controls
+   - User-triggered "Load More"
+   - Server-side search
+   - Server-side filtering
+   - Structured navigation
+4. **End-to-End Pagination:** Pagination must exist end-to-end:
+   ```text
+   PostgreSQL (LIMIT/OFFSET/INDEX)
+         ↓
+   Payload Collection (limit, page, hasNextPage, select)
+         ↓
+   Repository Boundary (enforced bounded parameters)
+         ↓
+   Server / Application Logic (page-specific data retrieval)
+         ↓
+   UI Components (viewport-bounded DOM & state)
+   ```
+5. **No Memory Slicing:** Using `.slice()` after retrieving an unbounded dataset does NOT satisfy bounded-read requirements.
+6. **Prohibited Unbounded Reads:** `pagination: false` is strictly prohibited for potentially large public collections.
+7. **Direct DB Queries Forbidden:** Frontend code MUST NOT query PostgreSQL or Payload database internals directly. Repositories and existing server data-access boundaries remain responsible for bounded data retrieval.
+8. **Admin Operability:** Content collections intended for large growth must remain operable in Payload Admin through native collection pagination (e.g., `defaultLimit: 10`, `limits: [10, 25, 50]`), sorting, search, and filtering.
+
+---
+
 # 15. Data Flow Rules
 
 The preferred flow is:

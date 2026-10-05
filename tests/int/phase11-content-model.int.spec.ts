@@ -59,12 +59,22 @@ describe('Phase 11 Content Model & Admin Architecture Verification', () => {
     expect(Array.isArray(info.socialLinks)).toBe(true)
   })
 
-  it('verifies Before & After cases array structure in Home global', async () => {
+  it('verifies Before & After cases migrated to dedicated Transformations collection', async () => {
     const home = await payload.findGlobal({
       slug: 'home',
     })
     expect(home).toBeDefined()
-    expect('beforeAfterCases' in home).toBe(true)
+    expect((home as any).beforeAfterCases).toBeUndefined()
+
+    const transformations = await payload.find({
+      collection: 'transformations' as any,
+      limit: 10,
+    })
+    expect(transformations).toBeDefined()
+    expect(transformations.totalDocs).toBeGreaterThanOrEqual(2)
+    expect(transformations.docs[0].title).toBeDefined()
+    expect(transformations.docs[0].beforeImage).toBeDefined()
+    expect(transformations.docs[0].afterImage).toBeDefined()
   })
 
   it('verifies Doctors collection qualifications array preserves its structure', async () => {

@@ -81,6 +81,7 @@ export interface Config {
     consultations: Consultation;
     reports: Report;
     'email-outbox': EmailOutbox;
+    transformations: Transformation;
     'payload-kv': PayloadKv;
     'payload-locked-documents': PayloadLockedDocument;
     'payload-preferences': PayloadPreference;
@@ -102,6 +103,7 @@ export interface Config {
     consultations: ConsultationsSelect<false> | ConsultationsSelect<true>;
     reports: ReportsSelect<false> | ReportsSelect<true>;
     'email-outbox': EmailOutboxSelect<false> | EmailOutboxSelect<true>;
+    transformations: TransformationsSelect<false> | TransformationsSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
     'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
@@ -652,6 +654,38 @@ export interface EmailOutbox {
   createdAt: string;
 }
 /**
+ * Documented clinical before-and-after smile transformations and patient results.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transformations".
+ */
+export interface Transformation {
+  id: number;
+  title: string;
+  /**
+   * Clinical photograph before procedure.
+   */
+  beforeImage: number | Media;
+  /**
+   * Clinical photograph after procedure / final aesthetic result.
+   */
+  afterImage: number | Media;
+  /**
+   * Brief non-confidential description of the clinical treatment and aesthetic outcome.
+   */
+  description?: string | null;
+  /**
+   * When checked, this transformation is prioritized in the featured homepage theatre showcase.
+   */
+  isFeatured?: boolean | null;
+  /**
+   * Lower numbers display first (e.g. 0, 1, 2...).
+   */
+  displayOrder?: number | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -730,6 +764,10 @@ export interface PayloadLockedDocument {
     | ({
         relationTo: 'email-outbox';
         value: number | EmailOutbox;
+      } | null)
+    | ({
+        relationTo: 'transformations';
+        value: number | Transformation;
       } | null);
   globalSlug?: string | null;
   user: {
@@ -1036,6 +1074,20 @@ export interface EmailOutboxSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "transformations_select".
+ */
+export interface TransformationsSelect<T extends boolean = true> {
+  title?: T;
+  beforeImage?: T;
+  afterImage?: T;
+  description?: T;
+  isFeatured?: T;
+  displayOrder?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv_select".
  */
 export interface PayloadKvSelect<T extends boolean = true> {
@@ -1104,18 +1156,6 @@ export interface Home {
         value: string;
         label: string;
         iconKey?: ('users' | 'star' | 'award' | 'heartHandshake' | 'shield' | 'clock') | null;
-        id?: string | null;
-      }[]
-    | null;
-  /**
-   * Curated clinical case photos demonstrating before and after dental results. Click any card to edit details in the side drawer.
-   */
-  beforeAfterCases?:
-    | {
-        title: string;
-        beforeImage: number | Media;
-        afterImage: number | Media;
-        description?: string | null;
         id?: string | null;
       }[]
     | null;
@@ -1247,15 +1287,6 @@ export interface HomeSelect<T extends boolean = true> {
         value?: T;
         label?: T;
         iconKey?: T;
-        id?: T;
-      };
-  beforeAfterCases?:
-    | T
-    | {
-        title?: T;
-        beforeImage?: T;
-        afterImage?: T;
-        description?: T;
         id?: T;
       };
   ctaHeadline?: T;

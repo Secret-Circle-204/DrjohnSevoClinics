@@ -3,16 +3,29 @@
 import React, { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import type { Media } from '@/payload-types'
+import { loadMoreTransformationsAction } from '@/app/(frontend)/actions/transformations'
 
 export interface BeforeAfterCaseItem {
+  id?: number | string
   title: string
   beforeImage: number | Media
   afterImage: number | Media
   description?: string | null
+  isFeatured?: boolean | null
+  displayOrder?: number | null
 }
 
-interface BeforeAfterSectionProps {
+export interface BeforeAfterPaginationMeta {
+  totalDocs: number
+  totalPages: number
+  page: number
+  hasNextPage: boolean
+}
+
+export interface BeforeAfterSectionProps {
   cases?: BeforeAfterCaseItem[] | null
+  initialCases?: BeforeAfterCaseItem[] | null
+  initialPagination?: BeforeAfterPaginationMeta
 }
 
 function getImageUrl(media: number | Media | undefined | null): string | null {
@@ -31,12 +44,32 @@ function getImageUrl(media: number | Media | undefined | null): string | null {
  * - Single large interactive comparison theatre
  * - Unified Pointer Events (Mouse, Touch, Stylus) with drag-to-reveal
  * - Discrete keyboard accessibility (Arrow keys, Home, End)
- * - Micro-thumbnail case navigation rail
+ * - Micro-thumbnail case navigation rail for bounded loaded cases
+ * - User-driven bounded pagination / Load More without full-page reloads
  * - Restrained editorial typography using official clinic brand tokens
- * - Zero CMS schema changes
+ * - Backed by scalable Transformations Collection (Constitution 14.1)
  */
-export function BeforeAfterSection({ cases }: BeforeAfterSectionProps) {
-  const validCases = cases?.filter((c) => c && c.beforeImage && c.afterImage) || []
+export function BeforeAfterSection({
+  cases,
+  initialCases,
+  initialPagination,
+}: BeforeAfterSectionProps) {
+  const [loadedCases, setLoadedCases] = useState<BeforeAfterCaseItem[]>(
+    () => initialCases || cases || []
+  )
+  const [pagination, setPagination] = useState<BeforeAfterPaginationMeta>(
+    () =>
+      initialPagination || {
+        totalDocs: (initialCases || cases || []).length,
+        totalPages: 1,
+        page: 1,
+        hasNextPage: false,
+      }
+  )
+  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [loadError, setLoadError] = useState<string | null>(null)
+
+  const validCases = loadedCases.filter((c) => c && c.beforeImage && c.afterImage)
 
   const [activeCaseIndex, setActiveCaseIndex] = useState(0)
   const [sliderPosition, setSliderPosition] = useState(50)
@@ -120,6 +153,33 @@ export function BeforeAfterSection({ cases }: BeforeAfterSectionProps) {
     },
     [activeCaseIndex]
   )
+
+  // User-driven bounded pagination handler (Load More)
+  const handleLoadMore = useCallback(async () => {
+    if (isLoadingMore || !pagination.hasNextPage) return
+    setIsLoadingMore(true)
+    setLoadError(null)
+
+    try {
+      const nextPage = pagination.page + 1
+      const res = await loadMoreTransformationsAction(nextPage, 6)
+      if (res.docs && res.docs.length > 0) {
+        setLoadedCases((prev) => [...prev, ...(res.docs as BeforeAfterCaseItem[])])
+        setPagination({
+          totalDocs: res.totalDocs,
+          totalPages: res.totalPages,
+          page: res.page,
+          hasNextPage: res.hasNextPage,
+        })
+      } else {
+        setPagination((prev) => ({ ...prev, hasNextPage: false }))
+      }
+    } catch {
+      setLoadError('Unable to load additional clinical cases. Please try again.')
+    } finally {
+      setIsLoadingMore(false)
+    }
+  }, [isLoadingMore, pagination])
 
   return (
     <section id="results" className="section bg-[#fdfcf9] border-t border-b border-[rgba(54,48,47,0.08)] py-16 sm:py-24">
@@ -326,6 +386,39 @@ export function BeforeAfterSection({ cases }: BeforeAfterSectionProps) {
                     )
                   })}
                 </div>
+              </div>
+            )}
+
+            {/* User-Driven Bounded Pagination / Load More */}
+            {pagination.hasNextPage && (
+              <div className="mt-8 flex flex-col items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleLoadMore}
+                  disabled={isLoadingMore}
+                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-primary-gold/50 bg-white hover:bg-primary-gold/10 hover:border-primary-gold text-deep-brown font-castelar text-xs font-bold tracking-[0.16em] uppercase shadow-xs transition-all duration-200 disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-gold"
+                  aria-label="Load more clinical transformations"
+                >
+                  {isLoadingMore ? (
+                    <>
+                      <span className="w-3.5 h-3.5 border-2 border-primary-gold border-t-transparent rounded-full animate-spin" />
+                      <span>Loading Cases...</span>
+                    </>
+                  ) : (
+                    <>
+                      <span>Explore More Cases</span>
+                      <span className="text-primary-gold font-bold">→</span>
+                    </>
+                  )}
+                </button>
+                <p className="font-perpetua text-xs text-text-muted">
+                  Showing {validCases.length} of {pagination.totalDocs} clinical transformations
+                </p>
+                {loadError && (
+                  <p className="font-perpetua text-xs text-red-600 mt-1">
+                    {loadError}
+                  </p>
+                )}
               </div>
             )}
           </div>

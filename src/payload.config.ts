@@ -19,6 +19,7 @@ import { FollowUps } from './collections/FollowUps'
 import { Consultations } from './collections/Consultations'
 import { Reports } from './collections/Reports'
 import { EmailOutbox } from './collections/EmailOutbox'
+import { Transformations } from './collections/Transformations'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
 
 import { Home } from './globals/Home'
@@ -55,6 +56,7 @@ export default buildConfig({
     Consultations,
     Reports,
     EmailOutbox,
+    Transformations,
   ],
   email: nodemailerAdapter({
     defaultFromAddress: process.env.FROM_EMAIL || 'info@drjohnsevo.com',

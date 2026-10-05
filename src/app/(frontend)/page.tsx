@@ -6,7 +6,7 @@ import { ExperienceSection } from '@/components/sections/ExperienceSection'
 import { TrustStatsSection } from '@/components/sections/TrustStatsSection'
 import { BeforeAfterSection } from '@/components/sections/BeforeAfterSection'
 import { BookingSection } from '@/components/sections/BookingSection'
-import { getHomeContent, getServices } from '@/repositories/clinic'
+import { getHomeContent, getServices, getTransformations } from '@/repositories/clinic'
 
 export const metadata: Metadata = {
   title: 'Exclusive Dental Care & Aesthetics',
@@ -16,9 +16,10 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const [homeContent, servicesResult] = await Promise.all([
+  const [homeContent, servicesResult, transformationsResult] = await Promise.all([
     getHomeContent(),
     getServices({ limit: 6 }),
+    getTransformations({ limit: 6, page: 1, featuredOnly: true }),
   ])
 
   const overviewImageUrl = typeof homeContent?.overviewImage === 'object' && homeContent?.overviewImage?.url
@@ -42,7 +43,15 @@ export default async function HomePage() {
         pillars={homeContent?.whyChooseItems}
       />
       <TrustStatsSection stats={homeContent?.trustStats} />
-      <BeforeAfterSection cases={homeContent?.beforeAfterCases} />
+      <BeforeAfterSection
+        initialCases={transformationsResult.docs}
+        initialPagination={{
+          totalDocs: transformationsResult.totalDocs,
+          totalPages: transformationsResult.totalPages,
+          page: transformationsResult.page,
+          hasNextPage: transformationsResult.hasNextPage,
+        }}
+      />
       <BookingSection
         availableServices={servicesResult.docs}
         ctaHeadline={homeContent?.ctaHeadline}

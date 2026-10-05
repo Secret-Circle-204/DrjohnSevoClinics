@@ -151,49 +151,6 @@ export const Home: GlobalConfig = {
           ],
         },
         {
-          label: 'Before & After Cases',
-          fields: [
-            {
-              name: 'beforeAfterCases',
-              type: 'array',
-              label: 'Before & After Photo Showcase Cases',
-              admin: {
-                components: {
-                  Field: '@/components/admin/DrawerArrayField#DrawerArrayField',
-                },
-                description: 'Curated clinical case photos demonstrating before and after dental results. Click any card to edit details in the side drawer.',
-              },
-              fields: [
-                {
-                  name: 'title',
-                  type: 'text',
-                  required: true,
-                  label: 'Case Title',
-                },
-                {
-                  name: 'beforeImage',
-                  type: 'upload',
-                  relationTo: 'media',
-                  required: true,
-                  label: 'Before Treatment Image',
-                },
-                {
-                  name: 'afterImage',
-                  type: 'upload',
-                  relationTo: 'media',
-                  required: true,
-                  label: 'After Treatment Image',
-                },
-                {
-                  name: 'description',
-                  type: 'text',
-                  label: 'Case Summary Note',
-                },
-              ],
-            },
-          ],
-        },
-        {
           label: 'Call to Action',
           fields: [
             {

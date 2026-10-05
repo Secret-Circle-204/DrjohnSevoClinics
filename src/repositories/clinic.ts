@@ -1,6 +1,6 @@
 import { getPayload } from 'payload'
 import configPromise from '@payload-config'
-import type { Home, About, ClinicInfo, Service, Doctor } from '@/payload-types'
+import type { Home, About, ClinicInfo, Service, Doctor, Transformation } from '@/payload-types'
 
 export interface PaginatedResult<T> {
   docs: T[]
@@ -9,6 +9,7 @@ export interface PaginatedResult<T> {
   page: number
   hasNextPage: boolean
   hasPrevPage: boolean
+  nextPage?: number | null
 }
 
 /**
@@ -145,5 +146,71 @@ export async function getMedicalTeam({
     page: result.page ?? 1,
     hasNextPage: result.hasNextPage,
     hasPrevPage: result.hasPrevPage,
+    nextPage: result.nextPage,
   }
 }
+
+export interface GetTransformationsParams {
+  page?: number
+  limit?: number
+  featuredOnly?: boolean
+}
+
+/**
+ * Bounded, demand-driven retrieval of clinical Before & After transformations.
+ * Respects Constitution Section 14.1 (Scalable Repeated Public Content & Bounded Reads).
+ * Initial query retrieves only the bounded window required for the Theatre (default limit: 6).
+ * pagination: false is strictly prohibited.
+ */
+export async function getTransformations({
+  page = 1,
+  limit = 6,
+  featuredOnly = true,
+}: GetTransformationsParams = {}): Promise<PaginatedResult<Transformation>> {
+  const payload = await getPayload({ config: configPromise })
+
+  // Guardrail: Enforce bounded limits (max 24 items per request)
+  const boundedLimit = Math.max(1, Math.min(limit, 24))
+  const safePage = Math.max(1, page)
+
+  const whereClause: any = featuredOnly
+    ? {
+        isFeatured: {
+          equals: true,
+        },
+      }
+    : {}
+
+  let result = await payload.find({
+    collection: 'transformations',
+    where: whereClause,
+    sort: ['displayOrder', '-createdAt'],
+    page: safePage,
+    limit: boundedLimit,
+    depth: 1,
+    overrideAccess: false,
+  })
+
+  // Fallback: If featured query yielded 0 docs on page 1, fetch general transformations boundedly
+  if (result.docs.length === 0 && featuredOnly && safePage === 1) {
+    result = await payload.find({
+      collection: 'transformations',
+      sort: ['displayOrder', '-createdAt'],
+      page: 1,
+      limit: boundedLimit,
+      depth: 1,
+      overrideAccess: false,
+    })
+  }
+
+  return {
+    docs: result.docs,
+    totalDocs: result.totalDocs,
+    totalPages: result.totalPages,
+    page: result.page ?? 1,
+    hasNextPage: result.hasNextPage,
+    hasPrevPage: result.hasPrevPage,
+    nextPage: result.nextPage,
+  }
+}
+
