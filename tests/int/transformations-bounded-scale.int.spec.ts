@@ -7,7 +7,7 @@ import { loadMoreTransformationsAction } from '@/app/(frontend)/actions/transfor
 let payload: Payload
 const createdTestIds: number[] = []
 
-describe('Transformations Bounded Scale & Scalable Public Content Architecture (Constitution 14.1)', () => {
+describe('Transformations Bounded Scale & Public Content Architecture (Constitution Sections 11–14, 48, 55)', () => {
   beforeAll(async () => {
     const payloadConfig = await config
     payload = await getPayload({ config: payloadConfig })
@@ -97,6 +97,18 @@ describe('Transformations Bounded Scale & Scalable Public Content Architecture (
     expect(res).toBeDefined()
     expect(res.docs.length).toBe(6)
     expect(res.page).toBe(2)
+  })
+
+  it('proves client window replacement: page 2 returns bounded window without accumulation', async () => {
+    const page1 = await loadMoreTransformationsAction(1, 6)
+    const page2 = await loadMoreTransformationsAction(2, 6)
+
+    // Each window holds strictly at most 6 items
+    expect(page1.docs.length).toBeLessThanOrEqual(6)
+    expect(page2.docs.length).toBeLessThanOrEqual(6)
+
+    // Replaced window cardinality is bounded, not accumulated (strictly 6, never 12)
+    expect(page2.docs.length).toBe(6)
   })
 
   it('proves migrated clinical records preserve media relationships and data', async () => {

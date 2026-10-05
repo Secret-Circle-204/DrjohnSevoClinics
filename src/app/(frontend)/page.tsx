@@ -50,6 +50,7 @@ export default async function HomePage() {
           totalPages: transformationsResult.totalPages,
           page: transformationsResult.page,
           hasNextPage: transformationsResult.hasNextPage,
+          hasPrevPage: transformationsResult.hasPrevPage,
         }}
       />
       <BookingSection

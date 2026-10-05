@@ -20,6 +20,7 @@ export interface BeforeAfterPaginationMeta {
   totalPages: number
   page: number
   hasNextPage: boolean
+  hasPrevPage?: boolean
 }
 
 export interface BeforeAfterSectionProps {
@@ -44,17 +45,18 @@ function getImageUrl(media: number | Media | undefined | null): string | null {
  * - Single large interactive comparison theatre
  * - Unified Pointer Events (Mouse, Touch, Stylus) with drag-to-reveal
  * - Discrete keyboard accessibility (Arrow keys, Home, End)
- * - Micro-thumbnail case navigation rail for bounded loaded cases
- * - User-driven bounded pagination / Load More without full-page reloads
+ * - Micro-thumbnail case navigation rail for bounded visible window (Constitution Sections 11–14, 48, 55)
+ * - User-driven bounded window pagination without full-page reloads and zero client-state accumulation
  * - Restrained editorial typography using official clinic brand tokens
- * - Backed by scalable Transformations Collection (Constitution 14.1)
+ * - Backed by scalable Transformations Collection
  */
 export function BeforeAfterSection({
   cases,
   initialCases,
   initialPagination,
 }: BeforeAfterSectionProps) {
-  const [loadedCases, setLoadedCases] = useState<BeforeAfterCaseItem[]>(
+  // Strictly bounded client window: holds ONLY the current visible page (never accumulates)
+  const [windowCases, setWindowCases] = useState<BeforeAfterCaseItem[]>(
     () => initialCases || cases || []
   )
   const [pagination, setPagination] = useState<BeforeAfterPaginationMeta>(
@@ -64,12 +66,13 @@ export function BeforeAfterSection({
         totalPages: 1,
         page: 1,
         hasNextPage: false,
+        hasPrevPage: false,
       }
   )
-  const [isLoadingMore, setIsLoadingMore] = useState(false)
+  const [isLoadingWindow, setIsLoadingWindow] = useState(false)
   const [loadError, setLoadError] = useState<string | null>(null)
 
-  const validCases = loadedCases.filter((c) => c && c.beforeImage && c.afterImage)
+  const validCases = windowCases.filter((c) => c && c.beforeImage && c.afterImage)
 
   const [activeCaseIndex, setActiveCaseIndex] = useState(0)
   const [sliderPosition, setSliderPosition] = useState(50)
@@ -154,32 +157,38 @@ export function BeforeAfterSection({
     [activeCaseIndex]
   )
 
-  // User-driven bounded pagination handler (Load More)
-  const handleLoadMore = useCallback(async () => {
-    if (isLoadingMore || !pagination.hasNextPage) return
-    setIsLoadingMore(true)
-    setLoadError(null)
+  // User-driven bounded window pagination handler (replaces visible window; never accumulates)
+  const handleNavigateWindow = useCallback(
+    async (targetPage: number) => {
+      if (isLoadingWindow || targetPage < 1 || targetPage > pagination.totalPages) return
+      setIsLoadingWindow(true)
+      setIsFading(true)
+      setLoadError(null)
 
-    try {
-      const nextPage = pagination.page + 1
-      const res = await loadMoreTransformationsAction(nextPage, 6)
-      if (res.docs && res.docs.length > 0) {
-        setLoadedCases((prev) => [...prev, ...(res.docs as BeforeAfterCaseItem[])])
-        setPagination({
-          totalDocs: res.totalDocs,
-          totalPages: res.totalPages,
-          page: res.page,
-          hasNextPage: res.hasNextPage,
-        })
-      } else {
-        setPagination((prev) => ({ ...prev, hasNextPage: false }))
+      try {
+        const res = await loadMoreTransformationsAction(targetPage, 6)
+        if (res.docs && res.docs.length > 0) {
+          // Bounded window: replace the visible cases completely so memory and DOM remain O(1)
+          setWindowCases(res.docs as BeforeAfterCaseItem[])
+          setPagination({
+            totalDocs: res.totalDocs,
+            totalPages: res.totalPages,
+            page: res.page,
+            hasNextPage: res.hasNextPage,
+            hasPrevPage: res.hasPrevPage,
+          })
+          setActiveCaseIndex(0)
+          setSliderPosition(50)
+        }
+      } catch {
+        setLoadError('Unable to load clinical transformations for this window. Please try again.')
+      } finally {
+        setIsLoadingWindow(false)
+        setIsFading(false)
       }
-    } catch {
-      setLoadError('Unable to load additional clinical cases. Please try again.')
-    } finally {
-      setIsLoadingMore(false)
-    }
-  }, [isLoadingMore, pagination])
+    },
+    [isLoadingWindow, pagination.totalPages]
+  )
 
   return (
     <section id="results" className="section bg-[#fdfcf9] border-t border-b border-[rgba(54,48,47,0.08)] py-16 sm:py-24">
@@ -320,16 +329,16 @@ export function BeforeAfterSection({
               <div className="flex-shrink-0 self-start sm:self-center">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(54,48,47,0.05)] border border-[rgba(54,48,47,0.08)] font-castelar text-xs font-bold tracking-widest text-primary-gold uppercase">
                   <span>Case</span>
-                  <span>{String(activeCaseIndex + 1).padStart(2, '0')}</span>
+                  <span>{String((pagination.page - 1) * 6 + activeCaseIndex + 1).padStart(2, '0')}</span>
                   <span className="text-text-subtle font-normal">/</span>
                   <span className="text-text-subtle font-normal">
-                    {String(validCases.length).padStart(2, '0')}
+                    {String(pagination.totalDocs).padStart(2, '0')}
                   </span>
                 </span>
               </div>
             </div>
 
-            {/* Micro-Thumbnail Case Navigation Rail */}
+            {/* Micro-Thumbnail Case Navigation Rail (Bounded Visible Window) */}
             {validCases.length > 1 && (
               <div className="w-full mt-6 flex flex-col items-center">
                 <div
@@ -340,10 +349,11 @@ export function BeforeAfterSection({
                   {validCases.map((item, idx) => {
                     const isActive = idx === activeCaseIndex
                     const thumbUrl = getImageUrl(item.afterImage) || getImageUrl(item.beforeImage)
+                    const itemCaseNumber = (pagination.page - 1) * 6 + idx + 1
 
                     return (
                       <button
-                        key={idx}
+                        key={item.id ?? idx}
                         type="button"
                         role="tab"
                         aria-selected={isActive}
@@ -355,7 +365,7 @@ export function BeforeAfterSection({
                             : 'border-[rgba(54,48,47,0.12)] bg-white hover:border-primary-gold/50 hover:bg-neutral-50 opacity-70 hover:opacity-100'
                         }`}
                         title={item.title}
-                        aria-label={`View clinical case ${idx + 1}: ${item.title}`}
+                        aria-label={`View clinical case ${itemCaseNumber}: ${item.title}`}
                       >
                         {/* Micro-thumbnail */}
                         <div className="relative w-11 h-11 sm:w-13 sm:h-13 rounded-xl overflow-hidden bg-neutral-100 flex-shrink-0 border border-[rgba(54,48,47,0.06)]">
@@ -369,7 +379,7 @@ export function BeforeAfterSection({
                             />
                           )}
                           <span className="absolute top-0.5 left-0.5 px-1 py-0.2 rounded text-[8px] font-castelar font-bold bg-black/60 text-white backdrop-blur-xs">
-                            {String(idx + 1).padStart(2, '0')}
+                            {String(itemCaseNumber).padStart(2, '0')}
                           </span>
                         </div>
 
@@ -379,7 +389,7 @@ export function BeforeAfterSection({
                             {item.title}
                           </span>
                           <span className="text-[9px] text-text-muted uppercase tracking-wider font-castelar mt-0.5">
-                            Case {String(idx + 1).padStart(2, '0')}
+                            Case {String(itemCaseNumber).padStart(2, '0')}
                           </span>
                         </div>
                       </button>
@@ -389,31 +399,50 @@ export function BeforeAfterSection({
               </div>
             )}
 
-            {/* User-Driven Bounded Pagination / Load More */}
-            {pagination.hasNextPage && (
-              <div className="mt-8 flex flex-col items-center gap-2">
-                <button
-                  type="button"
-                  onClick={handleLoadMore}
-                  disabled={isLoadingMore}
-                  className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-primary-gold/50 bg-white hover:bg-primary-gold/10 hover:border-primary-gold text-deep-brown font-castelar text-xs font-bold tracking-[0.16em] uppercase shadow-xs transition-all duration-200 disabled:opacity-50 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-gold"
-                  aria-label="Load more clinical transformations"
-                >
-                  {isLoadingMore ? (
-                    <>
-                      <span className="w-3.5 h-3.5 border-2 border-primary-gold border-t-transparent rounded-full animate-spin" />
-                      <span>Loading Cases...</span>
-                    </>
-                  ) : (
-                    <>
-                      <span>Explore More Cases</span>
-                      <span className="text-primary-gold font-bold">→</span>
-                    </>
+            {/* User-Driven Bounded Window Navigation (Strictly Viewport-Bounded DOM & State) */}
+            {pagination.totalPages > 1 && (
+              <div className="mt-8 flex flex-col items-center gap-3">
+                <div className="flex items-center gap-3">
+                  {pagination.hasPrevPage && (
+                    <button
+                      type="button"
+                      onClick={() => handleNavigateWindow(pagination.page - 1)}
+                      disabled={isLoadingWindow}
+                      className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-[rgba(54,48,47,0.15)] bg-white hover:bg-neutral-50 text-deep-brown font-castelar text-xs font-bold tracking-[0.14em] uppercase shadow-xs transition-all duration-200 disabled:opacity-40 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-gold"
+                      aria-label="View previous cases"
+                    >
+                      <span className="text-primary-gold font-bold">←</span>
+                      <span>Previous Cases</span>
+                    </button>
                   )}
-                </button>
+
+                  {pagination.hasNextPage && (
+                    <button
+                      type="button"
+                      onClick={() => handleNavigateWindow(pagination.page + 1)}
+                      disabled={isLoadingWindow}
+                      className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-primary-gold/50 bg-white hover:bg-primary-gold/10 hover:border-primary-gold text-deep-brown font-castelar text-xs font-bold tracking-[0.14em] uppercase shadow-xs transition-all duration-200 disabled:opacity-40 cursor-pointer focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-gold"
+                      aria-label="Explore next cases"
+                    >
+                      {isLoadingWindow ? (
+                        <>
+                          <span className="w-3.5 h-3.5 border-2 border-primary-gold border-t-transparent rounded-full animate-spin" />
+                          <span>Loading Window...</span>
+                        </>
+                      ) : (
+                        <>
+                          <span>Explore Next Cases</span>
+                          <span className="text-primary-gold font-bold">→</span>
+                        </>
+                      )}
+                    </button>
+                  )}
+                </div>
+
                 <p className="font-perpetua text-xs text-text-muted">
-                  Showing {validCases.length} of {pagination.totalDocs} clinical transformations
+                  Showing cases {(pagination.page - 1) * 6 + 1}–{(pagination.page - 1) * 6 + validCases.length} of {pagination.totalDocs} clinical transformations (Window {pagination.page} of {pagination.totalPages})
                 </p>
+
                 {loadError && (
                   <p className="font-perpetua text-xs text-red-600 mt-1">
                     {loadError}

@@ -6,7 +6,7 @@ import type { Transformation } from '@/payload-types'
 /**
  * Server Action: Bounded retrieval of transformations for user-driven pagination / Load More.
  * Enforces bounded limits (max 12 per call) and safe page numbers.
- * Respects Constitution Section 14.1 (Scalable Repeated Public Content & Bounded Reads).
+ * Respects Constitution Sections 11–14, 48, and 55 (Bounded, Demand-Driven Data Retrieval & Pagination Strategy).
  */
 export async function loadMoreTransformationsAction(
   page: number,

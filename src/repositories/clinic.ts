@@ -1,4 +1,4 @@
-import { getPayload } from 'payload'
+import { getPayload, type Where } from 'payload'
 import configPromise from '@payload-config'
 import type { Home, About, ClinicInfo, Service, Doctor, Transformation } from '@/payload-types'
 
@@ -158,7 +158,7 @@ export interface GetTransformationsParams {
 
 /**
  * Bounded, demand-driven retrieval of clinical Before & After transformations.
- * Respects Constitution Section 14.1 (Scalable Repeated Public Content & Bounded Reads).
+ * Respects Constitution Sections 11–14, 48, and 55 (Bounded, Demand-Driven Data Retrieval & Pagination Strategy).
  * Initial query retrieves only the bounded window required for the Theatre (default limit: 6).
  * pagination: false is strictly prohibited.
  */
@@ -173,7 +173,7 @@ export async function getTransformations({
   const boundedLimit = Math.max(1, Math.min(limit, 24))
   const safePage = Math.max(1, page)
 
-  const whereClause: any = featuredOnly
+  const whereClause: Where = featuredOnly
     ? {
         isFeatured: {
           equals: true,
