@@ -1,4 +1,6 @@
-import React from 'react'
+'use client'
+
+import React, { useState, useRef, useCallback } from 'react'
 import Image from 'next/image'
 import type { Media } from '@/payload-types'
 
@@ -13,93 +15,319 @@ interface BeforeAfterSectionProps {
   cases?: BeforeAfterCaseItem[] | null
 }
 
-function getImageUrl(media: number | Media): string | null {
-  if (typeof media === 'object' && media?.url) {
-    return media.url
+function getImageUrl(media: number | Media | undefined | null): string | null {
+  if (!media) return null
+  if (typeof media === 'object') {
+    if (media.url) return media.url
+    if (media.filename) return `/media/${media.filename}`
   }
   return null
 }
 
+/**
+ * Transformation Theatre: Interactive Reveal Before & After Showcase
+ *
+ * Implements a world-class, photo-first clinical comparison experience:
+ * - Single large interactive comparison theatre
+ * - Unified Pointer Events (Mouse, Touch, Stylus) with drag-to-reveal
+ * - Discrete keyboard accessibility (Arrow keys, Home, End)
+ * - Micro-thumbnail case navigation rail
+ * - Restrained editorial typography using official clinic brand tokens
+ * - Zero CMS schema changes
+ */
 export function BeforeAfterSection({ cases }: BeforeAfterSectionProps) {
-  const validCases = cases?.filter(c => c && c.beforeImage && c.afterImage) || []
+  const validCases = cases?.filter((c) => c && c.beforeImage && c.afterImage) || []
+
+  const [activeCaseIndex, setActiveCaseIndex] = useState(0)
+  const [sliderPosition, setSliderPosition] = useState(50)
+  const [isDragging, setIsDragging] = useState(false)
+  const [isFading, setIsFading] = useState(false)
+
+  const containerRef = useRef<HTMLDivElement>(null)
+
+  const currentCase = validCases[activeCaseIndex] || validCases[0]
+  const beforeUrl = getImageUrl(currentCase?.beforeImage)
+  const afterUrl = getImageUrl(currentCase?.afterImage)
+
+  // Unified pointer position calculation
+  const updatePosition = useCallback((clientX: number) => {
+    if (!containerRef.current) return
+    const rect = containerRef.current.getBoundingClientRect()
+    const x = clientX - rect.left
+    const percentage = Math.max(0, Math.min(100, (x / rect.width) * 100))
+    setSliderPosition(percentage)
+  }, [])
+
+  // Pointer event handlers (Mouse, Touch, Stylus unified)
+  const handlePointerDown = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      setIsDragging(true)
+      e.currentTarget.setPointerCapture(e.pointerId)
+      updatePosition(e.clientX)
+    },
+    [updatePosition]
+  )
+
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!isDragging) return
+      updatePosition(e.clientX)
+    },
+    [isDragging, updatePosition]
+  )
+
+  const handlePointerUp = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (isDragging) {
+        try {
+          e.currentTarget.releasePointerCapture(e.pointerId)
+        } catch {
+          // Pointer capture may have already been released
+        }
+        setIsDragging(false)
+      }
+    },
+    [isDragging]
+  )
+
+  // Keyboard accessibility handler
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === 'ArrowLeft' || e.key === 'ArrowDown') {
+      e.preventDefault()
+      setSliderPosition((prev) => Math.max(0, prev - 5))
+    } else if (e.key === 'ArrowRight' || e.key === 'ArrowUp') {
+      e.preventDefault()
+      setSliderPosition((prev) => Math.min(100, prev + 5))
+    } else if (e.key === 'Home') {
+      e.preventDefault()
+      setSliderPosition(0)
+    } else if (e.key === 'End') {
+      e.preventDefault()
+      setSliderPosition(100)
+    }
+  }, [])
+
+  // Case selector transition
+  const handleSelectCase = useCallback(
+    (index: number) => {
+      if (index === activeCaseIndex) return
+      setIsFading(true)
+      setTimeout(() => {
+        setActiveCaseIndex(index)
+        setSliderPosition(50)
+        setIsFading(false)
+      }, 150)
+    },
+    [activeCaseIndex]
+  )
 
   return (
-    <section id="results" className="section bg-[#fdfcf9] border-t border-b border-[rgba(54,48,47,0.08)]">
-      <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
-        <div className="text-center max-w-2xl mx-auto mb-12">
-          <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block mb-2">
-            Clinical Excellence
+    <section id="results" className="section bg-[#fdfcf9] border-t border-b border-[rgba(54,48,47,0.08)] py-16 sm:py-24">
+      <div className="mx-auto w-full max-w-6xl px-4 sm:px-6 lg:px-8">
+        {/* Section Header */}
+        <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
+          <span className="font-castelar text-xs tracking-[0.24em] text-primary-gold uppercase block mb-2 font-bold">
+            Clinical Artistry & Excellence
           </span>
-          <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f]">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-perpetua font-bold text-deep-brown tracking-tight">
             Real Patient Transformations
           </h2>
-          <p className="text-sm sm:text-base text-[#706865] mt-2 font-perpetua">
-            Documented before and after results demonstrating our personalized dental artistry.
+          <p className="text-sm sm:text-base text-text-muted mt-3 font-perpetua leading-relaxed">
+            Documented clinical before and after results demonstrating precision dentistry and bespoke smile design.
           </p>
         </div>
 
         {validCases.length === 0 ? (
-          <div className="bg-white rounded-3xl p-10 border border-[rgba(54,48,47,0.08)] shadow-sm text-center max-w-lg mx-auto">
-            <p className="font-perpetua text-[#706865] text-base leading-relaxed">
+          <div className="bg-white rounded-3xl p-12 border border-[rgba(54,48,47,0.08)] shadow-sm text-center max-w-lg mx-auto">
+            <p className="font-perpetua text-text-muted text-base leading-relaxed">
               Our clinical case gallery is being curated. Certified clinical transformations will be published here.
             </p>
           </div>
         ) : (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {validCases.map((item, idx) => {
-              const beforeUrl = getImageUrl(item.beforeImage)
-              const afterUrl = getImageUrl(item.afterImage)
-
-              return (
-                <div
-                  key={idx}
-                  className="card bg-white rounded-3xl overflow-hidden border border-[rgba(54,48,47,0.08)] shadow-sm hover:shadow-md transition-all flex flex-col justify-between group"
-                >
-                  <div className="grid grid-cols-2 gap-1.5 p-3 bg-[#faf6f0]">
-                    <div className="relative aspect-square rounded-2xl overflow-hidden border border-[rgba(54,48,47,0.06)] bg-neutral-100">
-                      {beforeUrl ? (
-                        <Image
-                          src={beforeUrl}
-                          alt={`${item.title} - Before`}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 50vw, 33vw"
-                        />
-                      ) : null}
-                      <span className="absolute bottom-2 left-2 bg-black/60 backdrop-blur-sm text-white text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full tracking-wider">
-                        Before
-                      </span>
-                    </div>
-
-                    <div className="relative aspect-square rounded-2xl overflow-hidden border border-[#b58a48]/30 bg-neutral-100 ring-1 ring-[#b58a48]/20">
-                      {afterUrl ? (
-                        <Image
-                          src={afterUrl}
-                          alt={`${item.title} - After`}
-                          fill
-                          className="object-cover"
-                          sizes="(max-width: 768px) 50vw, 33vw"
-                        />
-                      ) : null}
-                      <span className="absolute bottom-2 left-2 bg-[#b58a48] text-white text-[10px] uppercase font-semibold px-2 py-0.5 rounded-full tracking-wider shadow-sm">
-                        After
-                      </span>
-                    </div>
-                  </div>
-
-                  <div className="p-5">
-                    <h3 className="font-perpetua font-bold text-lg text-[#36302f] mb-1">
-                      {item.title}
-                    </h3>
-                    {item.description ? (
-                      <p className="text-xs text-[#706865] leading-relaxed line-clamp-2">
-                        {item.description}
-                      </p>
-                    ) : null}
-                  </div>
+          <div className="flex flex-col items-center">
+            {/* The Theatre Frame (Interactive Comparison Showcase) */}
+            <div
+              ref={containerRef}
+              onPointerDown={handlePointerDown}
+              onPointerMove={handlePointerMove}
+              onPointerUp={handlePointerUp}
+              onPointerCancel={handlePointerUp}
+              onKeyDown={handleKeyDown}
+              tabIndex={0}
+              role="slider"
+              aria-label="Before and after comparison slider"
+              aria-valuenow={Math.round(sliderPosition)}
+              aria-valuemin={0}
+              aria-valuemax={100}
+              aria-valuetext={`${Math.round(sliderPosition)}% revealed`}
+              className={`relative w-full aspect-[16/10] sm:aspect-[16/9] max-h-[580px] rounded-2xl sm:rounded-3xl overflow-hidden select-none bg-neutral-900 shadow-2xl border border-[rgba(54,48,47,0.12)] cursor-ew-resize touch-none focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-gold focus-visible:ring-offset-2 transition-opacity duration-200 ${
+                isFading ? 'opacity-40' : 'opacity-100'
+              }`}
+            >
+              {/* 1. Base Layer: Before Treatment Image */}
+              {beforeUrl && (
+                <div className="absolute inset-0 w-full h-full">
+                  <Image
+                    src={beforeUrl}
+                    alt={`${currentCase.title} - Before treatment`}
+                    fill
+                    priority
+                    className="object-cover pointer-events-none"
+                    sizes="(max-width: 1024px) 100vw, 1152px"
+                  />
                 </div>
-              )
-            })}
+              )}
+
+              {/* 2. Reveal Layer: After Treatment Image (Clip-path driven) */}
+              {afterUrl && (
+                <div
+                  className="absolute inset-0 w-full h-full pointer-events-none"
+                  style={{
+                    clipPath: `polygon(0 0, ${sliderPosition}% 0, ${sliderPosition}% 100%, 0 100%)`,
+                    transition: isDragging ? 'none' : 'clip-path 150ms ease-out',
+                    willChange: isDragging ? 'clip-path' : 'auto',
+                  }}
+                >
+                  <Image
+                    src={afterUrl}
+                    alt={`${currentCase.title} - After treatment`}
+                    fill
+                    priority
+                    className="object-cover pointer-events-none"
+                    sizes="(max-width: 1024px) 100vw, 1152px"
+                  />
+                </div>
+              )}
+
+              {/* 3. Restrained Minimal Dividing Line */}
+              <div
+                className="absolute top-0 bottom-0 w-[2px] bg-white/95 pointer-events-none shadow-[0_0_10px_rgba(0,0,0,0.5)]"
+                style={{
+                  left: `${sliderPosition}%`,
+                  transition: isDragging ? 'none' : 'left 150ms ease-out',
+                  willChange: isDragging ? 'left' : 'auto',
+                }}
+              />
+
+              {/* 4. Elegant Minimal Handle */}
+              <div
+                className="absolute top-1/2 -translate-x-1/2 -translate-y-1/2 w-9 h-9 sm:w-10 sm:h-10 rounded-full bg-deep-brown border-2 border-primary-gold text-light-gold shadow-xl flex items-center justify-center pointer-events-none select-none"
+                style={{
+                  left: `${sliderPosition}%`,
+                  transition: isDragging ? 'none' : 'left 150ms ease-out',
+                  willChange: isDragging ? 'left' : 'auto',
+                }}
+                aria-hidden="true"
+              >
+                <div className="flex items-center gap-1 text-[11px] font-bold tracking-tighter opacity-90">
+                  <span>‹</span>
+                  <span className="w-0.5 h-2.5 bg-light-gold rounded-full" />
+                  <span>›</span>
+                </div>
+              </div>
+
+              {/* 5. Subtle Floating Status Badges */}
+              <div
+                className="absolute bottom-3.5 left-3.5 z-10 px-3 py-1 rounded-full text-[10px] sm:text-xs font-castelar tracking-widest uppercase bg-black/50 text-white/90 backdrop-blur-md border border-white/10 select-none pointer-events-none shadow-sm"
+                aria-hidden="true"
+              >
+                Before
+              </div>
+
+              <div
+                className="absolute bottom-3.5 right-3.5 z-10 px-3 py-1 rounded-full text-[10px] sm:text-xs font-castelar tracking-widest uppercase bg-primary-gold/90 text-white backdrop-blur-md border border-light-gold/30 select-none pointer-events-none shadow-sm font-semibold"
+                aria-hidden="true"
+              >
+                After
+              </div>
+            </div>
+
+            {/* Case Identity & Editorial Typography */}
+            <div className="w-full mt-6 sm:mt-8 px-1 flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-[rgba(54,48,47,0.08)] pb-6">
+              <div className="space-y-1 max-w-2xl">
+                <div className="flex items-center gap-3">
+                  <h3 className="font-perpetua font-bold text-2xl sm:text-3xl text-deep-brown tracking-tight">
+                    {currentCase.title}
+                  </h3>
+                </div>
+                {currentCase.description ? (
+                  <p className="font-perpetua text-sm sm:text-base text-text-muted leading-relaxed">
+                    {currentCase.description}
+                  </p>
+                ) : null}
+              </div>
+
+              <div className="flex-shrink-0 self-start sm:self-center">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-[rgba(54,48,47,0.05)] border border-[rgba(54,48,47,0.08)] font-castelar text-xs font-bold tracking-widest text-primary-gold uppercase">
+                  <span>Case</span>
+                  <span>{String(activeCaseIndex + 1).padStart(2, '0')}</span>
+                  <span className="text-text-subtle font-normal">/</span>
+                  <span className="text-text-subtle font-normal">
+                    {String(validCases.length).padStart(2, '0')}
+                  </span>
+                </span>
+              </div>
+            </div>
+
+            {/* Micro-Thumbnail Case Navigation Rail */}
+            {validCases.length > 1 && (
+              <div className="w-full mt-6 flex flex-col items-center">
+                <div
+                  className="flex items-center justify-center gap-2.5 sm:gap-3.5 flex-wrap max-w-full"
+                  role="tablist"
+                  aria-label="Clinical cases"
+                >
+                  {validCases.map((item, idx) => {
+                    const isActive = idx === activeCaseIndex
+                    const thumbUrl = getImageUrl(item.afterImage) || getImageUrl(item.beforeImage)
+
+                    return (
+                      <button
+                        key={idx}
+                        type="button"
+                        role="tab"
+                        aria-selected={isActive}
+                        tabIndex={0}
+                        onClick={() => handleSelectCase(idx)}
+                        className={`group relative flex items-center gap-2.5 p-1.5 rounded-2xl border transition-all duration-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-gold cursor-pointer ${
+                          isActive
+                            ? 'border-primary-gold bg-primary-gold/10 shadow-md scale-105'
+                            : 'border-[rgba(54,48,47,0.12)] bg-white hover:border-primary-gold/50 hover:bg-neutral-50 opacity-70 hover:opacity-100'
+                        }`}
+                        title={item.title}
+                        aria-label={`View clinical case ${idx + 1}: ${item.title}`}
+                      >
+                        {/* Micro-thumbnail */}
+                        <div className="relative w-11 h-11 sm:w-13 sm:h-13 rounded-xl overflow-hidden bg-neutral-100 flex-shrink-0 border border-[rgba(54,48,47,0.06)]">
+                          {thumbUrl && (
+                            <Image
+                              src={thumbUrl}
+                              alt=""
+                              fill
+                              className="object-cover"
+                              sizes="56px"
+                            />
+                          )}
+                          <span className="absolute top-0.5 left-0.5 px-1 py-0.2 rounded text-[8px] font-castelar font-bold bg-black/60 text-white backdrop-blur-xs">
+                            {String(idx + 1).padStart(2, '0')}
+                          </span>
+                        </div>
+
+                        {/* Title preview on larger screens */}
+                        <div className="hidden md:flex flex-col text-left pr-2 max-w-[130px]">
+                          <span className="text-xs font-perpetua font-bold text-deep-brown truncate leading-tight">
+                            {item.title}
+                          </span>
+                          <span className="text-[9px] text-text-muted uppercase tracking-wider font-castelar mt-0.5">
+                            Case {String(idx + 1).padStart(2, '0')}
+                          </span>
+                        </div>
+                      </button>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
           </div>
         )}
       </div>
