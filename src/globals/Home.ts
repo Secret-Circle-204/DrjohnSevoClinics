@@ -46,24 +46,8 @@ export const Home: GlobalConfig = {
           ],
         },
         {
-          label: 'Overview & Strengths',
+          label: 'Why Choose Us Pillars',
           fields: [
-            {
-              name: 'overviewTitle',
-              type: 'text',
-              label: 'Clinic Overview Headline',
-            },
-            {
-              name: 'overviewText',
-              type: 'textarea',
-              label: 'Clinic Overview Narrative',
-            },
-            {
-              name: 'overviewImage',
-              type: 'upload',
-              relationTo: 'media',
-              label: 'Clinic Overview Photo',
-            },
             {
               name: 'whyChooseTitle',
               type: 'text',

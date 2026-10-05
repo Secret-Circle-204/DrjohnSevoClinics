@@ -1135,9 +1135,6 @@ export interface Home {
   heroBadge?: string | null;
   heroTitle: string;
   heroSubtitle?: string | null;
-  overviewTitle?: string | null;
-  overviewText?: string | null;
-  overviewImage?: (number | null) | Media;
   whyChooseTitle?: string | null;
   whyChooseSubtitle?: string | null;
   whyChooseItems?:
@@ -1171,6 +1168,10 @@ export interface Home {
 export interface About {
   id: number;
   storyTitle?: string | null;
+  /**
+   * Executive narrative and overview used across the clinic presentation and home overview section.
+   */
+  storySummary?: string | null;
   storyContent?: {
     root: {
       type: string;
@@ -1268,9 +1269,6 @@ export interface HomeSelect<T extends boolean = true> {
   heroBadge?: T;
   heroTitle?: T;
   heroSubtitle?: T;
-  overviewTitle?: T;
-  overviewText?: T;
-  overviewImage?: T;
   whyChooseTitle?: T;
   whyChooseSubtitle?: T;
   whyChooseItems?:
@@ -1301,6 +1299,7 @@ export interface HomeSelect<T extends boolean = true> {
  */
 export interface AboutSelect<T extends boolean = true> {
   storyTitle?: T;
+  storySummary?: T;
   storyContent?: T;
   storyImage?: T;
   founderTitle?: T;

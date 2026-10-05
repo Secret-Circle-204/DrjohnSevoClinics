@@ -149,9 +149,6 @@ async function ingest() {
       heroBadge: homeData.heroBadge || 'A Healthier Smile. A Brighter You.',
       heroTitle: homeData.heroTitle || 'Expert Dental Care for a Healthier, Happier You',
       heroSubtitle: homeData.heroSubtitle || 'Modern dentistry. Personalized care. A more confident you.',
-      overviewTitle: 'About Dr. John Sevo Dawod Clinics',
-      overviewText:
-        'Dr. John Sevo Clinics represents a distinguished benchmark in advanced dentistry and oral aesthetics. Founded on the principles of medical excellence, ethical practice, and patient-centered hospitality, the clinic brings together top-tier dental specialists, state-of-the-art diagnostic and treatment equipment, and rigorous international sterilization standards to provide exceptional care under one roof.',
       whyChooseTitle: 'Our Strengths',
       whyChooseSubtitle: 'Why Patients Choose Dr. John Sevo Clinics',
       whyChooseItems,
@@ -162,7 +159,7 @@ async function ingest() {
         'Schedule your consultation today with Dr. John Sevo and begin your journey toward a healthy, radiant smile.',
     },
   })
-  console.log('✓ Home global updated successfully with real client pillars and overview.')
+  console.log('✓ Home global updated successfully with real client pillars.')
 
   // 2. Ingest About Page Content
   const coreValues = [
@@ -231,6 +228,8 @@ async function ingest() {
     slug: 'about',
     data: {
       storyTitle: 'About Dr. John Sevo Dawod Clinics',
+      storySummary:
+        'Dr. John Sevo Clinics represents a distinguished benchmark in advanced dentistry and oral aesthetics. Founded on the principles of medical excellence, ethical practice, and patient-centered hospitality, the clinic brings together top-tier dental specialists, state-of-the-art diagnostic and treatment equipment, and rigorous international sterilization standards to provide exceptional care under one roof.',
       storyContent: storyLexical,
       founderTitle: 'A Word from the Founder',
       founderQuote:

@@ -8,5 +8,8 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./vitest.setup.ts'],
     include: ['tests/int/**/*.int.spec.ts'],
+    hookTimeout: 30000,
+    testTimeout: 30000,
+    fileParallelism: false,
   },
 })

@@ -6,7 +6,7 @@ import { ExperienceSection } from '@/components/sections/ExperienceSection'
 import { TrustStatsSection } from '@/components/sections/TrustStatsSection'
 import { BeforeAfterSection } from '@/components/sections/BeforeAfterSection'
 import { BookingSection } from '@/components/sections/BookingSection'
-import { getHomeContent, getServices, getTransformations } from '@/repositories/clinic'
+import { getHomeContent, getAboutContent, getServices, getTransformations } from '@/repositories/clinic'
 
 export const metadata: Metadata = {
   title: 'Exclusive Dental Care & Aesthetics',
@@ -16,14 +16,15 @@ export const metadata: Metadata = {
 }
 
 export default async function HomePage() {
-  const [homeContent, servicesResult, transformationsResult] = await Promise.all([
+  const [homeContent, aboutContent, servicesResult, transformationsResult] = await Promise.all([
     getHomeContent(),
+    getAboutContent(),
     getServices({ limit: 6 }),
     getTransformations({ limit: 6, page: 1, featuredOnly: true }),
   ])
 
-  const overviewImageUrl = typeof homeContent?.overviewImage === 'object' && homeContent?.overviewImage?.url
-    ? homeContent.overviewImage.url
+  const aboutImageUrl = typeof aboutContent?.storyImage === 'object' && aboutContent?.storyImage?.url
+    ? aboutContent.storyImage.url
     : undefined
 
   return (
@@ -35,9 +36,9 @@ export default async function HomePage() {
       />
       <ServicesSection services={servicesResult.docs} />
       <ExperienceSection
-        overviewTitle={homeContent?.overviewTitle}
-        overviewText={homeContent?.overviewText}
-        overviewImageUrl={overviewImageUrl}
+        overviewTitle={aboutContent?.storyTitle}
+        overviewText={aboutContent?.storySummary}
+        overviewImageUrl={aboutImageUrl}
         whyChooseTitle={homeContent?.whyChooseTitle}
         whyChooseSubtitle={homeContent?.whyChooseSubtitle}
         pillars={homeContent?.whyChooseItems}

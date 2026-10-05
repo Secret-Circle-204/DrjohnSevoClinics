@@ -83,7 +83,7 @@ function getPillarIcon(iconName?: string | null, idx?: number) {
 
 export function ExperienceSection({
   overviewTitle = 'About Dr. John Sevo Dawod Clinics',
-  overviewText = 'We combine advanced technology with a human touch to create a comfortable, stress-free experience. Our focus is always on you — your health, your comfort, and your smile.',
+  overviewText = 'Dr. John Sevo Clinics represents a distinguished benchmark in advanced dentistry and oral aesthetics. Founded on the principles of medical excellence, ethical practice, and patient-centered hospitality, the clinic brings together top-tier dental specialists, state-of-the-art diagnostic and treatment equipment, and rigorous international sterilization standards to provide exceptional care under one roof.',
   overviewImageUrl = '/images/clinic-reception.webp',
   whyChooseTitle = 'Our Strengths',
   whyChooseSubtitle = 'Why Patients Choose Dr. John Sevo Clinics',
@@ -92,7 +92,7 @@ export function ExperienceSection({
   const displayTitle = overviewTitle || 'About Dr. John Sevo Dawod Clinics'
   const displayText =
     overviewText ||
-    'We combine advanced technology with a human touch to create a comfortable, stress-free experience. Our focus is always on you — your health, your comfort, and your smile.'
+    'Dr. John Sevo Clinics represents a distinguished benchmark in advanced dentistry and oral aesthetics. Founded on the principles of medical excellence, ethical practice, and patient-centered hospitality, the clinic brings together top-tier dental specialists, state-of-the-art diagnostic and treatment equipment, and rigorous international sterilization standards to provide exceptional care under one roof.'
   const displayImage = overviewImageUrl || '/images/clinic-reception.webp'
   const displayWhyTitle = whyChooseTitle || 'Our Strengths'
   const displayWhySubtitle = whyChooseSubtitle || 'Why Patients Choose Dr. John Sevo Clinics'

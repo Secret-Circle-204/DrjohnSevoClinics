@@ -14,6 +14,7 @@ export const About: GlobalConfig = {
       () => {
         try {
           revalidatePath('/about')
+          revalidatePath('/')
         } catch {
           // Safe outside Next.js request context (CLI, tests, seeds)
         }
@@ -31,6 +32,15 @@ export const About: GlobalConfig = {
               name: 'storyTitle',
               type: 'text',
               label: 'About Story Headline',
+            },
+            {
+              name: 'storySummary',
+              type: 'textarea',
+              label: 'Clinic Overview Narrative',
+              admin: {
+                description:
+                  'Executive narrative and overview used across the clinic presentation and home overview section.',
+              },
             },
             {
               name: 'storyContent',
