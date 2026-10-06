@@ -1146,7 +1146,7 @@ export interface Home {
       }[]
     | null;
   /**
-   * Verified operational statistics or clinic metrics. If empty, the statistics bar remains non-promissory or displays verified defaults.
+   * Key clinic operational highlights and statistics.
    */
   trustStats?:
     | {

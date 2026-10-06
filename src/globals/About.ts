@@ -31,7 +31,7 @@ export const About: GlobalConfig = {
             {
               name: 'storyTitle',
               type: 'text',
-              label: 'About Story Headline',
+              label: 'About Story Title',
             },
             {
               name: 'storySummary',
@@ -109,12 +109,12 @@ export const About: GlobalConfig = {
             {
               name: 'valuesTitle',
               type: 'text',
-              label: 'Values & Vision Headline',
+              label: 'Core Values Section Title',
             },
             {
               name: 'coreValues',
               type: 'array',
-              label: 'Core Value Pillars',
+              label: 'Core Values List',
               admin: {
                 components: {
                   Field: '@/components/admin/DrawerArrayField#DrawerArrayField',

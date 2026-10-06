@@ -49,7 +49,7 @@ export function PillarRowLabel() {
   return (
     <div className="flex items-center gap-2">
       <span className="font-semibold text-neutral-800">
-        {title ? `✨ ${title}` : `Pillar #${(rowNumber ?? 0) + 1}`}
+        {title ? `✨ ${title}` : `Strength #${(rowNumber ?? 0) + 1}`}
       </span>
       {data?.iconName ? (
         <span className="text-xs text-[#b58a48] font-mono">[{data.iconName}]</span>

@@ -185,7 +185,7 @@ export function BookingSection({
                         type="tel"
                         value={phone}
                         onChange={(e) => setPhone(e.target.value)}
-                        placeholder="+971 50 123 4567"
+                        placeholder="e.g. +20 10 1234 5678"
                         required
                         className="w-full h-11 px-3.5 rounded-xl border border-[rgba(54,48,47,0.15)] focus:border-[#b58a48] focus:outline-none focus:ring-1 focus:ring-[#b58a48] text-sm text-[#36302f] bg-[#fcfbf9] transition-colors"
                       />
