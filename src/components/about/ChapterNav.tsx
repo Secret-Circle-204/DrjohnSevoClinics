@@ -77,7 +77,7 @@ export function ChapterNav() {
         }`}
       >
         <div className="px-2 pt-1 pb-1.5 border-b border-[#e1c38c]/15 text-[9px] font-castelar tracking-[0.2em] text-[#e1c38c] uppercase text-center">
-          Story
+          Overview
         </div>
         <div className="flex flex-col gap-0.5 py-1">
           {CHAPTERS.map((ch) => {
@@ -95,24 +95,19 @@ export function ChapterNav() {
                 title={ch.label}
               >
                 <span
-                  className={`font-mono text-[11px] transition-colors ${
-                    isActive ? 'text-[#e1c38c] font-bold' : 'text-[#f5f5f5]/50 group-hover:text-[#e1c38c]'
+                  className={`w-2 h-2 rounded-full transition-all flex-shrink-0 ${
+                    isActive
+                      ? 'bg-[#e1c38c] scale-125 shadow-[0_0_8px_rgba(225,195,140,0.8)]'
+                      : 'bg-[#e1c38c]/30 group-hover:bg-[#e1c38c]/70'
                   }`}
-                >
-                  {ch.num}
-                </span>
+                />
                 <span
-                  className={`text-xs font-perpetua tracking-wide whitespace-nowrap transition-all max-w-0 overflow-hidden group-hover:max-w-[140px] opacity-0 group-hover:opacity-100 ${
-                    isActive ? '!max-w-[140px] !opacity-100 font-bold text-white' : ''
+                  className={`text-xs font-perpetua tracking-wide whitespace-nowrap transition-all max-w-0 overflow-hidden group-hover:max-w-[160px] opacity-0 group-hover:opacity-100 ${
+                    isActive ? '!max-w-[160px] !opacity-100 font-bold text-white' : ''
                   }`}
                 >
                   {ch.label}
                 </span>
-                <span
-                  className={`w-1.5 h-1.5 rounded-full ml-auto transition-all ${
-                    isActive ? 'bg-[#e1c38c] scale-125' : 'bg-transparent group-hover:bg-[#e1c38c]/50'
-                  }`}
-                />
               </button>
             )
           })}
@@ -127,7 +122,7 @@ export function ChapterNav() {
       >
         <div className="flex items-center gap-2 overflow-x-auto no-scrollbar scroll-smooth">
           <span className="font-castelar text-[10px] tracking-widest text-[#e1c38c] uppercase whitespace-nowrap mr-1">
-            Story:
+            Sections:
           </span>
           {CHAPTERS.map((ch) => {
             const isActive = activeId === ch.id
@@ -136,13 +131,12 @@ export function ChapterNav() {
                 key={ch.id}
                 type="button"
                 onClick={() => scrollToChapter(ch.id)}
-                className={`flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs whitespace-nowrap transition-all ${
+                className={`flex items-center gap-1.5 px-3 py-1 rounded-full text-xs whitespace-nowrap transition-all ${
                   isActive
                     ? 'bg-[#b58a48] text-white font-semibold shadow-sm'
                     : 'bg-white/10 text-[#f5f5f5]/75 hover:bg-white/15'
                 }`}
               >
-                <span className="font-mono text-[10px] opacity-75">{ch.num}</span>
                 <span className="font-perpetua">{ch.label}</span>
               </button>
             )

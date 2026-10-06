@@ -36,7 +36,7 @@ export const Home: GlobalConfig = {
               name: 'heroTitle',
               type: 'text',
               required: true,
-              label: 'Hero Main Headline',
+              label: 'Hero Main Title',
             },
             {
               name: 'heroSubtitle',
@@ -46,12 +46,12 @@ export const Home: GlobalConfig = {
           ],
         },
         {
-          label: 'Why Choose Us Pillars',
+          label: 'Clinical Strengths',
           fields: [
             {
               name: 'whyChooseTitle',
               type: 'text',
-              label: 'Why Choose Us Headline',
+              label: 'Strengths Section Title',
             },
             {
               name: 'whyChooseSubtitle',
@@ -61,7 +61,7 @@ export const Home: GlobalConfig = {
             {
               name: 'whyChooseItems',
               type: 'array',
-              label: 'Why Choose Us Value Pillars',
+              label: 'Clinical Strengths List',
               admin: {
                 initCollapsed: true,
                 components: {
@@ -73,12 +73,12 @@ export const Home: GlobalConfig = {
                   name: 'title',
                   type: 'text',
                   required: true,
-                  label: 'Pillar Title',
+                  label: 'Strength Title',
                 },
                 {
                   name: 'description',
                   type: 'textarea',
-                  label: 'Pillar Description',
+                  label: 'Strength Description',
                 },
                 {
                   name: 'iconName',
@@ -101,7 +101,7 @@ export const Home: GlobalConfig = {
                 components: {
                   RowLabel: '@/components/admin/RowLabels#TrustStatRowLabel',
                 },
-                description: 'Verified operational statistics or clinic metrics. If empty, the statistics bar remains non-promissory or displays verified defaults.',
+                description: 'Key clinic operational highlights and statistics.',
               },
               fields: [
                 {
@@ -140,7 +140,7 @@ export const Home: GlobalConfig = {
             {
               name: 'ctaHeadline',
               type: 'text',
-              label: 'Call to Action Headline',
+              label: 'Call to Action Title',
             },
             {
               name: 'ctaSubtitle',
