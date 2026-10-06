@@ -146,16 +146,15 @@ async function ingest() {
   await payload.updateGlobal({
     slug: 'home',
     data: {
-      heroBadge: homeData.heroBadge || 'A Healthier Smile. A Brighter You.',
-      heroTitle: homeData.heroTitle || 'Expert Dental Care for a Healthier, Happier You',
-      heroSubtitle: homeData.heroSubtitle || 'Modern dentistry. Personalized care. A more confident you.',
+      heroBadge: 'A Healthier Smile. A Brighter You.',
+      heroTitle: 'Expert Dental Care for a Healthier, Happier You',
+      heroSubtitle: 'Modern dentistry. Personalized care. A more confident you.',
       whyChooseTitle: 'Our Strengths',
       whyChooseSubtitle: 'Why Patients Choose Dr. John Sevo Clinics',
       whyChooseItems,
-      trustStats: homeData.trustStats && homeData.trustStats.length > 0 ? homeData.trustStats : trustStats,
-      ctaHeadline: homeData.ctaHeadline || 'Ready to Experience Exceptional Dental Care?',
+      trustStats,
+      ctaHeadline: 'Ready to Experience Exceptional Dental Care?',
       ctaSubtitle:
-        homeData.ctaSubtitle ||
         'Schedule your consultation today with Dr. John Sevo and begin your journey toward a healthy, radiant smile.',
     },
   })
@@ -202,25 +201,32 @@ async function ingest() {
 
   const storyLexical = textToLexical([
     {
-      text: 'Dr. John Sevo Clinics represents a distinguished benchmark in advanced dentistry and oral aesthetics. Founded on the principles of medical excellence, ethical practice, and patient-centered hospitality, the clinic brings together top-tier dental specialists, state-of-the-art diagnostic and treatment equipment, and rigorous international sterilization standards to provide exceptional care under one roof.',
+      text: 'Dr. John Sevo Dawod Clinics Group was established in 2013 with the vision of creating a trusted dental healthcare brand that combines professional expertise with modern dentistry.',
     },
     {
-      text: 'Every smile tells a story, and our mission is to ensure every patient receives the precision, compassion, and clinical mastery required to achieve optimal oral health and natural facial harmony.',
+      text: 'Over the years, the group has continued to grow, expanding its presence while maintaining the same commitment to quality, patient care, and continuous development.',
+    },
+    {
+      text: 'Our clinics provide a comprehensive range of dental services supported by modern equipment, digital technologies, and a professional dental team.',
     },
   ])
 
   const experienceLexical = textToLexical([
     { text: 'Our Philosophy', heading: true },
     {
-      text: 'At Dr. John Sevo Clinics, we believe a confident smile begins with honest, precise, and compassionate care. Dentistry is not merely a clinical procedure — it is an art of enhancing confidence and an absolute commitment to improving quality of life. We integrate advanced clinical expertise with the latest dental technologies to deliver comprehensive, painless, and sustainable results.',
+      text: 'Our philosophy is built around patient-centered dentistry. We believe that successful dental care combines clinical expertise, modern technology, precise diagnosis, continuous development, and genuine care for every patient. Every treatment plan is designed according to the individual needs, expectations, and long-term oral health of each patient.',
     },
     { text: 'Keys to Our Success', heading: true },
     {
-      text: 'Our continued growth and patient trust stem from three enduring principles: unwavering clinical rigor, continuous investment in cutting-edge dental equipment, and building authentic, long-term relationships with every individual who entrusts us with their smile.',
+      text: 'Our success is built on several essential principles: Professional Expertise + Modern Technology + Continuous Development + Patient Trust + Teamwork.\n\nWe believe that technology alone does not create excellent dentistry. The real difference comes from combining advanced technology with experienced professionals, accurate diagnosis, proper treatment planning, and genuine patient care.',
     },
-    { text: 'Research, Innovation & Human Capital', heading: true },
+    { text: 'Research & Development', heading: true },
     {
-      text: 'We maintain an active commitment to evidence-based dental practices, embracing digital dentistry workflows, 3D printing, and advanced biocompatible materials. Our multidisciplinary team undergoes continuous international training, ensuring our patients benefit from the latest worldwide advances in cosmetic and restorative dentistry.',
+      text: 'We believe that dentistry is constantly evolving. Our approach is based on continuous learning and keeping up with developments in dental materials, clinical techniques, digital dentistry, diagnostic technologies, and modern treatment protocols. We continuously evaluate new technologies and techniques to determine how they can improve the quality, precision, efficiency, and patient experience within our clinics.',
+    },
+    { text: 'Human Capital', heading: true },
+    {
+      text: 'Our team is one of the most important assets of Dr. John Sevo Dawod Clinics. We believe that investing in people is essential to delivering consistent and high-quality patient care. Our professional team works together across different dental specialties, supported by continuous education, clinical experience, teamwork, and a shared commitment to our patients.',
     },
   ])
 
@@ -229,19 +235,19 @@ async function ingest() {
     data: {
       storyTitle: 'About Dr. John Sevo Dawod Clinics',
       storySummary:
-        'Dr. John Sevo Clinics represents a distinguished benchmark in advanced dentistry and oral aesthetics. Founded on the principles of medical excellence, ethical practice, and patient-centered hospitality, the clinic brings together top-tier dental specialists, state-of-the-art diagnostic and treatment equipment, and rigorous international sterilization standards to provide exceptional care under one roof.',
+        'Dr. John Sevo Dawod Clinics Group was established in 2013 with the vision of creating a trusted dental healthcare brand that combines professional expertise with modern dentistry. Over the years, the group has continued to grow, expanding its presence while maintaining the same commitment to quality, patient care, and continuous development.',
       storyContent: storyLexical,
       founderTitle: 'A Word from the Founder',
       founderQuote:
-        'Since the beginning, our journey has been driven by a single purpose: to transform dental care from an intimidating experience into a journey of confidence, comfort, and real change.\n\nAt Dr. John Sevo Clinics, we believe every smile tells a story. That is why we are committed to providing the highest standards of quality, utilizing modern technology, and ensuring every patient receives the care, precision, and attention they deserve.\n\nOur goal has never been just treating teeth — it is about restoring smiles, renewing self-esteem, and building lasting relationships based on trust and excellence.\n\nThank you for choosing us to be a part of your smile.',
+        'Since the establishment of our first clinic in 2013, our goal has always been clear: to provide every patient with high-quality dental care in a professional, comfortable, and trustworthy environment.\n\nFor us, dentistry is not only about treating teeth; it is about understanding our patients, earning their trust, and creating healthy, confident smiles that last.\n\nWe continuously invest in modern dental technologies, advanced clinical techniques, and the development of our team to ensure that our patients receive care that meets the highest professional standards.',
       founderName: 'Dr. John Sevo Dawod',
       founderRole: 'Founder & Medical Director',
       mission:
-        'To provide comprehensive, state-of-the-art dental care with empathy, clinical precision, and the highest standards of safety and comfort — empowering our patients with healthy, beautiful smiles and renewed confidence through personalized treatment experiences.',
+        'To deliver high-quality, patient-centered dental care through clinical expertise, advanced technology, continuous education, and a commitment to safety, precision, and patient satisfaction.',
       vision:
-        'To be the benchmark of excellence and the premier destination for advanced, aesthetic, and compassionate dentistry in the region, recognized for exceptional clinical outcomes, pioneering innovation, and an unwavering commitment to patient well-being.',
+        'To become one of the leading and most trusted dental healthcare groups in Egypt, recognized for clinical excellence, advanced technology, patient experience, and continuous innovation.',
       positioning:
-        'Modern Dentistry. Professional Care. Trusted Experience.\n\nPositioning Dr. John Sevo Clinics as a premier dental center offering advanced dental and cosmetic treatments with exceptional care and patient satisfaction.',
+        'Modern Dentistry. Professional Care. Trusted Experience.\n\nDr. John Sevo Dawod Clinics is positioned as a modern, professional dental healthcare group that combines clinical expertise with advanced technology and a strong focus on patient experience.\n\nOur goal is to create a dental environment where patients feel safe, understood, and confident throughout their treatment journey.',
       valuesTitle: 'Our Core Values',
       coreValues,
       experienceNarrative: experienceLexical,

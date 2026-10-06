@@ -218,7 +218,7 @@ a {
 
 .surface-deep-abstract {
   background-color: var(--color-deep-brown);
-  background-image: url('../../../brand-guidelines/bg-for-sec-and identty/primary-brown-abstract-background.png');
+  background-image: url('/images/primary-brown-abstract-background.png');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;

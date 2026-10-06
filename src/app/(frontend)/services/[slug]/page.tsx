@@ -4,7 +4,7 @@ import Link from 'next/link'
 import { notFound } from 'next/navigation'
 import { ArrowLeft, ArrowRight, CheckCircle2, Clock, UserCheck } from 'lucide-react'
 import type { Metadata } from 'next'
-import { getServiceBySlug, getMedicalTeam } from '@/repositories/clinic'
+import { getServiceBySlug, getMedicalTeam, getClinicInfo } from '@/repositories/clinic'
 import { RichText } from '@/components/richText/RichText'
 import type { Media, Doctor } from '@/payload-types'
 
@@ -45,14 +45,17 @@ export async function generateMetadata(props: ServiceDetailPageProps): Promise<M
 
 export default async function ServiceDetailPage(props: ServiceDetailPageProps) {
   const params = await props.params
-  const service = await getServiceBySlug(params.slug)
+  const [service, clinicInfo, medicalTeam] = await Promise.all([
+    getServiceBySlug(params.slug),
+    getClinicInfo(),
+    getMedicalTeam({ limit: 4 }),
+  ])
 
   if (!service) {
     notFound()
   }
 
   const imageUrl = getMediaUrl(service.featuredImage)
-  const medicalTeam = await getMedicalTeam({ limit: 4 })
   const doctors: Doctor[] = medicalTeam.docs
 
   const serviceJsonLd = {
@@ -62,11 +65,13 @@ export default async function ServiceDetailPage(props: ServiceDetailPageProps) {
     description: service.shortDescription,
     url: `${siteUrl}/services/${service.slug}`,
     image: imageUrl || undefined,
-    provider: {
-      '@type': 'Dentist',
-      name: 'Dr. John Sevo Dental Clinic',
-      url: siteUrl,
-    },
+    provider: clinicInfo?.clinicName
+      ? {
+          '@type': 'Dentist',
+          name: clinicInfo.clinicName,
+          url: siteUrl,
+        }
+      : undefined,
   }
 
   return (
@@ -125,13 +130,8 @@ export default async function ServiceDetailPage(props: ServiceDetailPageProps) {
                 {service.description ? (
                   <RichText data={service.description} />
                 ) : (
-                  <div className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed space-y-4">
-                    <p>
-                      {service.shortDescription}
-                    </p>
-                    <p>
-                      Our clinical specialists utilize high-magnification dental loupes, digital impression scanners, and bio-compatible materials to ensure long-lasting structural integrity and seamless aesthetics.
-                    </p>
+                  <div className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed">
+                    <p>{service.shortDescription}</p>
                   </div>
                 )}
               </div>

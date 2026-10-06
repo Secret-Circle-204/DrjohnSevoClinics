@@ -9,7 +9,6 @@ import { BookingSection } from '@/components/sections/BookingSection'
 import { getHomeContent, getAboutContent, getServices, getTransformations } from '@/repositories/clinic'
 
 export const metadata: Metadata = {
-  title: 'Exclusive Dental Care & Aesthetics',
   alternates: {
     canonical: '/',
   },

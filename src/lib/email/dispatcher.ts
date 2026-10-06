@@ -154,6 +154,10 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
       }
     }
 
+    const formattedHours = clinicInfo?.openingHours?.length
+      ? clinicInfo.openingHours.map((oh: any) => `${oh.days}: ${oh.hours}`).join(', ')
+      : null
+
     // 4. Render Reception Email Template
     const templateData = {
       inquiryId: inquiry.id,
@@ -166,9 +170,11 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
       message: inquiry.message,
       createdAt: inquiry.createdAt,
       siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com',
+      clinicName: clinicInfo?.clinicName || null,
     }
 
-    const subject = `[New Patient Inquiry] ${inquiry.fullName} - ${serviceTitle || 'General Consultation'} (#${inquiry.id})`
+    const serviceSuffix = serviceTitle ? ` - ${serviceTitle}` : ''
+    const subject = `[New Patient Inquiry] ${inquiry.fullName}${serviceSuffix} (#${inquiry.id})`
     const html = formatInquiryNotificationHtml(templateData)
     const text = formatInquiryNotificationText(templateData)
 
@@ -220,10 +226,14 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
             clinicPhone: clinicInfo?.phoneNumbers?.[0]?.number || null,
             clinicEmail: recipientEmail,
             clinicAddress: clinicInfo?.address || null,
+            clinicHours: formattedHours,
+            clinicName: clinicInfo?.clinicName || null,
             siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com',
           }
 
-          const patientSubject = `Appointment Request Received — Dr. John Sevo Dental Clinic (#${inquiry.id})`
+          const patientSubject = clinicInfo?.clinicName
+            ? `Appointment Request Received — ${clinicInfo.clinicName} (#${inquiry.id})`
+            : `Appointment Request Received (#${inquiry.id})`
           const patientHtml = formatPatientConfirmationHtml(patientTemplateData)
           const patientText = formatPatientConfirmationText(patientTemplateData)
 

@@ -9,14 +9,10 @@ interface HeroSectionProps {
 }
 
 export function HeroSection({
-  badge = 'A Healthier Smile. A Brighter You.',
-  title = 'Expert Dental Care for a Healthier, Happier You',
-  subtitle = 'Modern dentistry. Personalized care. A more confident you.',
+  badge,
+  title,
+  subtitle,
 }: HeroSectionProps) {
-  const displayBadge = badge || 'A Healthier Smile. A Brighter You.'
-  const displayTitle = title || 'Expert Dental Care for a Healthier, Happier You'
-  const displaySubtitle = subtitle || 'Modern dentistry. Personalized care. A more confident you.'
-
   return (
     <section className="relative overflow-hidden bg-gradient-to-br from-[#fdfcf9] via-[#f7f2ec] to-[#eee5dc] pt-8 pb-16 lg:py-16">
       {/* Subtle Official Watermark Background */}
@@ -34,17 +30,23 @@ export function HeroSection({
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-8 items-center">
           {/* Left Content */}
           <div className="lg:col-span-6 space-y-6 reveal-fade">
-            <span className="font-castelar text-xs tracking-[0.22em] font-normal uppercase text-[#b58a48] block">
-              {displayBadge}
-            </span>
+            {badge && (
+              <span className="font-castelar text-xs tracking-[0.22em] font-normal uppercase text-[#b58a48] block">
+                {badge}
+              </span>
+            )}
 
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-americana text-[#36302f] leading-[1.15] font-bold">
-              {displayTitle}
-            </h1>
+            {title && (
+              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-americana text-[#36302f] leading-[1.15] font-bold">
+                {title}
+              </h1>
+            )}
 
-            <p className="font-perpetua text-[#5a5350] text-lg sm:text-xl max-w-lg leading-relaxed">
-              {displaySubtitle}
-            </p>
+            {subtitle && (
+              <p className="font-perpetua text-[#5a5350] text-lg sm:text-xl max-w-lg leading-relaxed">
+                {subtitle}
+              </p>
+            )}
 
             {/* Action Buttons */}
             <div className="flex flex-wrap items-center gap-4 pt-2">
@@ -62,22 +64,6 @@ export function HeroSection({
                 Our Services
               </a>
             </div>
-
-            {/* Social Proof Row */}
-            <div className="pt-6 flex items-center gap-4 border-t border-[rgba(54,48,47,0.1)]">
-              <div className="flex items-center -space-x-2">
-                <Image
-                  src="/images/patient-avatars.webp"
-                  alt="Trusted Patients"
-                  width={75}
-                  height={26}
-                  className="h-7 w-auto object-contain rounded-full shadow-sm"
-                />
-              </div>
-              <span className="text-sm font-medium text-[#5a5350]">
-                Trusted by patients seeking <strong className="text-[#36302f]">clinical excellence & gentle care</strong>
-              </span>
-            </div>
           </div>
 
           {/* Right Doctor Presentation */}
@@ -85,7 +71,7 @@ export function HeroSection({
             <div className="relative mx-auto max-w-lg rounded-3xl overflow-hidden shadow-2xl border border-[rgba(255,255,255,0.8)]">
               <Image
                 src="/images/hero-doctor.webp"
-                alt="Dr. John Sevo, Dental Clinic & Aesthetics"
+                alt={title || ''}
                 width={554}
                 height={345}
                 priority

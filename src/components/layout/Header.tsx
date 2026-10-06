@@ -6,7 +6,11 @@ import { Calendar, ArrowRight, Menu } from 'lucide-react'
 import { ClinicLogo } from './ClinicLogo'
 import { MobileNav } from './MobileNav'
 
-export function Header() {
+interface HeaderProps {
+  clinicName?: string | null
+}
+
+export function Header({ clinicName }: HeaderProps = {}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
   return (
@@ -17,7 +21,7 @@ export function Header() {
           <div className="flex-1 flex items-center justify-start">
             {/* Desktop Brand Typography Logo */}
             <div className="hidden sm:flex items-center">
-              <ClinicLogo variant="text-only" height={26} className="hover:opacity-90 transition-opacity" />
+              <ClinicLogo variant="text-only" height={26} clinicName={clinicName} className="hover:opacity-90 transition-opacity" />
             </div>
 
             {/* Mobile Menu Trigger Button */}
@@ -60,7 +64,7 @@ export function Header() {
 
             {/* Enlarged Centered Pure Gold Emblem */}
             <div className="flex-shrink-0 px-2 lg:px-4">
-              <ClinicLogo variant="emblem-only" height={68} />
+              <ClinicLogo variant="emblem-only" height={68} clinicName={clinicName} />
             </div>
 
             {/* Right 3 Links */}
@@ -88,7 +92,7 @@ export function Header() {
 
           {/* Mobile Centered Logo */}
           <div className="md:hidden flex items-center justify-center">
-            <ClinicLogo variant="emblem-only" height={52} />
+            <ClinicLogo variant="emblem-only" height={52} clinicName={clinicName} />
           </div>
         </div>
 
@@ -110,6 +114,7 @@ export function Header() {
       <MobileNav
         isOpen={isMobileMenuOpen}
         onClose={() => setIsMobileMenuOpen(false)}
+        clinicName={clinicName}
       />
     </>
   )

@@ -9,8 +9,7 @@ interface FooterProps {
 
 export function Footer({ clinicInfo }: FooterProps) {
   const currentYear = new Date().getFullYear()
-  const clinicName = clinicInfo?.clinicName || 'Dr. John Sevo Dental Clinic'
-
+  const clinicName = clinicInfo?.clinicName || ''
 
   return (
     <footer id="contact" className="bg-[#36302f] text-[#ede8e4] pt-14 pb-10 border-t border-[#b58a48]/25 relative overflow-hidden">
@@ -21,7 +20,7 @@ export function Footer({ clinicInfo }: FooterProps) {
         <div className="flex flex-col md:flex-row items-center justify-between gap-8 pb-10 border-b border-[#b58a48]/20">
           {/* Footer Logo - Official Gold & White lockup (logo-gold-and-wihte-vertecal.svg) */}
           <div className="flex items-center">
-            <ClinicLogo variant="light-vertecal" height={80} />
+            <ClinicLogo variant="light-vertecal" height={80} clinicName={clinicName} />
           </div>
 
           {/* Navigation Links */}
@@ -34,11 +33,8 @@ export function Footer({ clinicInfo }: FooterProps) {
             <Link href="/contact" className="hover:text-[#E1C38C] transition-colors tracking-wide">Contact</Link>
           </div>
 
-          {/* Social Icons & Tagline */}
+          {/* Social Icons */}
           <div className="flex flex-col sm:flex-row items-center gap-5">
-            <span className="text-xs font-serif text-[#E1C38C] italic tracking-wider hidden xl:inline">
-              A Healthier Smile. A Brighter You.
-            </span>
             <div className="flex items-center gap-3">
               {/* Facebook */}
               <a
@@ -86,7 +82,7 @@ export function Footer({ clinicInfo }: FooterProps) {
 
         <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-perpetua text-[#b1957b]">
           <div>
-            © {currentYear} {clinicName}. All rights reserved.
+            © {currentYear}{clinicName ? ` ${clinicName}` : ''}. All rights reserved.
           </div>
           <div className="flex items-center gap-6">
             <a href="#" className="hover:text-[#E1C38C] transition-colors">Privacy Policy</a>

@@ -13,9 +13,10 @@ export interface ClinicLogoProps {
     | 'light-vertecal'
     | 'badge'
   height?: number
+  clinicName?: string | null
 }
 
-export function ClinicLogo({ className = '', variant = 'default', height = 70 }: ClinicLogoProps) {
+export function ClinicLogo({ className = '', variant = 'default', height = 70, clinicName }: ClinicLogoProps) {
   // Determine which SVG asset to load based on variant
   let src = '/logos/logo-gold-dark-text.svg'
   let aspectRatio = 80.97 / 104.87 // ≈ 0.772
@@ -42,12 +43,12 @@ export function ClinicLogo({ className = '', variant = 'default', height = 70 }:
   return (
     <Link
       href="/"
-      aria-label="Dr. John Sevo Dental Clinic Home"
+      aria-label={clinicName ? `${clinicName} Home` : 'Home'}
       className={`inline-flex items-center justify-center no-underline group transition-transform duration-200 hover:scale-105 ${className}`}
     >
       <Image
         src={src}
-        alt="Dr. John Sevo Dental Clinic"
+        alt={clinicName || ''}
         width={width}
         height={height}
         priority

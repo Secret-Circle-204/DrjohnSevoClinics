@@ -15,13 +15,45 @@ const createdPostIds: number[] = []
 const createdDoctorIds: number[] = []
 const createdMediaIds: number[] = []
 const createdCategoryIds: number[] = []
+let initialHome: any = null
+let initialAbout: any = null
+let initialClinicInfo: any = null
 
 describe('Phase E Evidence Closure Verification', () => {
   beforeAll(async () => {
     payload = await getPayload({ config: await config })
+    initialHome = await payload.findGlobal({ slug: 'home' }).catch(() => null)
+    initialAbout = await payload.findGlobal({ slug: 'about' }).catch(() => null)
+    initialClinicInfo = await payload.findGlobal({ slug: 'clinic-info' }).catch(() => null)
   })
 
   afterAll(async () => {
+    // Restore globals if mutated
+    if (initialHome) {
+      await payload.updateGlobal({
+        slug: 'home',
+        data: {
+          heroTitle: initialHome.heroTitle,
+        },
+      }).catch(() => {})
+    }
+    if (initialAbout) {
+      await payload.updateGlobal({
+        slug: 'about',
+        data: {
+          storyTitle: initialAbout.storyTitle,
+        },
+      }).catch(() => {})
+    }
+    if (initialClinicInfo) {
+      await payload.updateGlobal({
+        slug: 'clinic-info',
+        data: {
+          clinicName: initialClinicInfo.clinicName,
+        },
+      }).catch(() => {})
+    }
+
     // Cleanup any created test documents
     for (const id of createdServiceIds) {
       await payload.delete({ collection: 'services', id, overrideAccess: true }).catch(() => {})
@@ -218,7 +250,7 @@ describe('Phase E Evidence Closure Verification', () => {
       expect(parsed['@type']).toBe('Service')
       expect(parsed.name).toBe('Evidence Active Service')
       expect(parsed.description).toBe('Active service for sitemap verification')
-      expect(parsed.provider?.name).toBe('Dr. John Sevo Dental Clinic')
+      expect(parsed.provider?.name).toBe('Dr. John Sevo Dental Clinic & Aesthetics')
       expect(parsed.aggregateRating).toBeUndefined()
       expect(parsed.priceRange).toBeUndefined()
     })
@@ -238,7 +270,7 @@ describe('Phase E Evidence Closure Verification', () => {
       expect(parsed['@type']).toBe('BlogPosting')
       expect(parsed.headline).toBe('Evidence Active Blog Article')
       expect(parsed.description).toBe('Active blog article for sitemap verification')
-      expect(parsed.publisher?.name).toBe('Dr. John Sevo Dental Clinic')
+      expect(parsed.publisher?.name).toBe('Dr. John Sevo Dental Clinic & Aesthetics')
       expect(parsed.aggregateRating).toBeUndefined()
       expect(parsed.review).toBeUndefined()
     }, 15000)
@@ -250,7 +282,7 @@ describe('Phase E Evidence Closure Verification', () => {
       await payload.updateGlobal({
         slug: 'home',
         data: {
-          heroTitle: 'Evidence Tested Hero Main Headline',
+          heroTitle: 'Expert Dental Care for a Healthier, Happier You',
         },
       })
       expect(nextCache.revalidatePath).toHaveBeenCalledWith('/')
@@ -261,7 +293,7 @@ describe('Phase E Evidence Closure Verification', () => {
       await payload.updateGlobal({
         slug: 'about',
         data: {
-          storyTitle: 'Evidence Tested Story Headline',
+          storyTitle: 'About Dr. John Sevo Dawod Clinics',
         },
       })
       expect(nextCache.revalidatePath).toHaveBeenCalledWith('/about')

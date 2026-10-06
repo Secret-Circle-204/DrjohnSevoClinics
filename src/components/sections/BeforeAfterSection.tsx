@@ -196,14 +196,11 @@ export function BeforeAfterSection({
         {/* Section Header */}
         <div className="text-center max-w-2xl mx-auto mb-10 sm:mb-14">
           <span className="font-castelar text-xs tracking-[0.24em] text-primary-gold uppercase block mb-2 font-bold">
-            Clinical Artistry & Excellence
+            Before & After
           </span>
           <h2 className="text-3xl sm:text-4xl lg:text-5xl font-perpetua font-bold text-deep-brown tracking-tight">
-            Real Patient Transformations
+            Clinical Transformations
           </h2>
-          <p className="text-sm sm:text-base text-text-muted mt-3 font-perpetua leading-relaxed">
-            Documented clinical before and after results demonstrating precision dentistry and bespoke smile design.
-          </p>
         </div>
 
         {validCases.length === 0 ? (

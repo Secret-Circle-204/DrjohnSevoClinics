@@ -30,45 +30,15 @@ function getStatIcon(iconKey?: string | null) {
 }
 
 export function TrustStatsSection({ stats }: TrustStatsSectionProps) {
-  // If stats array is empty or undefined, render non-promissory verified clinical commitments
-  const displayStats: TrustStatItem[] =
-    stats && stats.length > 0
-      ? stats
-      : [
-          {
-            value: '100%',
-            label: 'Sterilization & Safety',
-            iconKey: 'shield',
-          },
-          {
-            value: 'Multi-Specialty',
-            label: 'Comprehensive Care',
-            iconKey: 'award',
-          },
-          {
-            value: 'State-of-the-Art',
-            label: 'Digital Diagnostics',
-            iconKey: 'star',
-          },
-          {
-            value: 'Patient-Centered',
-            label: 'Personalized Plans',
-            iconKey: 'heartHandshake',
-          },
-        ]
+  if (!stats || stats.length === 0) {
+    return null
+  }
+
+  const displayStats = stats
 
   return (
-    <section className="relative section surface-deep-abstract text-white overflow-hidden py-16">
+    <section className="relative section surface-deep-abstract text-white overflow-hidden py-14">
       <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 text-center relative z-10">
-        <span className="font-castelar text-xs tracking-[0.22em] text-[#E1C38C] uppercase block mb-2">
-          Clinical Excellence & Trust
-        </span>
-        <h2 className="text-3xl sm:text-4xl font-perpetua text-white font-bold mb-3">
-          Our Commitment to Every Patient
-        </h2>
-        <p className="font-perpetua text-base sm:text-lg text-neutral-300 max-w-xl mx-auto mb-12 leading-relaxed">
-          Excellence in modern dentistry, uncompromising safety protocols, and personalized care.
-        </p>
 
         {/* Dynamic Stats Grid */}
         <div className={`grid grid-cols-2 ${displayStats.length >= 4 ? 'md:grid-cols-4' : `md:grid-cols-${displayStats.length}`} gap-8`}>

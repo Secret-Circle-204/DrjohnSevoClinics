@@ -7,18 +7,19 @@ import { ClinicLogo } from './ClinicLogo'
 export interface MobileNavProps {
   isOpen: boolean
   onClose: () => void
+  clinicName?: string | null
 }
 
 const NAV_ITEMS = [
-  { num: '01', label: 'Home', subtitle: 'Excellence & Aesthetics', href: '/' },
-  { num: '02', label: 'About', subtitle: 'Dr. John Sevo & Philosophy', href: '/about' },
-  { num: '03', label: 'Services', subtitle: 'Specialized Dental Care', href: '/services' },
-  { num: '04', label: 'Blog', subtitle: 'Educational Articles & Media', href: '/blog' },
-  { num: '05', label: 'Results', subtitle: 'Before & After Gallery', href: '/#results' },
-  { num: '06', label: 'Contact', subtitle: 'Appointments & Location', href: '/contact' },
+  { num: '01', label: 'Home', href: '/' },
+  { num: '02', label: 'About', href: '/about' },
+  { num: '03', label: 'Services', href: '/services' },
+  { num: '04', label: 'Blog', href: '/blog' },
+  { num: '05', label: 'Results', href: '/#results' },
+  { num: '06', label: 'Contact', href: '/contact' },
 ]
 
-export function MobileNav({ isOpen, onClose }: MobileNavProps) {
+export function MobileNav({ isOpen, onClose, clinicName }: MobileNavProps) {
   const [isExiting, setIsExiting] = useState(false)
 
   // Golden Aurora Dissolve Close Trigger
@@ -94,7 +95,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
         }`}
       >
         <div className="flex items-center">
-          <ClinicLogo variant="light-vertecal" height={52} />
+          <ClinicLogo variant="light-vertecal" height={52} clinicName={clinicName} />
         </div>
 
         {/* Clean Luxury Close Button */}
@@ -135,9 +136,6 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
               <div>
                 <span className="block font-americana text-2xl sm:text-3xl text-white group-hover:text-[#E1C38C] tracking-wide transition-all duration-200 group-hover:translate-x-1.5">
                   {item.label}
-                </span>
-                <span className="block font-perpetua text-xs sm:text-sm text-[#b1957b] group-hover:text-[#ede8e4] tracking-wider transition-colors pt-0.5">
-                  {item.subtitle}
                 </span>
               </div>
             </div>
@@ -185,8 +183,7 @@ export function MobileNav({ isOpen, onClose }: MobileNavProps) {
           className="flex items-center justify-between pt-2"
         >
           <div className="text-xs font-perpetua text-[#ede8e4]">
-            <span className="block text-[#E1C38C] font-semibold">Dr. John Sevo Dental Clinic</span>
-            <span className="text-[#b1957b]">A Healthier Smile. A Brighter You.</span>
+            {clinicName && <span className="block text-[#E1C38C] font-semibold">{clinicName}</span>}
           </div>
 
           <div className="flex items-center gap-2.5">

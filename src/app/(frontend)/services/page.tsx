@@ -71,14 +71,11 @@ export default async function ServicesPage(props: ServicesPageProps) {
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl space-y-4">
             <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block">
-              Clinical Specializations
+              Services
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-americana text-[#36302f] leading-[1.15] font-bold">
-              Complete Dental Care for Every Smile
+              Clinical Specializations
             </h1>
-            <p className="font-perpetua text-[#5a5350] text-lg sm:text-xl leading-relaxed">
-              Tailored treatments engineered for long-term oral health, restorative strength, and radiant facial harmony.
-            </p>
           </div>
         </div>
       </section>

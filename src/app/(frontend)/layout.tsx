@@ -7,34 +7,38 @@ import './styles.css'
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com'
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: 'Dr. John Sevo Dental Clinic — Advanced Dental Care & Aesthetics',
-    template: '%s | Dr. John Sevo Dental Clinic',
-  },
-  description: 'Advanced dental care, implants, and cosmetic dentistry with refined luxury and clinical excellence.',
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    type: 'website',
-    locale: 'en_US',
-    siteName: 'Dr. John Sevo Dental Clinic',
-    url: siteUrl,
-    images: [
-      {
-        url: '/images/clinic-reception.webp',
-        width: 1200,
-        height: 630,
-        alt: 'Dr. John Sevo Dental Clinic',
+export async function generateMetadata(): Promise<Metadata> {
+  const clinicInfo = await getClinicInfo()
+  const clinicName = clinicInfo?.clinicName
+
+  if (!clinicName) {
+    return {
+      metadataBase: new URL(siteUrl),
+      alternates: {
+        canonical: '/',
       },
-    ],
-  },
-  twitter: {
-    card: 'summary_large_image',
-    images: ['/images/clinic-reception.webp'],
-  },
+    }
+  }
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: clinicName,
+      template: `%s | ${clinicName}`,
+    },
+    alternates: {
+      canonical: '/',
+    },
+    openGraph: {
+      type: 'website',
+      locale: 'en_US',
+      siteName: clinicName,
+      url: siteUrl,
+    },
+    twitter: {
+      card: 'summary_large_image',
+    },
+  }
 }
 
 export default async function RootLayout(props: { children: React.ReactNode }) {
@@ -75,7 +79,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
         )}
       </head>
       <body className="min-h-screen flex flex-col surface-light-neutral text-deep-brown selection:bg-[var(--color-primary-gold)] selection:text-white">
-        <Header />
+        <Header clinicName={clinicInfo?.clinicName} />
         <main className="flex-1">{children}</main>
         <Footer clinicInfo={clinicInfo} />
       </body>

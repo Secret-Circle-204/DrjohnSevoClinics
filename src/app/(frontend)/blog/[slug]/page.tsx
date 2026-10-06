@@ -6,6 +6,7 @@ import { ArrowLeft, Calendar, User } from 'lucide-react'
 import type { Metadata } from 'next'
 import { format } from 'date-fns'
 import { getPostBySlug } from '@/repositories/blog'
+import { getClinicInfo } from '@/repositories/clinic'
 import { RichText } from '@/components/richText/RichText'
 import type { Media, Doctor } from '@/payload-types'
 
@@ -48,7 +49,10 @@ export async function generateMetadata(props: BlogPostPageProps): Promise<Metada
 
 export default async function BlogPostPage(props: BlogPostPageProps) {
   const params = await props.params
-  const post = await getPostBySlug(params.slug)
+  const [post, clinicInfo] = await Promise.all([
+    getPostBySlug(params.slug),
+    getClinicInfo(),
+  ])
 
   if (!post) {
     notFound()
@@ -73,11 +77,13 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
           name: author.name,
         }
       : undefined,
-    publisher: {
-      '@type': 'Dentist',
-      name: 'Dr. John Sevo Dental Clinic',
-      url: siteUrl,
-    },
+    publisher: clinicInfo?.clinicName
+      ? {
+          '@type': 'Dentist',
+          name: clinicInfo.clinicName,
+          url: siteUrl,
+        }
+      : undefined,
   }
 
   return (
@@ -149,16 +155,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
           {/* Educational Content Area */}
           {post.content ? (
             <RichText data={post.content} />
-          ) : (
-            <div className="prose prose-lg max-w-none text-[#5a5350] font-perpetua leading-relaxed space-y-6">
-              <p>
-                Maintaining proper dental health requires an understanding of clinical preventative care and modern cosmetic methods. At Dr. John Sevo Dental Clinic, our medical team focuses on providing evidence-based patient guidance to empower informed decisions regarding oral aesthetics and health.
-              </p>
-              <p>
-                For individual diagnosis and personalized treatment planning, we invite you to consult directly with our dental specialists.
-              </p>
-            </div>
-          )}
+          ) : null}
 
           {/* Footer Back Link & Consultation CTA */}
           <div className="mt-16 pt-8 border-t border-[rgba(54,48,47,0.08)] flex flex-col sm:flex-row items-center justify-between gap-6">

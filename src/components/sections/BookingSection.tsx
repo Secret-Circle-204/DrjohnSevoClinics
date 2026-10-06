@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { Check, ArrowRight, Calendar as CalendarIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
+import { ArrowRight, Calendar as CalendarIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import {
@@ -96,40 +96,20 @@ export function BookingSection({
           {/* Left Content */}
           <div className="lg:col-span-5 space-y-6">
             <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block">
-              Take the First Step
+              Appointment Inquiry
             </span>
 
-            <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f] leading-tight">
-              {ctaHeadline || 'Book Your Appointment'}
-            </h2>
+            {ctaHeadline ? (
+              <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f] leading-tight">
+                {ctaHeadline}
+              </h2>
+            ) : null}
 
-            <p className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed">
-              {ctaSubtitle || 'A healthier, brighter smile is just a click away.'}
-            </p>
-
-            {/* Checklist */}
-            <div className="space-y-3 pt-2">
-              <div className="flex items-center gap-3 text-sm font-medium text-[#36302f]">
-                <div className="w-6 h-6 rounded-full bg-[#8e6e4f] text-white flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3.5 h-3.5" />
-                </div>
-                <span>Easy online booking</span>
-              </div>
-
-              <div className="flex items-center gap-3 text-sm font-medium text-[#36302f]">
-                <div className="w-6 h-6 rounded-full bg-[#8e6e4f] text-white flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3.5 h-3.5" />
-                </div>
-                <span>Flexible appointment times</span>
-              </div>
-
-              <div className="flex items-center gap-3 text-sm font-medium text-[#36302f]">
-                <div className="w-6 h-6 rounded-full bg-[#8e6e4f] text-white flex items-center justify-center flex-shrink-0">
-                  <Check className="w-3.5 h-3.5" />
-                </div>
-                <span>Friendly and professional team</span>
-              </div>
-            </div>
+            {ctaSubtitle ? (
+              <p className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed">
+                {ctaSubtitle}
+              </p>
+            ) : null}
           </div>
 
           {/* Right Booking Card */}
@@ -235,17 +215,9 @@ export function BookingSection({
                               </SelectItem>
                             ))
                           ) : (
-                            <>
-                              <SelectItem value="general" className="hover:bg-[#faf6f0] focus:bg-[#faf6f0] cursor-pointer">
-                                General Consultation
-                              </SelectItem>
-                              <SelectItem value="implants" className="hover:bg-[#faf6f0] focus:bg-[#faf6f0] cursor-pointer">
-                                Dental Implants
-                              </SelectItem>
-                              <SelectItem value="cosmetic" className="hover:bg-[#faf6f0] focus:bg-[#faf6f0] cursor-pointer">
-                                Cosmetic Dentistry
-                              </SelectItem>
-                            </>
+                            <SelectItem value="none" disabled className="text-neutral-400">
+                              No services currently available
+                            </SelectItem>
                           )}
                         </SelectContent>
                       </Select>

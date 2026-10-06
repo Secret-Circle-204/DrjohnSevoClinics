@@ -55,14 +55,11 @@ export default async function BlogPage(props: BlogPageProps) {
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8 relative z-10">
           <div className="max-w-3xl space-y-4">
             <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block">
-              Knowledge & Insights
+              Articles & Guides
             </span>
             <h1 className="text-4xl sm:text-5xl lg:text-6xl font-americana text-[#36302f] leading-[1.15] font-bold">
               Dental Education & Media
             </h1>
-            <p className="font-perpetua text-[#5a5350] text-lg sm:text-xl leading-relaxed">
-              Clinical advice, treatment guides, and video walk-throughs curated by our dental surgery team.
-            </p>
           </div>
 
           {/* Category Filter Tabs */}

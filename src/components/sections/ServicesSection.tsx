@@ -51,7 +51,7 @@ export function ServicesSection({ services = [] }: ServicesSectionProps) {
               Our Services
             </span>
             <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f]">
-              Complete Care for Every Smile
+              Clinical Services
             </h2>
           </div>
           <a

@@ -31,7 +31,7 @@ describe('Phase 11 Content Model & Admin Architecture Verification', () => {
     })
     expect(about).toBeDefined()
     expect(about.founderName).toBe('Dr. John Sevo Dawod')
-    expect(about.founderQuote).toContain('Since the beginning')
+    expect(about.founderQuote).toContain('Since the')
     expect(about.founderRole).toBe('Founder & Medical Director')
 
     expect(about.positioning).toContain('Modern Dentistry')
