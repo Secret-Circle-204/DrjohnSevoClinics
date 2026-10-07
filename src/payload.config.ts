@@ -21,6 +21,7 @@ import { Reports } from './collections/Reports'
 import { EmailOutbox } from './collections/EmailOutbox'
 import { Transformations } from './collections/Transformations'
 import { nodemailerAdapter } from '@payloadcms/email-nodemailer'
+import { vercelBlobStorage } from '@payloadcms/storage-vercel-blob'
 
 import { Home } from './globals/Home'
 import { About } from './globals/About'
@@ -81,5 +82,17 @@ export default buildConfig({
     },
   }),
   sharp,
-  plugins: [],
+  plugins: [
+    ...(process.env.BLOB_READ_WRITE_TOKEN
+      ? [
+          vercelBlobStorage({
+            enabled: true,
+            collections: {
+              media: true,
+            },
+            token: process.env.BLOB_READ_WRITE_TOKEN,
+          }),
+        ]
+      : []),
+  ],
 })
