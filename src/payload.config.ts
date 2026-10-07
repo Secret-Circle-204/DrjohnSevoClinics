@@ -56,9 +56,9 @@ export default buildConfig({
     Transformations,
   ],
   email: nodemailerAdapter({
-    defaultFromAddress: process.env.FROM_EMAIL || '',
+    defaultFromAddress: process.env.FROM_EMAIL || 'info@drjohnsevo.com',
     defaultFromName: process.env.FROM_NAME || 'Dr. John Sevo Dental Clinic',
-    skipVerify: !process.env.SMTP_USER || process.env.NODE_ENV === 'test',
+    skipVerify: true,
     transportOptions: {
       host: process.env.SMTP_HOST || 'smtp.gmail.com',
       port: Number(process.env.SMTP_PORT) || 587,
