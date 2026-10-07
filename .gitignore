@@ -30,6 +30,9 @@ yarn-error.log*
 
 # local env files
 .env*.local
+.env
+.env*
+test.env
 
 # vercel
 .vercel
@@ -38,13 +41,21 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-.env
-
+# media uploads (stored in cloud/Blob or VPS volume)
 /media
 
 # Playwright
-node_modules/
 /test-results/
 /playwright-report/
 /blob-report/
 /playwright/.cache/
+
+# IDE, Editor & Assistant tooling
+/.vscode
+/.gemini
+
+# Internal scripts & scratch tools
+/scripts
+
+# Raw client source assets
+/from jhone content
