@@ -41,7 +41,7 @@ export function Header({ clinicName }: HeaderProps = {}) {
           {/* Desktop Cluster */}
           <div className="hidden md:flex items-center">
             {/* Left 3 Links */}
-            <nav className="flex items-center gap-6 lg:gap-8 text-[13px] tracking-[0.06em] font-medium uppercase pr-4 lg:pr-6">
+            <nav className="flex items-center gap-6 lg:gap-8 text-[13px] font-dinar tracking-[0.06em] font-medium uppercase pr-4 lg:pr-6">
               <Link
                 href="/"
                 className="text-[#36302f] font-semibold relative py-1.5 text-center transition-colors hover:text-[#b58a48]"
@@ -68,7 +68,7 @@ export function Header({ clinicName }: HeaderProps = {}) {
             </div>
 
             {/* Right 3 Links */}
-            <nav className="flex items-center gap-6 lg:gap-8 text-[13px] tracking-[0.06em] font-medium uppercase pl-4 lg:pl-6">
+            <nav className="flex items-center gap-6 lg:gap-8 text-[13px] font-dinar tracking-[0.06em] font-medium uppercase pl-4 lg:pl-6">
               <Link
                 href="/blog"
                 className="text-[#5a5350] hover:text-[#b58a48] py-1.5 transition-colors"
@@ -100,7 +100,7 @@ export function Header({ clinicName }: HeaderProps = {}) {
         <div className="flex-1 flex items-center justify-end">
           <a
             href="#booking"
-            className="btn rounded-full bg-[#8e6e4f] hover:bg-[#a27e5b] text-white py-2.5 px-5 text-xs font-semibold uppercase tracking-wider transition-all shadow-sm hover:shadow-md flex items-center gap-2 group"
+            className="btn rounded-full bg-[#8e6e4f] hover:bg-[#a27e5b] text-white py-2.5 px-5 text-xs font-dinar font-semibold uppercase tracking-wider transition-all shadow-sm hover:shadow-md flex items-center gap-2 group"
           >
             <Calendar className="w-3.5 h-3.5 text-[#e1c38c]" />
             <span className="hidden sm:inline">Book Visit</span>

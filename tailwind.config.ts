@@ -62,13 +62,33 @@ const config: Config = {
   				'Georgia',
   				'serif'
   			],
+  			dinar: [
+  				'GE Dinar Two',
+  				'GE-Dinar-Two-Medium',
+  				'GE Dinar Two Medium',
+  				'Montserrat',
+  				'sans-serif'
+  			],
   			castelar: [
   				'Castelar',
   				'serif'
   			],
   			arabic: [
   				'GE Dinar Two',
+  				'GE-Dinar-Two-Medium',
+  				'GE Dinar Two Medium',
   				'Tahoma',
+  				'sans-serif'
+  			],
+  			sans: [
+  				'GE Dinar Two',
+  				'GE-Dinar-Two-Medium',
+  				'GE Dinar Two Medium',
+  				'Montserrat',
+  				'-apple-system',
+  				'BlinkMacSystemFont',
+  				'Segoe UI',
+  				'Roboto',
   				'sans-serif'
   			]
   		},

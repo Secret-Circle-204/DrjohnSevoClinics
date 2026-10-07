@@ -38,6 +38,10 @@ function getFieldLabel(label: unknown): string {
 }
 
 function getSingularLabel(label: string): string {
+  if (label.includes('Pillars')) return 'Pillar'
+  if (label.includes('Values')) return 'Value'
+  if (label.includes('Cases')) return 'Case'
+  if (label.includes('Items')) return 'Item'
   if (label.endsWith(' Cases')) return label.replace(/ Cases$/, ' Case')
   if (label.endsWith(' Pillars')) return label.replace(/ Pillars$/, ' Pillar')
   if (label.endsWith(' Items')) return label.replace(/ Items$/, ' Item')
@@ -210,12 +214,22 @@ function ReusableContentCard({
     : null
   const singleUrl = useResolvedMediaUrl(singleImageVal)
 
-  // Formatted 2-digit sequence for clean Core Values presentation (e.g. 01, 02)
+  // Check if this item is a simple word-only / pillar item (e.g. keysToSuccessPillars)
+  const isWordOnly = useMemo(() => {
+    return (
+      !hasBeforeAfterUploads &&
+      !hasSingleUpload &&
+      !description &&
+      (fields.length <= 1 || singularLabel.toLowerCase().includes('pillar'))
+    )
+  }, [hasBeforeAfterUploads, hasSingleUpload, description, fields.length, singularLabel])
+
+  // Formatted 2-digit sequence for clean presentation (e.g. 01, 02)
   const sequenceStr = String(index + 1).padStart(2, '0')
 
   return (
     <div
-      className="drawer-array-field__card"
+      className={`drawer-array-field__card ${isWordOnly ? 'is-word-only' : ''} ${menuOpen ? 'is-menu-open' : ''}`}
       onClick={onEdit}
       role="button"
       tabIndex={0}
@@ -275,9 +289,15 @@ function ReusableContentCard({
       )}
 
       {!hasBeforeAfterUploads && !hasSingleUpload && (
-        <div className="drawer-array-field__sequence-badge" aria-hidden="true">
-          <span>{sequenceStr}</span>
-        </div>
+        isWordOnly ? (
+          <div className="drawer-array-field__compact-badge" aria-hidden="true">
+            <span>{sequenceStr}</span>
+          </div>
+        ) : (
+          <div className="drawer-array-field__sequence-badge" aria-hidden="true">
+            <span>{sequenceStr}</span>
+          </div>
+        )
       )}
 
       {/* 2. Middle Content Info */}
@@ -286,61 +306,65 @@ function ReusableContentCard({
           {title || `${singularLabel} #${index + 1}`}
         </h4>
 
-        {/* Status Row with semantic dots */}
-        <div className="drawer-array-field__status-row">
-          {hasBeforeAfterUploads ? (
-            hasBoth ? (
-              <>
-                <span className="drawer-array-field__status-dot dot-ready" />
-                <span className="drawer-array-field__status-text text-ready">Photos Ready</span>
-              </>
-            ) : hasBefore && !hasAfter ? (
-              <>
-                <span className="drawer-array-field__status-dot dot-warning" />
-                <span className="drawer-array-field__status-text text-warning">Missing After Photo</span>
-              </>
-            ) : !hasBefore && hasAfter ? (
-              <>
-                <span className="drawer-array-field__status-dot dot-warning" />
-                <span className="drawer-array-field__status-text text-warning">Missing Before Photo</span>
-              </>
+        {/* Status Row with semantic dots (only show for media items or when description exists) */}
+        {!isWordOnly && (hasBeforeAfterUploads || hasSingleUpload || description) && (
+          <div className="drawer-array-field__status-row">
+            {hasBeforeAfterUploads ? (
+              hasBoth ? (
+                <>
+                  <span className="drawer-array-field__status-dot dot-ready" />
+                  <span className="drawer-array-field__status-text text-ready">Photos Ready</span>
+                </>
+              ) : hasBefore && !hasAfter ? (
+                <>
+                  <span className="drawer-array-field__status-dot dot-warning" />
+                  <span className="drawer-array-field__status-text text-warning">Missing After Photo</span>
+                </>
+              ) : !hasBefore && hasAfter ? (
+                <>
+                  <span className="drawer-array-field__status-dot dot-warning" />
+                  <span className="drawer-array-field__status-text text-warning">Missing Before Photo</span>
+                </>
+              ) : (
+                <>
+                  <span className="drawer-array-field__status-dot dot-pending" />
+                  <span className="drawer-array-field__status-text text-pending">Photos Pending</span>
+                </>
+              )
+            ) : hasSingleUpload ? (
+              singleUrl ? (
+                <>
+                  <span className="drawer-array-field__status-dot dot-ready" />
+                  <span className="drawer-array-field__status-text text-ready">Media Ready</span>
+                </>
+              ) : (
+                <>
+                  <span className="drawer-array-field__status-dot dot-pending" />
+                  <span className="drawer-array-field__status-text text-pending">Media Pending</span>
+                </>
+              )
             ) : (
               <>
-                <span className="drawer-array-field__status-dot dot-pending" />
-                <span className="drawer-array-field__status-text text-pending">Photos Pending</span>
-              </>
-            )
-          ) : hasSingleUpload ? (
-            singleUrl ? (
-              <>
                 <span className="drawer-array-field__status-dot dot-ready" />
-                <span className="drawer-array-field__status-text text-ready">Media Ready</span>
+                <span className="drawer-array-field__status-text text-ready">
+                  {title ? 'Configured' : 'Draft'}
+                </span>
               </>
-            ) : (
-              <>
-                <span className="drawer-array-field__status-dot dot-pending" />
-                <span className="drawer-array-field__status-text text-pending">Media Pending</span>
-              </>
-            )
-          ) : (
-            <>
-              <span className="drawer-array-field__status-dot dot-ready" />
-              <span className="drawer-array-field__status-text text-ready">
-                {title ? 'Configured' : 'Draft'}
-              </span>
-            </>
-          )}
-        </div>
+            )}
+          </div>
+        )}
 
-        {description ? (
+        {!isWordOnly && description ? (
           <p className="drawer-array-field__card-snippet">{description}</p>
         ) : null}
       </div>
 
       {/* 3. Right: Meta & Actions */}
       <div className="drawer-array-field__meta-actions">
-        {/* Index label */}
-        <span className="drawer-array-field__index-label">#{index + 1}</span>
+        {/* Index label (only when not word-only) */}
+        {!isWordOnly && (
+          <span className="drawer-array-field__index-label">#{index + 1}</span>
+        )}
 
         {/* More Actions Overflow Menu */}
         {!readOnly && (
@@ -523,6 +547,13 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
 
   const clientFields = (field.fields || []) as ClientField[]
 
+  const countUnit = useMemo(() => {
+    const lower = singularLabel.toLowerCase()
+    if (rows.length === 1) return lower
+    if (lower.endsWith('s')) return lower
+    return `${lower}s`
+  }, [singularLabel, rows.length])
+
   return (
     <div className="drawer-array-field">
       {/* Header Area */}
@@ -531,7 +562,7 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
           <div className="drawer-array-field__title-row">
             <h3 className="drawer-array-field__title">{fieldLabel}</h3>
             <span className="drawer-array-field__count-pill">
-              {rows.length} {rows.length === 1 ? 'case' : 'cases'}
+              {rows.length} {countUnit}
             </span>
           </div>
           {field.admin?.description ? (
@@ -628,7 +659,7 @@ export const DrawerArrayField: ArrayFieldClientComponent = (props) => {
                 </span>
               </div>
               <span className="drawer-array-field__drawer-banner-pill">
-                Case {activeRowIndex + 1} of {rows.length}
+                {singularLabel} {activeRowIndex + 1} of {rows.length}
               </span>
             </div>
 

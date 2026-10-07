@@ -57,7 +57,7 @@ export default async function BlogPage(props: BlogPageProps) {
             <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block">
               Articles & Guides
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-americana text-[#36302f] leading-[1.15] font-bold">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] leading-tight tracking-tight">
               Dental Education & Media
             </h1>
           </div>
@@ -97,17 +97,17 @@ export default async function BlogPage(props: BlogPageProps) {
       <section className="section py-16 lg:py-24">
         <div className="mx-auto w-full max-w-7xl px-6 lg:px-8">
           <div className="flex items-center justify-between mb-10">
-            <h2 className="text-3xl font-perpetua font-bold text-[#36302f]">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
               Featured Articles
             </h2>
-            <span className="text-xs font-perpetua text-[#706865]">
+            <span className="text-xs font-dinar text-[#706865]">
               Showing {posts.length} of {postsResult.totalDocs} articles
             </span>
           </div>
 
           {posts.length === 0 ? (
             <div className="bg-white rounded-3xl p-12 border border-[rgba(54,48,47,0.08)] shadow-sm text-center max-w-lg mx-auto">
-              <p className="font-perpetua text-[#706865] text-base leading-relaxed">
+              <p className="font-dinar text-[#706865] text-base leading-relaxed">
                 Educational dental articles are currently being prepared by our specialists. Please check back shortly.
               </p>
             </div>
@@ -157,7 +157,7 @@ export default async function BlogPage(props: BlogPageProps) {
                           <h3 className="font-americana font-bold text-xl text-[#36302f] group-hover:text-[#b58a48] transition-colors leading-snug">
                             {post.title}
                           </h3>
-                          <p className="text-sm font-perpetua text-[#706865] leading-relaxed line-clamp-3">
+                          <p className="text-sm font-dinar text-[#706865] leading-relaxed line-clamp-3">
                             {post.excerpt}
                           </p>
                         </div>
@@ -183,7 +183,7 @@ export default async function BlogPage(props: BlogPageProps) {
                       Previous Page
                     </Link>
                   )}
-                  <span className="text-xs font-perpetua text-[#706865]">
+                  <span className="text-xs font-dinar text-[#706865]">
                     Page {postsResult.page} of {postsResult.totalPages}
                   </span>
                   {postsResult.hasNextPage && (
@@ -212,7 +212,7 @@ export default async function BlogPage(props: BlogPageProps) {
               <span className="font-castelar text-[10px] tracking-[0.2em] text-[#b58a48] uppercase block">
                 Video Library
               </span>
-              <h2 className="text-2xl sm:text-3xl font-perpetua font-bold text-[#36302f]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
                 Patient Video Guides
               </h2>
             </div>
@@ -220,7 +220,7 @@ export default async function BlogPage(props: BlogPageProps) {
 
           {videos.length === 0 ? (
             <div className="bg-white rounded-3xl p-10 border border-[rgba(54,48,47,0.08)] shadow-sm text-center max-w-lg mx-auto">
-              <p className="font-perpetua text-[#706865] text-base leading-relaxed">
+              <p className="font-dinar text-[#706865] text-base leading-relaxed">
                 Our clinical video series is currently being produced. Certified video presentations will appear here.
               </p>
             </div>
@@ -255,7 +255,7 @@ export default async function BlogPage(props: BlogPageProps) {
                       </div>
                     </div>
                     <div className="p-4">
-                      <h4 className="font-perpetua font-bold text-base text-[#36302f] line-clamp-2 group-hover:text-[#b58a48] transition-colors">
+                      <h4 className="font-dinar font-bold text-base text-[#36302f] line-clamp-2 group-hover:text-[#b58a48] transition-colors">
                         {vid.title}
                       </h4>
                     </div>

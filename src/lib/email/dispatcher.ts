@@ -82,7 +82,10 @@ export function isPermanentSmtpError(error: any): boolean {
  * Guarantees idempotency via referenceId = inquiry-${inquiry.id}.
  * Does not block or fail the caller if queueing throws.
  */
-export async function queueInquiryNotification(inquiry: any, payload: Payload): Promise<number | null> {
+export async function queueInquiryNotification(
+  inquiry: any,
+  payload: Payload,
+): Promise<number | null> {
   if (!inquiry || !inquiry.id) {
     return null
   }
@@ -124,7 +127,11 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
       // Global fetch fallback to env
     }
 
-    if (!recipientEmail && process.env.CLINIC_RECEPTION_EMAIL && process.env.CLINIC_RECEPTION_EMAIL.trim()) {
+    if (
+      !recipientEmail &&
+      process.env.CLINIC_RECEPTION_EMAIL &&
+      process.env.CLINIC_RECEPTION_EMAIL.trim()
+    ) {
       recipientEmail = process.env.CLINIC_RECEPTION_EMAIL.trim()
     }
 
@@ -169,7 +176,7 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
       preferredTime: inquiry.preferredTime,
       message: inquiry.message,
       createdAt: inquiry.createdAt,
-      siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com',
+      siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
       clinicName: clinicInfo?.clinicName || null,
     }
 
@@ -196,7 +203,9 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
 
     // 6. Trigger non-blocking asynchronous dispatch for Reception Notification
     void dispatchOutboxRecord(outboxDoc.id, payload).catch((err) => {
-      payload.logger.error(`[EmailOutbox] Background dispatch error for reception #${outboxDoc.id}: ${err?.message || err}`)
+      payload.logger.error(
+        `[EmailOutbox] Background dispatch error for reception #${outboxDoc.id}: ${err?.message || err}`,
+      )
     })
 
     // 7. Patient Confirmation Email: Queue confirmation directly to patient
@@ -228,7 +237,7 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
             clinicAddress: clinicInfo?.address || null,
             clinicHours: formattedHours,
             clinicName: clinicInfo?.clinicName || null,
-            siteUrl: process.env.NEXT_PUBLIC_SITE_URL || 'https://drjohnsevo.com',
+            siteUrl: process.env.NEXT_PUBLIC_SITE_URL,
           }
 
           const patientSubject = clinicInfo?.clinicName
@@ -267,7 +276,9 @@ export async function queueInquiryNotification(inquiry: any, payload: Payload): 
 
     return outboxDoc.id
   } catch (err: any) {
-    payload.logger.error(`[EmailOutbox] Failed to queue inquiry notification for #${inquiry?.id}: ${err?.message || err}`)
+    payload.logger.error(
+      `[EmailOutbox] Failed to queue inquiry notification for #${inquiry?.id}: ${err?.message || err}`,
+    )
     return null
   }
 }
@@ -416,7 +427,9 @@ export async function dispatchOutboxRecord(outboxId: number, payload: Payload): 
       return false
     }
   } catch (err: any) {
-    payload.logger.error(`[EmailOutbox] Fatal dispatch error for outbox #${outboxId}: ${err?.message || err}`)
+    payload.logger.error(
+      `[EmailOutbox] Fatal dispatch error for outbox #${outboxId}: ${err?.message || err}`,
+    )
     return false
   } finally {
     activeDispatchLocks.delete(outboxId)

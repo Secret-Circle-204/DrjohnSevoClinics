@@ -115,6 +115,35 @@ export async function getServiceBySlug(slug: string): Promise<Service | null> {
 }
 
 /**
+ * Bounded retrieval of related services, excluding the current service slug.
+ */
+export async function getRelatedServices({
+  currentSlug,
+  limit = 3,
+}: {
+  currentSlug: string
+  limit?: number
+}): Promise<Service[]> {
+  const payload = await getPayload({ config: configPromise })
+  const boundedLimit = Math.max(1, Math.min(limit, 6))
+  const result = await payload.find({
+    collection: 'services',
+    where: {
+      and: [
+        { slug: { not_equals: currentSlug } },
+        { isActive: { equals: true } },
+      ],
+    },
+    sort: 'order',
+    limit: boundedLimit,
+    depth: 1,
+    overrideAccess: false,
+  })
+
+  return result.docs
+}
+
+/**
  * Bounded, demand-driven retrieval of the active medical team (Doctors).
  */
 export async function getMedicalTeam({

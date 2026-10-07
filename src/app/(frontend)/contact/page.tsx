@@ -33,10 +33,10 @@ export default async function ContactPage() {
             <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block">
               Direct Contact & Reception
             </span>
-            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-americana text-[#36302f] leading-[1.15] font-bold">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] leading-tight tracking-tight">
               Contact & Reception
             </h1>
-            <p className="font-perpetua text-[#5a5350] text-lg sm:text-xl leading-relaxed">
+            <p className="font-dinar text-[#5a5350] text-lg sm:text-xl leading-relaxed">
               {clinicName
                 ? `Connect with ${clinicName} for appointments, specialized inquiries, or directions to our practice.`
                 : 'Connect with our team for appointments, specialized inquiries, or directions to our practice.'}
@@ -61,7 +61,7 @@ export default async function ContactPage() {
                   </h3>
                   <div className="space-y-1">
                     {phoneNumbers.map((p, idx) => (
-                      <div key={idx} className="text-xs font-perpetua text-[#706865]">
+                      <div key={idx} className="text-xs font-dinar text-[#706865]">
                         <span className="font-semibold text-[#36302f] block">{p.number}</span>
                         {p.label && <span className="text-[11px] text-[#8e6e4f]">{p.label}</span>}
                       </div>
@@ -79,7 +79,7 @@ export default async function ContactPage() {
                   <h3 className="font-americana font-bold text-lg text-[#36302f]">
                     Email Inquiries
                   </h3>
-                  <p className="text-xs font-perpetua text-[#706865] break-all">
+                  <p className="text-xs font-dinar text-[#706865] break-all">
                     {email}
                   </p>
                   <span className="text-[11px] text-[#8e6e4f] block">
@@ -97,7 +97,7 @@ export default async function ContactPage() {
                   <h3 className="font-americana font-bold text-lg text-[#36302f]">
                     Clinic Location
                   </h3>
-                  <p className="text-xs font-perpetua text-[#706865] leading-relaxed">
+                  <p className="text-xs font-dinar text-[#706865] leading-relaxed">
                     {address}
                   </p>
                   {clinicInfo?.locationOnMap && (
@@ -125,7 +125,7 @@ export default async function ContactPage() {
                   </h3>
                   <div className="space-y-1.5">
                     {openingHours.map((h, idx) => (
-                      <div key={idx} className="text-xs font-perpetua text-[#706865] flex justify-between">
+                      <div key={idx} className="text-xs font-dinar text-[#706865] flex justify-between">
                         <span className="font-medium text-[#36302f]">{h.days}:</span>
                         <span>{h.hours}</span>
                       </div>

@@ -22,9 +22,8 @@ import { UnderlineFeatureClient as UnderlineFeatureClient_e70f5e05f09f93e00b997e
 import { BoldFeatureClient as BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864 } from '@payloadcms/richtext-lexical/client'
 import { QualificationRowLabel as QualificationRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
-import { PillarRowLabel as PillarRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
-import { TrustStatRowLabel as TrustStatRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { DrawerArrayField as DrawerArrayField_34672afe6859982ddf5a1488582ef667 } from '@/components/admin/DrawerArrayField'
+import { TrustStatRowLabel as TrustStatRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { PhoneRowLabel as PhoneRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { OpeningHoursRowLabel as OpeningHoursRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
 import { SocialLinkRowLabel as SocialLinkRowLabel_602181e9d445b98d48bce238807017cb } from '@/components/admin/RowLabels'
@@ -56,9 +55,8 @@ export const importMap = {
   "@payloadcms/richtext-lexical/client#BoldFeatureClient": BoldFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@payloadcms/richtext-lexical/client#ItalicFeatureClient": ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0c864,
   "@/components/admin/RowLabels#QualificationRowLabel": QualificationRowLabel_602181e9d445b98d48bce238807017cb,
-  "@/components/admin/RowLabels#PillarRowLabel": PillarRowLabel_602181e9d445b98d48bce238807017cb,
-  "@/components/admin/RowLabels#TrustStatRowLabel": TrustStatRowLabel_602181e9d445b98d48bce238807017cb,
   "@/components/admin/DrawerArrayField#DrawerArrayField": DrawerArrayField_34672afe6859982ddf5a1488582ef667,
+  "@/components/admin/RowLabels#TrustStatRowLabel": TrustStatRowLabel_602181e9d445b98d48bce238807017cb,
   "@/components/admin/RowLabels#PhoneRowLabel": PhoneRowLabel_602181e9d445b98d48bce238807017cb,
   "@/components/admin/RowLabels#OpeningHoursRowLabel": OpeningHoursRowLabel_602181e9d445b98d48bce238807017cb,
   "@/components/admin/RowLabels#SocialLinkRowLabel": SocialLinkRowLabel_602181e9d445b98d48bce238807017cb,

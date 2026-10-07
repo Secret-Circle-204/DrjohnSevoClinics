@@ -2,26 +2,22 @@ import React from 'react'
 import type { Metadata } from 'next'
 import Image from 'next/image'
 import Link from 'next/link'
+import { ArrowRight, Award, Compass, Heart, ShieldCheck, Quote, Sparkles } from 'lucide-react'
 import {
-  ArrowRight,
-  Award,
-  Compass,
-  Heart,
-  ShieldCheck,
-  Quote,
-  Sparkles,
-} from 'lucide-react'
-import { getAboutContent, getHomeContent, getMedicalTeam, getClinicInfo } from '@/repositories/clinic'
+  getAboutContent,
+  getMedicalTeam,
+  getClinicInfo,
+} from '@/repositories/clinic'
 import { RichText } from '@/components/richText/RichText'
 import { ChapterNav } from '@/components/about/ChapterNav'
 import { CoreValuesInteractive } from '@/components/about/CoreValuesInteractive'
 import { KeysToSuccessInteractive } from '@/components/about/KeysToSuccessInteractive'
-import { extractSectionsFromLexical } from '@/lib/lexicalSections'
 import type { Media } from '@/payload-types'
 
 export const metadata: Metadata = {
   title: 'About Us | John Sevo Clinics',
-  description: 'The story, clinical philosophy, specialized medical team, and guiding principles of John Sevo Clinics.',
+  description:
+    'The story, clinical philosophy, specialized medical team, and guiding principles of John Sevo Clinics.',
   alternates: {
     canonical: '/about',
   },
@@ -35,9 +31,8 @@ function getMediaUrl(media?: number | Media | null): string | null {
 }
 
 export default async function AboutPage() {
-  const [aboutContent, homeContent, doctorsResult, clinicInfo] = await Promise.all([
+  const [aboutContent, doctorsResult, clinicInfo] = await Promise.all([
     getAboutContent(),
-    getHomeContent(),
     getMedicalTeam({ limit: 12 }),
     getClinicInfo(),
   ])
@@ -45,30 +40,7 @@ export default async function AboutPage() {
   const storyImageUrl = getMediaUrl(aboutContent?.storyImage)
   const doctors = doctorsResult.docs
   const coreValues = aboutContent?.coreValues || []
-  const strengths = homeContent?.whyChooseItems || []
-
-  // Extract structured sections from experienceNarrative (Lexical richText) with zero duplication
-  const narrativeSections = extractSectionsFromLexical(aboutContent?.experienceNarrative)
-
-  const philosophySection =
-    narrativeSections['ourphilosophy'] ||
-    Object.values(narrativeSections).find((s) => s.title.toLowerCase().includes('philosophy'))
-
-  const keysToSuccessSection =
-    narrativeSections['keystooursuccess'] ||
-    narrativeSections['keystosuccess'] ||
-    Object.values(narrativeSections).find((s) => s.title.toLowerCase().includes('success'))
-
-  const rdSection =
-    narrativeSections['researchdevelopment'] ||
-    narrativeSections['research'] ||
-    Object.values(narrativeSections).find(
-      (s) => s.title.toLowerCase().includes('research') || s.title.toLowerCase().includes('development')
-    )
-
-  const humanCapitalSection =
-    narrativeSections['humancapital'] ||
-    Object.values(narrativeSections).find((s) => s.title.toLowerCase().includes('human'))
+  const strengths = aboutContent?.clinicalStrengths || []
 
   return (
     <div className="bg-[#f5f5f5] text-[#36302f] min-h-screen selection:bg-[#b58a48] selection:text-white">
@@ -86,24 +58,24 @@ export default async function AboutPage() {
         <div className="absolute inset-0 bg-gradient-to-b from-[#36302f]/80 via-transparent to-[#36302f]/95 pointer-events-none" />
 
         <div className="container relative z-10">
-          <div className="max-w-4xl space-y-6">
+          <div className="max-w-5xl space-y-6">
             <div className="inline-flex items-center gap-3 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md border border-[#e1c38c]/30 text-xs font-castelar tracking-[0.25em] text-[#e1c38c] uppercase">
               <Sparkles className="w-3.5 h-3.5 text-[#e1c38c]" />
               <span>{clinicInfo?.clinicName || 'John Sevo Clinics'}</span>
             </div>
 
             {aboutContent?.storyTitle ? (
-              <h1 className="text-4xl sm:text-6xl lg:text-7xl font-americana font-bold text-[#f5f5f5] leading-[1.08] tracking-tight">
+              <h1 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#f5f5f5] leading-tight tracking-tight">
                 {aboutContent.storyTitle}
               </h1>
             ) : null}
 
             {aboutContent?.storySummary ? (
-              <p className="font-perpetua text-xl sm:text-2xl text-[#f5f5f5]/85 leading-relaxed max-w-2xl pt-2">
+              <p className="font-dinar text-xl sm:text-2xl text-[#f5f5f5]/85 leading-relaxed max-w-4xl pt-2">
                 {aboutContent.storySummary}
               </p>
             ) : aboutContent?.positioning ? (
-              <p className="font-perpetua text-xl sm:text-2xl text-[#f5f5f5]/85 leading-relaxed max-w-2xl pt-2">
+              <p className="font-dinar text-xl sm:text-2xl text-[#f5f5f5]/85 leading-relaxed max-w-4xl pt-2">
                 {aboutContent.positioning}
               </p>
             ) : null}
@@ -127,7 +99,7 @@ export default async function AboutPage() {
                 Founder&apos;s Message
               </span>
               {aboutContent.founderTitle ? (
-                <h2 className="text-3xl sm:text-4xl font-americana font-bold text-[#36302f]">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
                   {aboutContent.founderTitle}
                 </h2>
               ) : null}
@@ -167,7 +139,7 @@ export default async function AboutPage() {
                   <Quote className="w-20 h-20 -mb-6" />
                 </div>
 
-                <blockquote className="font-perpetua text-2xl sm:text-3xl lg:text-4xl text-[#36302f] leading-snug italic font-normal">
+                <blockquote className="font-dinar text-lg sm:text-xl lg:text-2xl text-[#36302f] leading-relaxed italic font-normal">
                   &ldquo;{aboutContent.founderQuote}&rdquo;
                 </blockquote>
 
@@ -180,7 +152,7 @@ export default async function AboutPage() {
                         </p>
                       ) : null}
                       {aboutContent.founderRole ? (
-                        <p className="font-perpetua text-sm text-[#8e6e4f] tracking-wide">
+                        <p className="font-dinar text-sm text-[#8e6e4f] tracking-wide">
                           {aboutContent.founderRole}
                         </p>
                       ) : null}
@@ -201,7 +173,7 @@ export default async function AboutPage() {
           Surface: Soft Neutral (bg-[#f7f2ec])
           Composition: Typography-Led Editorial Statement & Narrative
           ========================================================================= */}
-      {philosophySection ? (
+      {aboutContent?.philosophyContent ? (
         <section
           id="chapter-philosophy"
           className="section surface-soft-neutral border-b border-[rgba(54,48,47,0.08)] relative"
@@ -212,32 +184,13 @@ export default async function AboutPage() {
                 Our Philosophy
               </span>
 
-              {philosophySection.title ? (
-                <h2 className="text-3xl sm:text-5xl font-americana font-bold text-[#36302f] leading-tight">
-                  {philosophySection.title}
-                </h2>
-              ) : null}
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] leading-tight tracking-tight">
+                Our Clinical Philosophy
+              </h2>
 
-              {philosophySection.paragraphs.length > 0 && (
-                <div className="pt-4">
-                  <p className="font-perpetua text-2xl sm:text-3xl lg:text-3xl text-[#36302f] leading-relaxed italic max-w-3xl mx-auto">
-                    &ldquo;{philosophySection.paragraphs[0]}&rdquo;
-                  </p>
-                </div>
-              )}
-
-              {philosophySection.paragraphs.length > 1 && (
-                <>
-                  <div className="w-24 h-0.5 bg-[#b58a48]/40 mx-auto my-6" />
-                  <div className="space-y-4 max-w-2xl mx-auto text-left">
-                    {philosophySection.paragraphs.slice(1).map((p, idx) => (
-                      <p key={idx} className="font-perpetua text-lg text-[#5a5350] leading-relaxed">
-                        {p}
-                      </p>
-                    ))}
-                  </div>
-                </>
-              )}
+              <div className="font-dinar text-xl sm:text-2xl lg:text-3xl text-[#36302f] leading-relaxed italic max-w-3xl mx-auto pt-4">
+                <RichText data={aboutContent.philosophyContent} />
+              </div>
             </div>
           </div>
         </section>
@@ -259,7 +212,7 @@ export default async function AboutPage() {
                 About Our Clinics
               </span>
               {aboutContent?.storyTitle ? (
-                <h2 className="text-3xl sm:text-4xl font-americana font-bold text-[#36302f]">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
                   {aboutContent.storyTitle}
                 </h2>
               ) : null}
@@ -268,7 +221,7 @@ export default async function AboutPage() {
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
               <div className="lg:col-span-6 space-y-6">
                 {aboutContent?.storyContent && (
-                  <div className="font-perpetua text-lg sm:text-xl text-[#4a4340] leading-relaxed space-y-4">
+                  <div className="font-dinar text-lg sm:text-xl text-[#4a4340] leading-relaxed space-y-4">
                     <RichText data={aboutContent.storyContent} />
                   </div>
                 )}
@@ -311,11 +264,11 @@ export default async function AboutPage() {
                 <div className="h-px w-16 bg-[#e1c38c]/40" />
               </div>
 
-              <h2 className="text-3xl sm:text-5xl font-americana font-bold text-[#f5f5f5] leading-tight">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#f5f5f5] leading-tight tracking-tight">
                 The Vision
               </h2>
 
-              <p className="font-perpetua text-2xl sm:text-3xl lg:text-4xl text-[#f5f5f5]/90 leading-relaxed font-light pt-2">
+              <p className="font-dinar text-2xl sm:text-3xl lg:text-4xl text-[#f5f5f5]/90 leading-relaxed font-light pt-2">
                 &ldquo;{aboutContent.vision}&rdquo;
               </p>
 
@@ -344,7 +297,7 @@ export default async function AboutPage() {
                 Our Mission
               </span>
 
-              <h2 className="text-3xl sm:text-4xl font-americana font-bold text-[#36302f]">
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
                 The Mission
               </h2>
 
@@ -353,7 +306,7 @@ export default async function AboutPage() {
                   <Heart className="w-6 h-6" />
                 </div>
 
-                <p className="font-perpetua text-2xl sm:text-3xl text-[#36302f] leading-relaxed">
+                <p className="font-dinar text-2xl sm:text-3xl text-[#36302f] leading-relaxed">
                   {aboutContent.mission}
                 </p>
               </div>
@@ -378,7 +331,7 @@ export default async function AboutPage() {
                 Our Core Values
               </span>
               {aboutContent?.valuesTitle ? (
-                <h2 className="text-3xl sm:text-4xl font-americana font-bold text-[#36302f]">
+                <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
                   {aboutContent.valuesTitle}
                 </h2>
               ) : null}
@@ -405,11 +358,9 @@ export default async function AboutPage() {
               <span className="font-castelar text-xs tracking-[0.25em] text-[#b58a48] uppercase block mb-3">
                 Our Strengths
               </span>
-              {homeContent?.whyChooseTitle ? (
-                <h2 className="text-3xl sm:text-4xl font-americana font-bold text-[#36302f]">
-                  {homeContent.whyChooseTitle}
-                </h2>
-              ) : null}
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
+                {aboutContent?.strengthsTitle || 'Our Strengths'}
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -426,7 +377,7 @@ export default async function AboutPage() {
                       {item.title}
                     </h3>
                     {item.description && (
-                      <p className="font-perpetua text-base text-[#5a5350] leading-relaxed">
+                      <p className="font-dinar text-base text-[#5a5350] leading-relaxed">
                         {item.description}
                       </p>
                     )}
@@ -444,9 +395,9 @@ export default async function AboutPage() {
       {/* =========================================================================
           CHAPTER 08 — KEYS TO SUCCESS
           Surface: Deep Brand Surface (bg-[#2b2524] text-white)
-          Composition: The Integrated Formula / Equation Flow
+          Composition: Clean RichText Presentation Container
           ========================================================================= */}
-      {keysToSuccessSection && (
+      {aboutContent?.keysToSuccessContent ? (
         <section
           id="chapter-success"
           className="section bg-[#2b2524] text-white border-b border-[#e1c38c]/15 relative py-20 lg:py-28"
@@ -456,29 +407,26 @@ export default async function AboutPage() {
               <span className="font-castelar text-xs tracking-[0.25em] text-[#e1c38c] uppercase block mb-3">
                 Keys to Our Success
               </span>
-              {keysToSuccessSection.title ? (
-                <h2 className="text-3xl sm:text-5xl font-americana font-bold text-[#f5f5f5]">
-                  {keysToSuccessSection.title}
-                </h2>
-              ) : null}
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#f5f5f5] tracking-tight">
+                {aboutContent?.keysToSuccessCulmination}
+              </h2>
             </div>
 
-            {keysToSuccessSection.paragraphs.length > 0 && (
-              <KeysToSuccessInteractive
-                equationText={keysToSuccessSection.paragraphs[0]}
-                explanatoryParagraphs={keysToSuccessSection.paragraphs.slice(1)}
-              />
-            )}
+            <KeysToSuccessInteractive
+              content={aboutContent.keysToSuccessContent}
+              pillars={aboutContent?.keysToSuccessPillars?.map((p) => p.title).filter(Boolean)}
+              culmination={aboutContent?.keysToSuccessCulmination || undefined}
+            />
           </div>
         </section>
-      )}
+      ) : null}
 
       {/* =========================================================================
           CHAPTER 09 — RESEARCH & DEVELOPMENT
           Surface: Soft Neutral (bg-[#f7f2ec])
           Composition: Clinical Precision & Digital Workflows Focus
           ========================================================================= */}
-      {rdSection && (
+      {aboutContent?.rdContent ? (
         <section
           id="chapter-rd"
           className="section surface-soft-neutral border-b border-[rgba(54,48,47,0.08)] relative"
@@ -488,20 +436,16 @@ export default async function AboutPage() {
               <span className="font-castelar text-xs tracking-[0.25em] text-[#b58a48] uppercase block mb-3">
                 Research &amp; Development
               </span>
-              {rdSection.title ? (
-                <h2 className="text-3xl sm:text-4xl font-americana font-bold text-[#36302f]">
-                  {rdSection.title}
-                </h2>
-              ) : null}
+              <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
+                Innovation &amp; Modern Technology
+              </h2>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
               <div className="lg:col-span-7 space-y-6">
-                {rdSection.paragraphs.map((p, idx) => (
-                  <p key={idx} className="font-perpetua text-lg sm:text-xl text-[#4a4340] leading-relaxed">
-                    {p}
-                  </p>
-                ))}
+                <div className="font-dinar text-lg sm:text-xl text-[#4a4340] leading-relaxed space-y-4">
+                  <RichText data={aboutContent.rdContent} />
+                </div>
               </div>
 
               {/* Treatment Environment Imagery */}
@@ -509,7 +453,7 @@ export default async function AboutPage() {
                 <div className="rounded-3xl overflow-hidden shadow-xl border border-[rgba(54,48,47,0.1)] relative aspect-[4/3] bg-[#faf6f0]">
                   <Image
                     src="/images/booking-chair.webp"
-                    alt={rdSection.title || ''}
+                    alt="Innovation & Modern Technology"
                     fill
                     className="object-cover"
                     sizes="(max-width: 1024px) 100vw, 40vw"
@@ -520,7 +464,7 @@ export default async function AboutPage() {
             </div>
           </div>
         </section>
-      )}
+      ) : null}
 
       {/* =========================================================================
           CHAPTER 10 — HUMAN CAPITAL
@@ -536,24 +480,23 @@ export default async function AboutPage() {
             <span className="font-castelar text-xs tracking-[0.25em] text-[#b58a48] uppercase block mb-3">
               Specialized Medical Team
             </span>
-            {humanCapitalSection?.title ? (
-              <h2 className="text-3xl sm:text-4xl font-americana font-bold text-[#36302f]">
-                {humanCapitalSection.title}
-              </h2>
-            ) : null}
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] tracking-tight">
+              Our Human Capital
+            </h2>
 
-            {humanCapitalSection?.paragraphs && humanCapitalSection.paragraphs.length > 0 && (
-              <p className="font-perpetua text-xl text-[#5a5350] leading-relaxed mt-4">
-                {humanCapitalSection.paragraphs[0]}
-              </p>
-            )}
+            {aboutContent?.humanCapitalContent ? (
+              <div className="font-dinar text-xl text-[#5a5350] leading-relaxed mt-4 space-y-3">
+                <RichText data={aboutContent.humanCapitalContent} />
+              </div>
+            ) : null}
           </div>
 
           {/* Doctors Grid from CMS */}
           {doctors.length === 0 ? (
             <div className="bg-white rounded-3xl p-10 border border-[rgba(54,48,47,0.08)] shadow-sm text-center max-w-lg mx-auto">
-              <p className="font-perpetua text-[#706865] text-base leading-relaxed">
-                Medical team credentials and specialist profiles are currently being updated in our clinical directory.
+              <p className="font-dinar text-[#706865] text-base leading-relaxed">
+                Medical team credentials and specialist profiles are currently being updated in our
+                clinical directory.
               </p>
             </div>
           ) : (
@@ -597,7 +540,10 @@ export default async function AboutPage() {
                       {doctor.qualifications && doctor.qualifications.length > 0 && (
                         <div className="pt-3 border-t border-[rgba(54,48,47,0.06)] space-y-1">
                           {doctor.qualifications.map((q, idx) => (
-                            <div key={idx} className="flex items-center gap-2 text-xs text-[#706865]">
+                            <div
+                              key={idx}
+                              className="flex items-center gap-2 text-xs text-[#706865]"
+                            >
                               <ShieldCheck className="w-3.5 h-3.5 text-[#8e6e4f] flex-shrink-0" />
                               <span>{q.degree}</span>
                             </div>
@@ -626,11 +572,11 @@ export default async function AboutPage() {
           <div className="absolute inset-0 bg-gradient-to-t from-[#36302f] via-transparent to-[#36302f]/80 pointer-events-none" />
 
           <div className="container relative z-10 max-w-4xl mx-auto space-y-8">
-            <span className="font-castelar text-xs tracking-[0.3em] text-[#e1c38c] uppercase block">
+            <span className="font-castelar text-xs sm:text-sm tracking-[0.28em] text-[#e1c38c] uppercase block">
               Strategic Positioning &amp; Promise
             </span>
 
-            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-americana font-bold text-[#f5f5f5] leading-tight max-w-3xl mx-auto">
+            <h2 className="text-3xl sm:text-5xl lg:text-6xl font-americana font-bold text-[#f5f5f5] leading-tight tracking-tight max-w-4xl mx-auto">
               {aboutContent.positioning}
             </h2>
 

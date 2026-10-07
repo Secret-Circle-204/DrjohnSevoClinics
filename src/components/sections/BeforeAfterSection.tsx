@@ -198,14 +198,14 @@ export function BeforeAfterSection({
           <span className="font-castelar text-xs tracking-[0.24em] text-primary-gold uppercase block mb-2 font-bold">
             Before & After
           </span>
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-perpetua font-bold text-deep-brown tracking-tight">
+          <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-deep-brown tracking-tight">
             Clinical Transformations
           </h2>
         </div>
 
         {validCases.length === 0 ? (
           <div className="bg-white rounded-3xl p-12 border border-[rgba(54,48,47,0.08)] shadow-sm text-center max-w-lg mx-auto">
-            <p className="font-perpetua text-text-muted text-base leading-relaxed">
+            <p className="font-dinar text-text-muted text-base leading-relaxed">
               Our clinical case gallery is being curated. Certified clinical transformations will be published here.
             </p>
           </div>
@@ -312,12 +312,12 @@ export function BeforeAfterSection({
             <div className="w-full mt-6 sm:mt-8 px-1 flex flex-col sm:flex-row sm:items-start justify-between gap-4 border-b border-[rgba(54,48,47,0.08)] pb-6">
               <div className="space-y-1 max-w-2xl">
                 <div className="flex items-center gap-3">
-                  <h3 className="font-perpetua font-bold text-2xl sm:text-3xl text-deep-brown tracking-tight">
+                  <h3 className="font-americana font-bold text-2xl sm:text-3xl text-deep-brown tracking-tight">
                     {currentCase.title}
                   </h3>
                 </div>
                 {currentCase.description ? (
-                  <p className="font-perpetua text-sm sm:text-base text-text-muted leading-relaxed">
+                  <p className="font-dinar text-sm sm:text-base text-text-muted leading-relaxed">
                     {currentCase.description}
                   </p>
                 ) : null}
@@ -382,7 +382,7 @@ export function BeforeAfterSection({
 
                         {/* Title preview on larger screens */}
                         <div className="hidden md:flex flex-col text-left pr-2 max-w-[130px]">
-                          <span className="text-xs font-perpetua font-bold text-deep-brown truncate leading-tight">
+                          <span className="text-xs font-dinar font-bold text-deep-brown truncate leading-tight">
                             {item.title}
                           </span>
                           <span className="text-[9px] text-text-muted uppercase tracking-wider font-castelar mt-0.5">
@@ -436,12 +436,12 @@ export function BeforeAfterSection({
                   )}
                 </div>
 
-                <p className="font-perpetua text-xs text-text-muted">
+                <p className="font-dinar text-xs text-text-muted">
                   Showing cases {(pagination.page - 1) * 6 + 1}–{(pagination.page - 1) * 6 + validCases.length} of {pagination.totalDocs} clinical transformations (Window {pagination.page} of {pagination.totalPages})
                 </p>
 
                 {loadError && (
-                  <p className="font-perpetua text-xs text-red-600 mt-1">
+                  <p className="font-dinar text-xs text-red-600 mt-1">
                     {loadError}
                   </p>
                 )}

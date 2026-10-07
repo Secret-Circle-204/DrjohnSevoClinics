@@ -1,6 +1,7 @@
 import React from 'react'
 import type { Metadata } from 'next'
 import { HeroSection } from '@/components/sections/HeroSection'
+import { FounderCinematicSection } from '@/components/sections/FounderCinematicSection'
 import { ServicesSection } from '@/components/sections/ServicesSection'
 import { ExperienceSection } from '@/components/sections/ExperienceSection'
 import { TrustStatsSection } from '@/components/sections/TrustStatsSection'
@@ -18,7 +19,7 @@ export default async function HomePage() {
   const [homeContent, aboutContent, servicesResult, transformationsResult] = await Promise.all([
     getHomeContent(),
     getAboutContent(),
-    getServices({ limit: 6 }),
+    getServices({ limit: 12 }),
     getTransformations({ limit: 6, page: 1, featuredOnly: true }),
   ])
 
@@ -33,13 +34,16 @@ export default async function HomePage() {
         title={homeContent?.heroTitle}
         subtitle={homeContent?.heroSubtitle}
       />
+      <FounderCinematicSection
+        title={aboutContent?.founderTitle}
+        quote={aboutContent?.founderQuote}
+        name={aboutContent?.founderName}
+        role={aboutContent?.founderRole}
+        imageUrl={aboutImageUrl || '/images/hero-doctor.webp'}
+      />
       <ServicesSection services={servicesResult.docs} />
       <ExperienceSection
-        overviewTitle={aboutContent?.storyTitle}
-        overviewText={aboutContent?.storySummary}
-        overviewImageUrl={aboutImageUrl}
         whyChooseTitle={homeContent?.whyChooseTitle}
-        whyChooseSubtitle={homeContent?.whyChooseSubtitle}
         pillars={homeContent?.whyChooseItems}
       />
       <TrustStatsSection stats={homeContent?.trustStats} />

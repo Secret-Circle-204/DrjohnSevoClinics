@@ -44,8 +44,14 @@ describe('Phase 11 Content Model & Admin Architecture Verification', () => {
     expect(about.storyContent).toBeDefined()
     expect((about.storyContent as any)?.root?.children?.length).toBeGreaterThan(0)
 
-    expect(about.experienceNarrative).toBeDefined()
-    expect((about.experienceNarrative as any)?.root?.children?.length).toBeGreaterThan(0)
+    expect(about.philosophyContent).toBeDefined()
+    expect((about.philosophyContent as any)?.root?.children?.length).toBeGreaterThan(0)
+    expect(about.keysToSuccessContent).toBeDefined()
+    expect((about.keysToSuccessContent as any)?.root?.children?.length).toBeGreaterThan(0)
+    expect(about.rdContent).toBeDefined()
+    expect((about.rdContent as any)?.root?.children?.length).toBeGreaterThan(0)
+    expect(about.humanCapitalContent).toBeDefined()
+    expect((about.humanCapitalContent as any)?.root?.children?.length).toBeGreaterThan(0)
   })
 
   it('verifies ClinicInfo operational structures remain semantic and structured', async () => {

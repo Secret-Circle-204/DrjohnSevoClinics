@@ -223,6 +223,10 @@ export interface Service {
    * Concise summary displayed on service cards and navigation overviews (max 250 chars).
    */
   shortDescription: string;
+  /**
+   * Key benefit to the patient (e.g. Protects against gum disease, freshens breath, and restores your natural, healthy shine).
+   */
+  patientBenefit?: string | null;
   description?: {
     root: {
       type: string;
@@ -863,6 +867,7 @@ export interface ServicesSelect<T extends boolean = true> {
   title?: T;
   slug?: T;
   shortDescription?: T;
+  patientBenefit?: T;
   description?: T;
   featuredImage?: T;
   iconName?: T;
@@ -1136,7 +1141,9 @@ export interface Home {
   heroTitle: string;
   heroSubtitle?: string | null;
   whyChooseTitle?: string | null;
-  whyChooseSubtitle?: string | null;
+  /**
+   * The 4 key reasons patients choose Dr. John Sevo Clinics. Click any card to edit details in the side drawer.
+   */
   whyChooseItems?:
     | {
         title: string;
@@ -1169,7 +1176,7 @@ export interface About {
   id: number;
   storyTitle?: string | null;
   /**
-   * Executive narrative and overview used across the clinic presentation and home overview section.
+   * Executive narrative and overview used across the clinic presentation.
    */
   storySummary?: string | null;
   storyContent?: {
@@ -1206,7 +1213,7 @@ export interface About {
         id?: string | null;
       }[]
     | null;
-  experienceNarrative?: {
+  philosophyContent?: {
     root: {
       type: string;
       children: {
@@ -1221,6 +1228,70 @@ export interface About {
     };
     [k: string]: unknown;
   } | null;
+  keysToSuccessContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  keysToSuccessCulmination?: string | null;
+  keysToSuccessPillars?:
+    | {
+        title: string;
+        id?: string | null;
+      }[]
+    | null;
+  rdContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  humanCapitalContent?: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  } | null;
+  strengthsTitle?: string | null;
+  /**
+   * The 9 core clinical strengths of Dr. John Sevo Dawod Clinics. Click any card to edit details in the side drawer.
+   */
+  clinicalStrengths?:
+    | {
+        title: string;
+        description?: string | null;
+        iconName?: string | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -1270,7 +1341,6 @@ export interface HomeSelect<T extends boolean = true> {
   heroTitle?: T;
   heroSubtitle?: T;
   whyChooseTitle?: T;
-  whyChooseSubtitle?: T;
   whyChooseItems?:
     | T
     | {
@@ -1317,7 +1387,26 @@ export interface AboutSelect<T extends boolean = true> {
         description?: T;
         id?: T;
       };
-  experienceNarrative?: T;
+  philosophyContent?: T;
+  keysToSuccessContent?: T;
+  keysToSuccessCulmination?: T;
+  keysToSuccessPillars?:
+    | T
+    | {
+        title?: T;
+        id?: T;
+      };
+  rdContent?: T;
+  humanCapitalContent?: T;
+  strengthsTitle?: T;
+  clinicalStrengths?:
+    | T
+    | {
+        title?: T;
+        description?: T;
+        iconName?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

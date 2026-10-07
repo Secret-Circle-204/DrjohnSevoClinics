@@ -46,39 +46,36 @@ export const Home: GlobalConfig = {
           ],
         },
         {
-          label: 'Clinical Strengths',
+          label: 'Why Choose Us',
           fields: [
             {
               name: 'whyChooseTitle',
               type: 'text',
-              label: 'Strengths Section Title',
-            },
-            {
-              name: 'whyChooseSubtitle',
-              type: 'text',
-              label: 'Why Choose Us Subtitle',
+              label: 'Why Choose Us Title',
+              defaultValue: 'Why Choose Us?',
             },
             {
               name: 'whyChooseItems',
               type: 'array',
-              label: 'Clinical Strengths List',
+              label: 'Why Choose Us Reasons',
               admin: {
-                initCollapsed: true,
                 components: {
-                  RowLabel: '@/components/admin/RowLabels#PillarRowLabel',
+                  Field: '@/components/admin/DrawerArrayField#DrawerArrayField',
                 },
+                description:
+                  'The 4 key reasons patients choose Dr. John Sevo Clinics. Click any card to edit details in the side drawer.',
               },
               fields: [
                 {
                   name: 'title',
                   type: 'text',
                   required: true,
-                  label: 'Strength Title',
+                  label: 'Reason Title',
                 },
                 {
                   name: 'description',
                   type: 'textarea',
-                  label: 'Strength Description',
+                  label: 'Reason Description',
                 },
                 {
                   name: 'iconName',

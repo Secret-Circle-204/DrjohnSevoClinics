@@ -15,7 +15,7 @@ export function RichText({ data, className = '' }: RichTextProps) {
   if (!data || !data.root) return null
 
   return (
-    <div className={`prose prose-lg max-w-none text-[#5a5350] font-perpetua leading-relaxed ${className}`}>
+    <div className={`prose prose-lg max-w-none text-[#5a5350] font-dinar leading-relaxed ${className}`}>
       <LexicalRichText data={data} />
     </div>
   )

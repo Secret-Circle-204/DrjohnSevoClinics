@@ -36,11 +36,7 @@ export default buildConfig({
       baseDir: path.resolve(dirname),
     },
   },
-  globals: [
-    Home,
-    About,
-    ClinicInfo,
-  ],
+  globals: [Home, About, ClinicInfo],
   collections: [
     Users,
     Media,
@@ -59,7 +55,7 @@ export default buildConfig({
     Transformations,
   ],
   email: nodemailerAdapter({
-    defaultFromAddress: process.env.FROM_EMAIL || 'info@drjohnsevo.com',
+    defaultFromAddress: process.env.FROM_EMAIL || '',
     defaultFromName: process.env.FROM_NAME || 'Dr. John Sevo Dental Clinic',
     skipVerify: !process.env.SMTP_USER || process.env.NODE_ENV === 'test',
     transportOptions: {

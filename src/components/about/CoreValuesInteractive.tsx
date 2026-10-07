@@ -46,7 +46,7 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
             </h3>
 
             {activeValue.description && (
-              <p className="font-perpetua text-[#5a5350] text-xl sm:text-2xl leading-relaxed transition-all duration-300 pt-2">
+              <p className="font-dinar text-[#5a5350] text-xl sm:text-2xl leading-relaxed transition-all duration-300 pt-2">
                 {activeValue.description}
               </p>
             )}
@@ -90,7 +90,7 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
                     0{idx + 1}
                   </span>
                   <span
-                    className={`font-perpetua font-bold text-lg sm:text-xl truncate transition-colors ${
+                    className={`font-dinar font-bold text-lg sm:text-xl truncate transition-colors ${
                       isActive ? 'text-[#36302f]' : 'text-[#5a5350] group-hover:text-[#36302f]'
                     }`}
                   >
@@ -136,7 +136,7 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
                   >
                     0{idx + 1}
                   </span>
-                  <span className="font-perpetua font-bold text-lg text-[#36302f]">
+                  <span className="font-dinar font-bold text-lg text-[#36302f]">
                     {val.title}
                   </span>
                 </div>
@@ -148,7 +148,7 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
               </button>
 
               {isExpanded && val.description && (
-                <div className="px-5 pb-5 pt-1 border-t border-[rgba(54,48,47,0.06)] text-base font-perpetua text-[#5a5350] leading-relaxed">
+                <div className="px-5 pb-5 pt-1 border-t border-[rgba(54,48,47,0.06)] text-base font-dinar text-[#5a5350] leading-relaxed">
                   {val.description}
                 </div>
               )}

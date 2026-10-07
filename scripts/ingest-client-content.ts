@@ -1,13 +1,12 @@
 import 'dotenv/config'
 import { getPayload } from 'payload'
-import config from '../src/payload.config'
+import configPromise from '../src/payload.config'
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function textToLexical(paragraphs: { text: string; heading?: boolean }[]): any {
+function textToLexical(paragraphs: { text: string; heading?: boolean }[]) {
   return {
     root: {
       type: 'root',
-      format: '',
+      format: '' as const,
       indent: 0,
       version: 1,
       direction: 'ltr' as const,
@@ -16,18 +15,18 @@ function textToLexical(paragraphs: { text: string; heading?: boolean }[]): any {
           return {
             type: 'heading',
             tag: 'h3',
-            format: '',
+            format: '' as const,
             indent: 0,
             version: 1,
             direction: 'ltr' as const,
             children: [
               {
-                mode: 'normal',
-                text: p.text,
                 type: 'text',
-                style: '',
                 detail: 0,
-                format: 1, // bold
+                format: 0,
+                mode: 'normal',
+                style: '',
+                text: p.text,
                 version: 1,
               },
             ],
@@ -35,18 +34,18 @@ function textToLexical(paragraphs: { text: string; heading?: boolean }[]): any {
         }
         return {
           type: 'paragraph',
-          format: '',
+          format: '' as const,
           indent: 0,
           version: 1,
           direction: 'ltr' as const,
           children: [
             {
-              mode: 'normal',
-              text: p.text,
               type: 'text',
-              style: '',
               detail: 0,
               format: 0,
+              mode: 'normal',
+              style: '',
+              text: p.text,
               version: 1,
             },
           ],
@@ -57,54 +56,80 @@ function textToLexical(paragraphs: { text: string; heading?: boolean }[]): any {
 }
 
 async function ingest() {
-  console.log('Starting Phase 11 Client Content Ingestion...')
-  const payload = await getPayload({ config })
+  console.log('--- STARTING CLIENT CONTENT INGESTION ---')
+  const payload = await getPayload({ config: configPromise })
 
-  // 1. Ingest Home Page Content
-  const homeData = await payload.findGlobal({ slug: 'home' })
-
+  // 1. Ingest Home Page Why Choose Us Reasons
   const whyChooseItems = [
     {
-      title: 'Advanced Dental Technologies',
+      title: 'Advanced Technology',
       description:
-        'Equipped with state-of-the-art diagnostic imaging, 3D digital scanning, and modern clinical equipment ensuring precision, safety, and optimal patient outcomes.',
+        'State-of-the-art equipment for precise, comfortable, and efficient treatments.',
+      iconName: 'Cpu',
+    },
+    {
+      title: 'Expert Team',
+      description:
+        'Highly skilled dental professionals dedicated to your individual oral health goals.',
+      iconName: 'Award',
+    },
+    {
+      title: 'Patient-Centric Comfort',
+      description:
+        'A warm, welcoming environment designed to eliminate dental anxiety.',
+      iconName: 'Smile',
+    },
+    {
+      title: 'Comprehensive Care',
+      description:
+        'Everything from routine preventative hygiene to advanced full-mouth restorations under one roof.',
+      iconName: 'ShieldCheck',
+    },
+  ]
+
+  // The 9 Real Clinical Strengths belonging to About
+  const clinicalStrengths = [
+    {
+      title: 'Multidisciplinary Clinical Expertise',
+      description:
+        'A comprehensive team covering all dental specialties under one roof, ensuring integrated and accurate treatment planning.',
+      iconName: 'Award',
+    },
+    {
+      title: 'Advanced Diagnostic & Digital Technologies',
+      description:
+        'Equipped with state-of-the-art 3D imaging, digital scanners, and modern clinical tools for maximum precision and patient comfort.',
       iconName: 'Sparkles',
     },
     {
-      title: 'Comprehensive Multi-Disciplinary Care',
+      title: 'Individualized Patient-First Care',
       description:
-        'Providing a complete spectrum of dental specialties under one roof, from cosmetic smile design and dental implants to orthodontics and restorative dentistry.',
-      iconName: 'ShieldCheck',
-    },
-    {
-      title: 'Rigorous Sterilization & Safety Protocols',
-      description:
-        'Strict adherence to international multi-barrier infection control protocols, hospital-grade sterilization procedures, and uncompromising patient safety standards.',
-      iconName: 'Shield',
-    },
-    {
-      title: 'Painless & Gentle Clinical Approach',
-      description:
-        'Modern pain-management technologies, delicate clinical techniques, and compassionate communication designed to eliminate dental anxiety.',
-      iconName: 'HeartHandshake',
+        'Every treatment plan is customized to each patient’s unique health profile, lifestyle goals, and aesthetic expectations.',
+      iconName: 'Heart',
     },
     {
       title: 'Transparent Treatment Planning',
       description:
-        'Clear explanations, comprehensive diagnostic reviews, and collaborative treatment plans with absolute honesty and no unexpected surprises.',
-      iconName: 'FileCheck',
+        'Clear, detailed explanations of clinical options, timelines, and costs so you can make confident, informed healthcare decisions.',
+      iconName: 'FileText',
     },
     {
-      title: 'Personalized Aesthetic Excellence',
+      title: 'Comprehensive Dental Services',
       description:
-        'Custom-tailored smile designs harmonizing natural facial features with durable, authentic cosmetic dentistry.',
-      iconName: 'Gem',
+        'Full-spectrum oral healthcare from general dentistry and preventive care to complex surgical rehabilitation and cosmetic makeovers.',
+      iconName: 'Layers',
     },
     {
-      title: 'Elite Medical Team & Specialization',
+      title: 'Continuous Professional Development',
       description:
-        'Highly qualified dental consultants and continuous professional training maintaining global clinical best practices.',
-      iconName: 'Award',
+        'Our clinical staff regularly trains in modern evidence-based techniques and global dental breakthroughs to maintain international standards.',
+      iconName: 'GraduationCap',
+    },
+    {
+      title: 'Strict Hospital-Grade Sterilization Protocols',
+      description:
+        'Uncompromising infection control standards and sterilization systems ensuring a safe, hygienic environment for every visit.',
+      iconName: 'ShieldCheck',
     },
     {
       title: 'Comfort-Centered Clinical Environment',
@@ -149,8 +174,7 @@ async function ingest() {
       heroBadge: 'A Healthier Smile. A Brighter You.',
       heroTitle: 'Expert Dental Care for a Healthier, Happier You',
       heroSubtitle: 'Modern dentistry. Personalized care. A more confident you.',
-      whyChooseTitle: 'Our Strengths',
-      whyChooseSubtitle: 'Why Patients Choose Dr. John Sevo Clinics',
+      whyChooseTitle: 'Why Choose Us?',
       whyChooseItems,
       trustStats,
       ctaHeadline: 'Ready to Experience Exceptional Dental Care?',
@@ -211,20 +235,28 @@ async function ingest() {
     },
   ])
 
-  const experienceLexical = textToLexical([
-    { text: 'Our Philosophy', heading: true },
+  const philosophyLexical = textToLexical([
     {
       text: 'Our philosophy is built around patient-centered dentistry. We believe that successful dental care combines clinical expertise, modern technology, precise diagnosis, continuous development, and genuine care for every patient. Every treatment plan is designed according to the individual needs, expectations, and long-term oral health of each patient.',
     },
-    { text: 'Keys to Our Success', heading: true },
+  ])
+
+  const keysToSuccessLexical = textToLexical([
     {
-      text: 'Our success is built on several essential principles: Professional Expertise + Modern Technology + Continuous Development + Patient Trust + Teamwork.\n\nWe believe that technology alone does not create excellent dentistry. The real difference comes from combining advanced technology with experienced professionals, accurate diagnosis, proper treatment planning, and genuine patient care.',
+      text: 'Our success is built on several essential principles: Professional Expertise + Modern Technology  Continuous Development  Patient Trust  Teamwork.',
     },
-    { text: 'Research & Development', heading: true },
+    {
+      text: 'We believe that technology alone does not create excellent dentistry. The real difference comes from combining advanced technology with experienced professionals, accurate diagnosis, proper treatment planning, and genuine patient care.',
+    },
+  ])
+
+  const rdLexical = textToLexical([
     {
       text: 'We believe that dentistry is constantly evolving. Our approach is based on continuous learning and keeping up with developments in dental materials, clinical techniques, digital dentistry, diagnostic technologies, and modern treatment protocols. We continuously evaluate new technologies and techniques to determine how they can improve the quality, precision, efficiency, and patient experience within our clinics.',
     },
-    { text: 'Human Capital', heading: true },
+  ])
+
+  const humanCapitalLexical = textToLexical([
     {
       text: 'Our team is one of the most important assets of Dr. John Sevo Dawod Clinics. We believe that investing in people is essential to delivering consistent and high-quality patient care. Our professional team works together across different dental specialties, supported by continuous education, clinical experience, teamwork, and a shared commitment to our patients.',
     },
@@ -250,10 +282,25 @@ async function ingest() {
         'Modern Dentistry. Professional Care. Trusted Experience.\n\nDr. John Sevo Dawod Clinics is positioned as a modern, professional dental healthcare group that combines clinical expertise with advanced technology and a strong focus on patient experience.\n\nOur goal is to create a dental environment where patients feel safe, understood, and confident throughout their treatment journey.',
       valuesTitle: 'Our Core Values',
       coreValues,
-      experienceNarrative: experienceLexical,
+      philosophyContent: philosophyLexical,
+      keysToSuccessContent: keysToSuccessLexical,
+      keysToSuccessCulmination: 'Principles of Clinical Excellence',
+      keysToSuccessPillars: [
+        { title: 'Professional Expertise' },
+        { title: 'Modern Technology' },
+        { title: 'Continuous Development' },
+        { title: 'Patient Trust' },
+        { title: 'Teamwork' },
+      ],
+      strengthsTitle: 'Our Strengths',
+      clinicalStrengths,
+      rdContent: rdLexical,
+      humanCapitalContent: humanCapitalLexical,
     },
   })
-  console.log('✓ About global updated successfully with real client pillars, founder quote, values, and narrative.')
+  console.log(
+    '✓ About global updated successfully with real client pillars, founder quote, values, and narrative.',
+  )
 
   console.log('Phase 11 Client Content Ingestion Complete!')
   process.exit(0)

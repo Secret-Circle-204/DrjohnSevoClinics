@@ -9,6 +9,7 @@ import * as migration_20261002_191829_phase9_reports_foundation from './20261002
 import * as migration_20261002_201213_phase10_email_outbox from './20261002_201213_phase10_email_outbox';
 import * as migration_20261002_224057_phase11_public_content_model from './20261002_224057_phase11_public_content_model';
 import * as migration_20261003_001500_phase10_inquiries_email_required from './20261003_001500_phase10_inquiries_email_required';
+import * as migration_20261006_220000_separate_clinical_strengths_and_why_choose from './20261006_220000_separate_clinical_strengths_and_why_choose';
 
 export const migrations = [
   {
@@ -65,5 +66,10 @@ export const migrations = [
     up: migration_20261003_001500_phase10_inquiries_email_required.up,
     down: migration_20261003_001500_phase10_inquiries_email_required.down,
     name: '20261003_001500_phase10_inquiries_email_required'
+  },
+  {
+    up: migration_20261006_220000_separate_clinical_strengths_and_why_choose.up,
+    down: migration_20261006_220000_separate_clinical_strengths_and_why_choose.down,
+    name: '20261006_220000_separate_clinical_strengths_and_why_choose'
   },
 ];

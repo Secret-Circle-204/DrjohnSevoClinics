@@ -1,8 +1,14 @@
-"use client"
+'use client'
 
 import React, { useState } from 'react'
 import Image from 'next/image'
-import { ArrowRight, Calendar as CalendarIcon, Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
+import {
+  ArrowRight,
+  Calendar as CalendarIcon,
+  Loader2,
+  CheckCircle2,
+  AlertCircle,
+} from 'lucide-react'
 import { format } from 'date-fns'
 import { cn } from '@/lib/utils'
 import {
@@ -42,14 +48,50 @@ export function BookingSection({
     message: string
   } | null>(null)
 
+  React.useEffect(() => {
+    if (typeof window === 'undefined' || !availableServices.length) return
+
+    const selectServiceByParam = () => {
+      const urlParams = new URLSearchParams(window.location.search)
+      const serviceParam = urlParams.get('service')
+      if (serviceParam) {
+        const found = availableServices.find(
+          (s) => s.slug === serviceParam || String(s.id) === serviceParam,
+        )
+        if (found) {
+          setSelectedService(String(found.id))
+        }
+      }
+    }
+
+    selectServiceByParam()
+
+    const handleCustomSelect = (e: Event) => {
+      const customEvent = e as CustomEvent<{ slug?: string; id?: number | string }>
+      const identifier = customEvent.detail?.slug || customEvent.detail?.id
+      if (identifier) {
+        const found = availableServices.find(
+          (s) => s.slug === identifier || String(s.id) === String(identifier),
+        )
+        if (found) {
+          setSelectedService(String(found.id))
+        }
+      }
+    }
+
+    window.addEventListener('select-clinic-service', handleCustomSelect)
+    return () => {
+      window.removeEventListener('select-clinic-service', handleCustomSelect)
+    }
+  }, [availableServices])
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setIsSubmitting(true)
     setSubmissionStatus(null)
 
-    const serviceId = selectedService && !isNaN(Number(selectedService))
-      ? Number(selectedService)
-      : undefined
+    const serviceId =
+      selectedService && !isNaN(Number(selectedService)) ? Number(selectedService) : undefined
 
     const res = await submitInquiryAction({
       fullName,
@@ -79,7 +121,10 @@ export function BookingSection({
   }
 
   return (
-    <section id="booking" className="section bg-[#f7f2ec] border-t border-b border-[rgba(54,48,47,0.08)] relative overflow-hidden">
+    <section
+      id="booking"
+      className="section bg-[#f7f2ec] border-t border-b border-[rgba(54,48,47,0.08)] relative overflow-hidden"
+    >
       {/* Subtle Logo Watermark Background */}
       <div className="absolute left-0 bottom-0 -translate-x-1/4 translate-y-1/4 pointer-events-none opacity-15 select-none z-0">
         <Image
@@ -96,17 +141,21 @@ export function BookingSection({
           {/* Left Content */}
           <div className="lg:col-span-5 space-y-6">
             <span className="font-castelar text-xs tracking-[0.22em] text-[#b58a48] uppercase block">
-              Appointment Inquiry
+              Online Booking
             </span>
 
-            {ctaHeadline ? (
-              <h2 className="text-3xl sm:text-4xl font-perpetua font-bold text-[#36302f] leading-tight">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] leading-tight tracking-tight">
+              Appointment Inquiry
+            </h2>
+
+            {ctaHeadline && ctaHeadline !== 'Appointment Inquiry' ? (
+              <p className="font-americana text-lg sm:text-xl font-bold text-[#8e6e4f] leading-snug">
                 {ctaHeadline}
-              </h2>
+              </p>
             ) : null}
 
             {ctaSubtitle ? (
-              <p className="text-[#5a5350] font-perpetua text-base sm:text-lg leading-relaxed">
+              <p className="text-[#5a5350] font-dinar text-base sm:text-lg leading-relaxed">
                 {ctaSubtitle}
               </p>
             ) : null}
@@ -120,7 +169,7 @@ export function BookingSection({
                   <div className="w-14 h-14 rounded-full bg-[#faf6f0] border border-[#b58a48]/30 flex items-center justify-center mx-auto text-[#b58a48]">
                     <CheckCircle2 className="w-8 h-8" />
                   </div>
-                  <h3 className="text-2xl font-perpetua font-bold text-[#36302f]">
+                  <h3 className="text-2xl font-americana font-bold text-[#36302f]">
                     Request Received
                   </h3>
                   <p className="text-sm text-[#706865] max-w-md mx-auto leading-relaxed">
@@ -145,7 +194,10 @@ export function BookingSection({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="fullname" className="block text-xs font-semibold text-[#5a5350] mb-1.5">
+                      <label
+                        htmlFor="fullname"
+                        className="block text-xs font-semibold text-[#5a5350] mb-1.5"
+                      >
                         Full Name *
                       </label>
                       <input
@@ -160,7 +212,10 @@ export function BookingSection({
                     </div>
 
                     <div>
-                      <label htmlFor="email" className="block text-xs font-semibold text-[#5a5350] mb-1.5">
+                      <label
+                        htmlFor="email"
+                        className="block text-xs font-semibold text-[#5a5350] mb-1.5"
+                      >
                         Email Address *
                       </label>
                       <input
@@ -177,7 +232,10 @@ export function BookingSection({
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label htmlFor="phone" className="block text-xs font-semibold text-[#5a5350] mb-1.5">
+                      <label
+                        htmlFor="phone"
+                        className="block text-xs font-semibold text-[#5a5350] mb-1.5"
+                      >
                         Phone Number *
                       </label>
                       <input
@@ -193,7 +251,10 @@ export function BookingSection({
 
                     {/* Service selection */}
                     <div>
-                      <label htmlFor="service-trigger" className="block text-xs font-semibold text-[#5a5350] mb-1.5">
+                      <label
+                        htmlFor="service-trigger"
+                        className="block text-xs font-semibold text-[#5a5350] mb-1.5"
+                      >
                         Service
                       </label>
                       <Select value={selectedService} onValueChange={setSelectedService}>
@@ -233,15 +294,20 @@ export function BookingSection({
                           <button
                             type="button"
                             className={cn(
-                              "w-full h-11 px-3.5 rounded-xl border border-[rgba(54,48,47,0.15)] bg-[#fcfbf9] text-sm text-left flex items-center justify-between transition-colors focus:outline-none focus:ring-1 focus:ring-[#b58a48] focus:border-[#b58a48]",
-                              !selectedDate && "text-[#706865]"
+                              'w-full h-11 px-3.5 rounded-xl border border-[rgba(54,48,47,0.15)] bg-[#fcfbf9] text-sm text-left flex items-center justify-between transition-colors focus:outline-none focus:ring-1 focus:ring-[#b58a48] focus:border-[#b58a48]',
+                              !selectedDate && 'text-[#706865]',
                             )}
                           >
-                            <span>{selectedDate ? format(selectedDate, 'MM/dd/yyyy') : 'mm/dd/yyyy'}</span>
+                            <span>
+                              {selectedDate ? format(selectedDate, 'MM/dd/yyyy') : 'mm/dd/yyyy'}
+                            </span>
                             <CalendarIcon className="w-4 h-4 text-[#8e6e4f] opacity-80" />
                           </button>
                         </PopoverTrigger>
-                        <PopoverContent className="w-auto p-0 bg-white border border-[rgba(54,48,47,0.1)] rounded-2xl shadow-xl z-50" align="start">
+                        <PopoverContent
+                          className="w-auto p-0 bg-white border border-[rgba(54,48,47,0.1)] rounded-2xl shadow-xl z-50"
+                          align="start"
+                        >
                           <Calendar
                             mode="single"
                             selected={selectedDate}

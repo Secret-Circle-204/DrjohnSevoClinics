@@ -1,59 +1,62 @@
 'use client'
 
 import React, { useState } from 'react'
-import { Sparkles, ShieldCheck, Check, ArrowRight } from 'lucide-react'
+import { Sparkles, ShieldCheck, Check } from 'lucide-react'
+import { RichText } from '@/components/richText/RichText'
 
 interface KeysToSuccessInteractiveProps {
-  equationText: string
+  content?: any
+  equationText?: string
   explanatoryParagraphs?: string[]
+  pillars?: string[]
+  culmination?: string
 }
 
+const DEFAULT_PILLARS = [
+  'Professional Expertise',
+  'Modern Technology',
+  'Continuous Development',
+  'Patient Trust',
+  'Teamwork',
+]
+
 export function KeysToSuccessInteractive({
+  content,
   equationText,
   explanatoryParagraphs = [],
+  pillars,
+  culmination = 'Principles of Clinical Excellence',
 }: KeysToSuccessInteractiveProps) {
   const [hoveredIdx, setHoveredIdx] = useState<number | null>(null)
   const [hoveredResult, setHoveredResult] = useState(false)
 
-  // Dynamically extract formula items and explanatory text
-  let formulaItems: string[] = []
-  let remainingText = ''
-  let formulaResult = 'The Sevo Standard'
+  // Determine formula items cleanly
+  let formulaItems: string[] = pillars && pillars.length > 0 ? pillars : []
+  let formulaResult = culmination
 
-  if (equationText.includes('=')) {
-    const [left, right] = equationText.split('=')
-    formulaItems = left.split('+').map((s) => s.trim()).filter(Boolean)
-    formulaResult = right.replace(/\.$/, '').trim()
-  } else if (equationText.includes('+')) {
-    const sentences = equationText.split(/(?<=[.!?])\s+/)
-    const formulaSentence = sentences.find((s) => s.includes('+')) || equationText
-    remainingText = sentences.filter((s) => s !== formulaSentence).join(' ')
-
-    let rawFormula = formulaSentence
-    if (rawFormula.includes(':')) {
-      rawFormula = rawFormula.split(':')[1]
+  if (formulaItems.length === 0 && equationText) {
+    if (equationText.includes('=')) {
+      const [left, right] = equationText.split('=')
+      formulaItems = left.split('+').map((s) => s.trim()).filter(Boolean)
+      if (right) formulaResult = right.replace(/\.$/, '').trim()
+    } else if (equationText.includes('+')) {
+      const sentences = equationText.split(/(?<=[.!?])\s+/)
+      const formulaSentence = sentences.find((s) => s.includes('+')) || equationText
+      let rawFormula = formulaSentence
+      if (rawFormula.includes(':')) {
+        rawFormula = rawFormula.split(':')[1]
+      }
+      rawFormula = rawFormula.replace(/\.$/, '')
+      formulaItems = rawFormula
+        .split('+')
+        .map((s) => s.trim())
+        .filter(Boolean)
     }
-    rawFormula = rawFormula.replace(/\.$/, '')
-
-    formulaItems = rawFormula
-      .split('+')
-      .map((s) => s.trim())
-      .filter(Boolean)
   }
 
-  const allExplanatory = [
-    remainingText,
-    ...explanatoryParagraphs,
-  ].filter(Boolean)
-
+  // If still empty, use the authentic 5 clinical principles
   if (formulaItems.length === 0) {
-    return (
-      <div className="p-8 sm:p-12 rounded-3xl bg-white/5 border border-[#e1c38c]/20 backdrop-blur-md text-center">
-        <p className="font-americana text-xl sm:text-2xl lg:text-3xl text-[#e1c38c] leading-relaxed font-bold">
-          {equationText}
-        </p>
-      </div>
-    )
+    formulaItems = DEFAULT_PILLARS
   }
 
   return (
@@ -117,7 +120,8 @@ export function KeysToSuccessInteractive({
             xmlns="http://www.w3.org/2000/svg"
           >
             {formulaItems.map((_, idx) => {
-              const startY = 34 + idx * 68
+              const total = formulaItems.length
+              const startY = total > 1 ? 34 + idx * ((340 - 68) / (total - 1)) : 170
               const endY = 170
               const isHighlighted = hoveredIdx === idx || hoveredResult
 
@@ -163,7 +167,7 @@ export function KeysToSuccessInteractive({
             <div className="relative z-10 space-y-4">
               <div className="flex items-center gap-2 text-xs font-castelar tracking-[0.25em] text-[#e1c38c] uppercase">
                 <Sparkles className="w-4 h-4 text-[#e1c38c]" />
-                <span>The Unified Culmination</span>
+                <span>The Unified Standard</span>
               </div>
 
               <h3 className="font-americana text-2xl sm:text-3xl lg:text-4xl font-bold text-white leading-tight">
@@ -176,9 +180,11 @@ export function KeysToSuccessInteractive({
             <div className="relative z-10 pt-6 border-t border-[#e1c38c]/20 flex items-center justify-between text-xs font-castelar tracking-wider text-[#e1c38c] uppercase">
               <span className="flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-[#e1c38c]" />
-                Predictable Excellence
+                Clinical Excellence
               </span>
-              <span className="text-white/60 font-perpetua text-sm italic tracking-normal capitalize">Our Clinical Standard</span>
+              <span className="text-white/60 font-dinar text-sm tracking-normal capitalize">
+                Dr. John Sevo Clinics
+              </span>
             </div>
           </div>
         </div>
@@ -220,24 +226,33 @@ export function KeysToSuccessInteractive({
         </div>
       </div>
 
-      {/* Explanatory Narrative from Doctor's Content */}
-      {allExplanatory.length > 0 && (
+      {/* Narrative from Doctor's Content */}
+      {(content || explanatoryParagraphs.length > 0) && (
         <div className="pt-6 border-t border-[#e1c38c]/15">
           <div className="max-w-4xl mx-auto">
-            {allExplanatory.map((p, idx) => (
-              <div
-                key={idx}
-                className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-[#e1c38c]/15 space-y-3 relative overflow-hidden text-center sm:text-left"
-              >
-                <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-castelar tracking-wider text-[#e1c38c] uppercase">
-                  <Check className="w-3.5 h-3.5 text-[#e1c38c]" />
-                  <span>Clinical Philosophy</span>
-                </div>
-                <p className="font-perpetua text-lg sm:text-xl text-[#f5f5f5]/90 leading-relaxed">
-                  {p}
-                </p>
+            <div className="p-6 sm:p-8 rounded-3xl bg-white/[0.03] border border-[#e1c38c]/15 space-y-3 relative overflow-hidden text-center sm:text-left">
+              <div className="flex items-center justify-center sm:justify-start gap-2 text-xs font-castelar tracking-wider text-[#e1c38c] uppercase">
+                <Check className="w-3.5 h-3.5 text-[#e1c38c]" />
+                <span>Our Principles</span>
               </div>
-            ))}
+              {content ? (
+                <div className="font-dinar text-lg sm:text-xl text-[#f5f5f5]/90 leading-relaxed">
+                  <RichText
+                    data={content}
+                    className="prose-invert !text-[#f5f5f5] [&_*]:!text-[#f5f5f5]"
+                  />
+                </div>
+              ) : (
+                explanatoryParagraphs.map((p, idx) => (
+                  <p
+                    key={idx}
+                    className="font-dinar text-lg sm:text-xl text-[#f5f5f5]/90 leading-relaxed"
+                  >
+                    {p}
+                  </p>
+                ))
+              )}
+            </div>
           </div>
         </div>
       )}

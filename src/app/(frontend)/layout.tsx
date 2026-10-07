@@ -80,7 +80,7 @@ export default async function RootLayout(props: { children: React.ReactNode }) {
       </head>
       <body className="min-h-screen flex flex-col surface-light-neutral text-deep-brown selection:bg-[var(--color-primary-gold)] selection:text-white">
         <Header clinicName={clinicInfo?.clinicName} />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1 w-full max-w-full overflow-x-hidden">{children}</main>
         <Footer clinicInfo={clinicInfo} />
       </body>
     </html>

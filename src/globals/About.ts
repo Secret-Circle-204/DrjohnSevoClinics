@@ -39,7 +39,7 @@ export const About: GlobalConfig = {
               label: 'Clinic Overview Narrative',
               admin: {
                 description:
-                  'Executive narrative and overview used across the clinic presentation and home overview section.',
+                  'Executive narrative and overview used across the clinic presentation.',
               },
             },
             {
@@ -142,9 +142,89 @@ export const About: GlobalConfig = {
           label: 'Philosophy & Innovation',
           fields: [
             {
-              name: 'experienceNarrative',
+              name: 'philosophyContent',
               type: 'richText',
-              label: 'Clinical Philosophy, Keys to Success & Innovation',
+              label: 'Our Philosophy Content',
+            },
+            {
+              name: 'keysToSuccessContent',
+              type: 'richText',
+              label: 'Keys to Our Success Content',
+            },
+            {
+              name: 'keysToSuccessCulmination',
+              type: 'text',
+              label: 'Keys to Success — Culmination Outcome',
+              defaultValue: 'Principles of Clinical Excellence',
+            },
+            {
+              name: 'keysToSuccessPillars',
+              type: 'array',
+              label: 'Keys to Success — Interactive Equation Pillars',
+              admin: {
+                components: {
+                  Field: '@/components/admin/DrawerArrayField#DrawerArrayField',
+                },
+              },
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  required: true,
+                  label: 'Pillar Principle Title',
+                },
+              ],
+            },
+            {
+              name: 'rdContent',
+              type: 'richText',
+              label: 'Research & Development Content',
+            },
+            {
+              name: 'humanCapitalContent',
+              type: 'richText',
+              label: 'Human Capital Content',
+            },
+          ],
+        },
+        {
+          label: 'Clinical Strengths',
+          fields: [
+            {
+              name: 'strengthsTitle',
+              type: 'text',
+              label: 'Clinical Strengths Title',
+              defaultValue: 'Our Strengths',
+            },
+            {
+              name: 'clinicalStrengths',
+              type: 'array',
+              label: 'Clinical Strengths List',
+              admin: {
+                components: {
+                  Field: '@/components/admin/DrawerArrayField#DrawerArrayField',
+                },
+                description:
+                  'The 9 core clinical strengths of Dr. John Sevo Dawod Clinics. Click any card to edit details in the side drawer.',
+              },
+              fields: [
+                {
+                  name: 'title',
+                  type: 'text',
+                  required: true,
+                  label: 'Strength Title',
+                },
+                {
+                  name: 'description',
+                  type: 'textarea',
+                  label: 'Strength Description',
+                },
+                {
+                  name: 'iconName',
+                  type: 'text',
+                  label: 'Design System Icon Key',
+                },
+              ],
             },
           ],
         },

@@ -24,7 +24,7 @@ export function Footer({ clinicInfo }: FooterProps) {
           </div>
 
           {/* Navigation Links */}
-          <div className="flex flex-wrap items-center justify-center gap-7 text-sm font-perpetua text-[#ede8e4]/90">
+          <div className="flex flex-wrap items-center justify-center gap-7 text-sm font-dinar text-[#ede8e4]/90">
             <Link href="/" className="hover:text-[#E1C38C] transition-colors tracking-wide">Home</Link>
             <Link href="/about" className="hover:text-[#E1C38C] transition-colors tracking-wide">About</Link>
             <Link href="/services" className="hover:text-[#E1C38C] transition-colors tracking-wide">Services</Link>
@@ -80,7 +80,7 @@ export function Footer({ clinicInfo }: FooterProps) {
           </div>
         </div>
 
-        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-perpetua text-[#b1957b]">
+        <div className="pt-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-dinar text-[#b1957b]">
           <div>
             © {currentYear}{clinicName ? ` ${clinicName}` : ''}. All rights reserved.
           </div>

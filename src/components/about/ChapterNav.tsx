@@ -102,7 +102,7 @@ export function ChapterNav() {
                   }`}
                 />
                 <span
-                  className={`text-xs font-perpetua tracking-wide whitespace-nowrap transition-all max-w-0 overflow-hidden group-hover:max-w-[160px] opacity-0 group-hover:opacity-100 ${
+                  className={`text-xs font-dinar tracking-wide whitespace-nowrap transition-all max-w-0 overflow-hidden group-hover:max-w-[160px] opacity-0 group-hover:opacity-100 ${
                     isActive ? '!max-w-[160px] !opacity-100 font-bold text-white' : ''
                   }`}
                 >
@@ -137,7 +137,7 @@ export function ChapterNav() {
                     : 'bg-white/10 text-[#f5f5f5]/75 hover:bg-white/15'
                 }`}
               >
-                <span className="font-perpetua">{ch.label}</span>
+                <span className="font-dinar">{ch.label}</span>
               </button>
             )
           })}

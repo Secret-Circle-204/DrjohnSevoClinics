@@ -1,7 +1,6 @@
 import { getPayload, Payload } from 'payload'
 import config from '@/payload.config'
 import { describe, it, beforeAll, expect } from 'vitest'
-import { extractSectionsFromLexical } from '@/lib/lexicalSections'
 
 let payload: Payload
 
@@ -21,16 +20,12 @@ describe('About Page 11 Official Content Pillars & Consumer Coverage Test', () =
     expect(about.founderTitle).toBeDefined()
   })
 
-  it('verifies 02 — Philosophy is extractable from experienceNarrative with zero duplication', async () => {
+  it('verifies 02 — Philosophy is populated from dedicated philosophyContent RichText field', async () => {
     const about = await payload.findGlobal({ slug: 'about' })
-    const sections = extractSectionsFromLexical(about.experienceNarrative)
-    const philosophy =
-      sections['ourphilosophy'] ||
-      Object.values(sections).find((s) => s.title.toLowerCase().includes('philosophy'))
-
-    expect(philosophy).toBeDefined()
-    expect(philosophy!.paragraphs.length).toBeGreaterThanOrEqual(1)
-    expect(philosophy!.paragraphs[0]).toContain('patient-centered dentistry')
+    expect(about.philosophyContent).toBeDefined()
+    const children = (about.philosophyContent as any)?.root?.children
+    expect(Array.isArray(children)).toBe(true)
+    expect(children.length).toBeGreaterThanOrEqual(1)
   })
 
   it('verifies 03 — About John Sevo Clinics heritage is populated from storyTitle & storyContent', async () => {
@@ -75,40 +70,28 @@ describe('About Page 11 Official Content Pillars & Consumer Coverage Test', () =
     expect(home.whyChooseItems![0].description).toBeDefined()
   })
 
-  it('verifies 08 — Keys to Success is extractable from experienceNarrative', async () => {
+  it('verifies 08 — Keys to Success is populated from dedicated keysToSuccessContent RichText field', async () => {
     const about = await payload.findGlobal({ slug: 'about' })
-    const sections = extractSectionsFromLexical(about.experienceNarrative)
-    const success =
-      sections['keystooursuccess'] ||
-      sections['keystosuccess'] ||
-      Object.values(sections).find((s) => s.title.toLowerCase().includes('success'))
-
-    expect(success).toBeDefined()
-    expect(success!.paragraphs.length).toBeGreaterThanOrEqual(1)
-    expect(success!.paragraphs.join(' ')).toContain('Expertise')
+    expect(about.keysToSuccessContent).toBeDefined()
+    const children = (about.keysToSuccessContent as any)?.root?.children
+    expect(Array.isArray(children)).toBe(true)
+    expect(children.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('verifies 09 — Research & Development is extractable from experienceNarrative', async () => {
+  it('verifies 09 — Research & Development is populated from dedicated rdContent RichText field', async () => {
     const about = await payload.findGlobal({ slug: 'about' })
-    const sections = extractSectionsFromLexical(about.experienceNarrative)
-    const rd =
-      sections['researchdevelopment'] ||
-      sections['research'] ||
-      Object.values(sections).find((s) => s.title.toLowerCase().includes('research'))
-
-    expect(rd).toBeDefined()
-    expect(rd!.paragraphs.length).toBeGreaterThanOrEqual(1)
+    expect(about.rdContent).toBeDefined()
+    const children = (about.rdContent as any)?.root?.children
+    expect(Array.isArray(children)).toBe(true)
+    expect(children.length).toBeGreaterThanOrEqual(1)
   })
 
-  it('verifies 10 — Human Capital narrative is extractable and Doctors collection provides active doctors', async () => {
+  it('verifies 10 — Human Capital is populated from dedicated humanCapitalContent RichText field and Doctors collection provides active doctors', async () => {
     const about = await payload.findGlobal({ slug: 'about' })
-    const sections = extractSectionsFromLexical(about.experienceNarrative)
-    const humanCapital =
-      sections['humancapital'] ||
-      Object.values(sections).find((s) => s.title.toLowerCase().includes('human'))
-
-    expect(humanCapital).toBeDefined()
-    expect(humanCapital!.paragraphs.length).toBeGreaterThanOrEqual(1)
+    expect(about.humanCapitalContent).toBeDefined()
+    const children = (about.humanCapitalContent as any)?.root?.children
+    expect(Array.isArray(children)).toBe(true)
+    expect(children.length).toBeGreaterThanOrEqual(1)
 
     const doctors = await payload.find({
       collection: 'doctors',

@@ -64,6 +64,14 @@ export const Services: CollectionConfig = {
       },
     },
     {
+      name: 'patientBenefit',
+      type: 'textarea',
+      label: 'Patient Benefit',
+      admin: {
+        description: 'Key benefit to the patient (e.g. Protects against gum disease, freshens breath, and restores your natural, healthy shine).',
+      },
+    },
+    {
       name: 'description',
       type: 'richText',
       label: 'Full Clinical Description',

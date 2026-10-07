@@ -109,11 +109,11 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
                 {categoryName}
               </span>
             )}
-            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-americana text-[#36302f] leading-[1.2] font-bold">
+            <h1 className="text-3xl sm:text-4xl lg:text-5xl font-americana font-bold text-[#36302f] leading-tight tracking-tight">
               {post.title}
             </h1>
 
-            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs text-[#706865] font-perpetua">
+            <div className="flex flex-wrap items-center gap-6 pt-2 text-xs text-[#706865] font-dinar">
               {post.publishedAt && (
                 <div className="flex items-center gap-1.5 text-[#8e6e4f]">
                   <Calendar className="w-4 h-4" />
@@ -148,7 +148,7 @@ export default async function BlogPostPage(props: BlogPostPageProps) {
           )}
 
           {/* Lead Excerpt */}
-          <div className="text-lg sm:text-xl font-perpetua text-[#36302f] font-medium leading-relaxed pb-8 border-b border-[rgba(54,48,47,0.08)] mb-8">
+          <div className="text-lg sm:text-xl font-dinar text-[#36302f] font-medium leading-relaxed pb-8 border-b border-[rgba(54,48,47,0.08)] mb-8">
             {post.excerpt}
           </div>
 

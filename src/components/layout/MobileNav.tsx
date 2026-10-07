@@ -182,7 +182,7 @@ export function MobileNav({ isOpen, onClose, clinicName }: MobileNavProps) {
           }}
           className="flex items-center justify-between pt-2"
         >
-          <div className="text-xs font-perpetua text-[#ede8e4]">
+          <div className="text-xs font-dinar text-[#ede8e4]">
             {clinicName && <span className="block text-[#E1C38C] font-semibold">{clinicName}</span>}
           </div>
 
