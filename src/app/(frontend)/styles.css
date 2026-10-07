@@ -264,7 +264,6 @@ html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   scroll-behavior: smooth;
-  overflow-x: hidden;
 }
 
 body {
@@ -274,7 +273,7 @@ body {
   line-height: 1.65;
   background-color: var(--color-bg-app);
   color: var(--color-text);
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 img, picture, svg {
@@ -877,4 +876,16 @@ a {
    Allows composition using Tailwind utilities (mx-auto, flex, grid, etc.)
    -------------------------------------------------------------------------- */
 @tailwind utilities;
+
+/* --------------------------------------------------------------------------
+   12. SCROLLBAR SUPPRESSION UTILITY (.no-scrollbar)
+   Ensures seamless, clean scrolling without ugly browser scrollbars.
+   -------------------------------------------------------------------------- */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
 

@@ -218,7 +218,7 @@ export function FounderCinematicSection({
               RIGHT: Editorial Quote Card (Warm Luxury Parchment)
               ==================================================================== */}
           <motion.div variants={quoteCardVariants} className="lg:col-span-7 flex flex-col">
-            <div className="relative w-full h-full rounded-3xl bg-[#fdfbf7] border border-[#d8c8b6]/70 p-6 sm:p-8 lg:p-9 shadow-lg backdrop-blur-md flex flex-col justify-between">
+            <div className="relative w-full h-full rounded-3xl bg-white/50 backdrop-blur-md border border-white/80 p-6 sm:p-8 lg:p-9 shadow-[0_8px_32px_0_rgba(54,48,47,0.06)] flex flex-col justify-between">
               {/* Top: Animated Gold Quote Icon & Flowing Paragraphs */}
               <div className="space-y-4">
                 <motion.div

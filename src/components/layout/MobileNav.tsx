@@ -1,6 +1,7 @@
 'use client'
 
 import React, { useEffect, useState, useCallback } from 'react'
+import { usePathname } from 'next/navigation'
 import { X, ArrowRight, Calendar } from 'lucide-react'
 import { ClinicLogo } from './ClinicLogo'
 
@@ -20,7 +21,14 @@ const NAV_ITEMS = [
 ]
 
 export function MobileNav({ isOpen, onClose, clinicName }: MobileNavProps) {
+  const pathname = usePathname()
   const [isExiting, setIsExiting] = useState(false)
+
+  const isLinkActive = (href: string) => {
+    if (href === '/') return pathname === '/'
+    if (href.startsWith('/#')) return false
+    return pathname === href || pathname.startsWith(`${href}/`)
+  }
 
   // Golden Aurora Dissolve Close Trigger
   const triggerGoldenClose = useCallback((targetHref?: string) => {
@@ -114,37 +122,61 @@ export function MobileNav({ isOpen, onClose, clinicName }: MobileNavProps) {
       <div
         className="relative z-10 flex-1 px-6 py-4 overflow-y-auto flex flex-col justify-center divide-y divide-[#b58a48]/15"
       >
-        {NAV_ITEMS.map((item, idx) => (
-          <a
-            key={item.label}
-            href={item.href}
-            onClick={(e) => {
-              e.preventDefault()
-              triggerGoldenClose(item.href)
-            }}
-            style={{
-              animation: isExiting
-                ? `navItemSlideOutLateral 0.24s cubic-bezier(0.32, 0.72, 0, 1) ${idx * 16}ms both`
-                : `cinematicHop 0.52s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 60 + 50}ms both`,
-            }}
-            className="group relative flex items-center justify-between py-4 sm:py-5 transition-all duration-300"
-          >
-            <div className="flex items-baseline gap-4">
-              <span className="font-castelar text-sm sm:text-base text-[#E1C38C] font-semibold tracking-widest">
-                {item.num}
-              </span>
-              <div>
-                <span className="block font-americana text-2xl sm:text-3xl text-white group-hover:text-[#E1C38C] tracking-wide transition-all duration-200 group-hover:translate-x-1.5">
-                  {item.label}
+        {NAV_ITEMS.map((item, idx) => {
+          const active = isLinkActive(item.href)
+          return (
+            <a
+              key={item.label}
+              href={item.href}
+              onClick={(e) => {
+                e.preventDefault()
+                triggerGoldenClose(item.href)
+              }}
+              style={{
+                animation: isExiting
+                  ? `navItemSlideOutLateral 0.24s cubic-bezier(0.32, 0.72, 0, 1) ${idx * 16}ms both`
+                  : `cinematicHop 0.52s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 60 + 50}ms both`,
+              }}
+              className={`group relative flex items-center justify-between py-3.5 sm:py-4 px-3 rounded-2xl transition-all duration-300 ${
+                active
+                  ? 'bg-gradient-to-r from-[#b58a48]/25 via-[#b58a48]/10 to-transparent border border-[#b58a48]/35 shadow-xs'
+                  : 'hover:bg-white/[0.04]'
+              }`}
+            >
+              <div className="flex items-baseline gap-4">
+                <span
+                  className={`font-castelar text-sm sm:text-base tracking-widest ${
+                    active ? 'text-[#E1C38C] font-bold' : 'text-[#E1C38C]/70'
+                  }`}
+                >
+                  {item.num}
                 </span>
+                <div className="flex items-center gap-2.5">
+                  <span
+                    className={`block font-americana text-2xl sm:text-3xl tracking-wide transition-all duration-200 group-hover:translate-x-1.5 ${
+                      active ? 'text-[#E1C38C] font-bold' : 'text-white group-hover:text-[#E1C38C]'
+                    }`}
+                  >
+                    {item.label}
+                  </span>
+                  {active && (
+                    <span className="w-2 h-2 rounded-full bg-[#E1C38C] shadow-[0_0_10px_#E1C38C]" />
+                  )}
+                </div>
               </div>
-            </div>
 
-            <div className="w-9 h-9 rounded-full border border-[#E1C38C]/20 group-hover:border-[#E1C38C] group-hover:bg-[#b58a48]/20 flex items-center justify-center text-[#E1C38C]/60 group-hover:text-[#E1C38C] group-hover:translate-x-1 transition-all duration-300">
-              <ArrowRight className="w-4 h-4" />
-            </div>
-          </a>
-        ))}
+              <div
+                className={`w-9 h-9 rounded-full border flex items-center justify-center transition-all duration-300 group-hover:translate-x-1 ${
+                  active
+                    ? 'border-[#E1C38C] bg-[#b58a48]/30 text-[#E1C38C]'
+                    : 'border-[#E1C38C]/20 group-hover:border-[#E1C38C] group-hover:bg-[#b58a48]/20 text-[#E1C38C]/60 group-hover:text-[#E1C38C]'
+                }`}
+              >
+                <ArrowRight className="w-4 h-4" />
+              </div>
+            </a>
+          )
+        })}
       </div>
 
       {/* Bottom Cinematic Action Bar */}

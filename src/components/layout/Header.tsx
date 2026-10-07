@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 import { Calendar, ArrowRight, Menu } from 'lucide-react'
 import { ClinicLogo } from './ClinicLogo'
 import { MobileNav } from './MobileNav'
@@ -10,18 +11,46 @@ interface HeaderProps {
   clinicName?: string | null
 }
 
+const LEFT_NAV_ITEMS = [
+  { label: 'Home', href: '/' },
+  { label: 'About', href: '/about' },
+  { label: 'Services', href: '/services' },
+]
+
+const RIGHT_NAV_ITEMS = [
+  { label: 'Blog', href: '/blog' },
+  { label: 'Results', href: '/#results' },
+  { label: 'Contact', href: '/contact' },
+]
+
 export function Header({ clinicName }: HeaderProps = {}) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const pathname = usePathname()
+
+  const isLinkActive = (href: string) => {
+    if (href === '/') {
+      return pathname === '/'
+    }
+    if (href.startsWith('/#')) {
+      return false
+    }
+    return pathname === href || pathname.startsWith(`${href}/`)
+  }
 
   return (
     <>
-      <header className="sticky top-0 z-50 bg-[#fdfcf9]/95 backdrop-blur-md border-b border-[rgba(54,48,47,0.08)] shadow-[0_2px_12px_rgba(54,48,47,0.03)] transition-all">
+      <header className="sticky top-0 z-50 w-full bg-[#fdfcf9] border-b border-[rgba(54,48,47,0.08)] shadow-[0_2px_12px_rgba(54,48,47,0.04)] transition-all">
         <div className="mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8 h-[88px] flex items-center justify-between">
           {/* Outer Left: Official Brand Wordmark / Mobile Trigger */}
           <div className="flex-1 flex items-center justify-start">
             {/* Desktop Brand Typography Logo */}
             <div className="hidden sm:flex items-center">
-              <ClinicLogo variant="text-only" height={26} clinicName={clinicName} className="hover:opacity-90 transition-opacity" />
+              <ClinicLogo
+                variant="text-only"
+                height={26}
+                clinicName={clinicName}
+                className="hover:opacity-90 transition-opacity"
+              />
             </div>
 
             {/* Mobile Menu Trigger Button */}
@@ -36,77 +65,79 @@ export function Header({ clinicName }: HeaderProps = {}) {
             </button>
           </div>
 
-        {/* Center: The Intimate Navigation Core (3 Links — Centered Emblem — 3 Links) */}
-        <div className="flex items-center justify-center">
-          {/* Desktop Cluster */}
-          <div className="hidden md:flex items-center">
-            {/* Left 3 Links */}
-            <nav className="flex items-center gap-6 lg:gap-8 text-[13px] font-dinar tracking-[0.06em] font-medium uppercase pr-4 lg:pr-6">
-              <Link
-                href="/"
-                className="text-[#36302f] font-semibold relative py-1.5 text-center transition-colors hover:text-[#b58a48]"
-              >
-                Home
-              </Link>
-              <Link
-                href="/about"
-                className="text-[#5a5350] hover:text-[#b58a48] py-1.5 transition-colors"
-              >
-                About
-              </Link>
-              <Link
-                href="/services"
-                className="text-[#5a5350] hover:text-[#b58a48] py-1.5 transition-colors"
-              >
-                Services
-              </Link>
-            </nav>
+          {/* Center: The Intimate Navigation Core (3 Links — Centered Emblem — 3 Links) */}
+          <div className="flex items-center justify-center">
+            {/* Desktop Cluster */}
+            <div className="hidden md:flex items-center">
+              {/* Left 3 Links */}
+              <nav className="flex items-center gap-6 lg:gap-8 text-[13px] font-dinar tracking-[0.06em] font-medium uppercase pr-4 lg:pr-6">
+                {LEFT_NAV_ITEMS.map((item) => {
+                  const active = isLinkActive(item.href)
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`relative py-1.5 transition-colors ${
+                        active
+                          ? 'text-[#b58a48] font-bold'
+                          : 'text-[#36302f] hover:text-[#b58a48]'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {active && (
+                        <span className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-[#b58a48] rounded-full" />
+                      )}
+                    </Link>
+                  )
+                })}
+              </nav>
 
-            {/* Enlarged Centered Pure Gold Emblem */}
-            <div className="flex-shrink-0 px-2 lg:px-4">
-              <ClinicLogo variant="emblem-only" height={68} clinicName={clinicName} />
+              {/* Enlarged Centered Pure Gold Emblem */}
+              <div className="flex-shrink-0 px-2 lg:px-4">
+                <ClinicLogo variant="emblem-only" height={68} clinicName={clinicName} />
+              </div>
+
+              {/* Right 3 Links */}
+              <nav className="flex items-center gap-6 lg:gap-8 text-[13px] font-dinar tracking-[0.06em] font-medium uppercase pl-4 lg:pl-6">
+                {RIGHT_NAV_ITEMS.map((item) => {
+                  const active = isLinkActive(item.href)
+                  return (
+                    <Link
+                      key={item.href}
+                      href={item.href}
+                      className={`relative py-1.5 transition-colors ${
+                        active
+                          ? 'text-[#b58a48] font-bold'
+                          : 'text-[#36302f] hover:text-[#b58a48]'
+                      }`}
+                    >
+                      <span>{item.label}</span>
+                      {active && (
+                        <span className="absolute -bottom-0.5 left-0 right-0 h-[2px] bg-[#b58a48] rounded-full" />
+                      )}
+                    </Link>
+                  )
+                })}
+              </nav>
             </div>
 
-            {/* Right 3 Links */}
-            <nav className="flex items-center gap-6 lg:gap-8 text-[13px] font-dinar tracking-[0.06em] font-medium uppercase pl-4 lg:pl-6">
-              <Link
-                href="/blog"
-                className="text-[#5a5350] hover:text-[#b58a48] py-1.5 transition-colors"
-              >
-                Blog
-              </Link>
-              <Link
-                href="/#results"
-                className="text-[#5a5350] hover:text-[#b58a48] py-1.5 transition-colors"
-              >
-                Results
-              </Link>
-              <Link
-                href="/contact"
-                className="text-[#5a5350] hover:text-[#b58a48] py-1.5 transition-colors"
-              >
-                Contact
-              </Link>
-            </nav>
+            {/* Mobile Centered Logo */}
+            <div className="md:hidden flex items-center justify-center">
+              <ClinicLogo variant="emblem-only" height={52} clinicName={clinicName} />
+            </div>
           </div>
 
-          {/* Mobile Centered Logo */}
-          <div className="md:hidden flex items-center justify-center">
-            <ClinicLogo variant="emblem-only" height={52} clinicName={clinicName} />
+          {/* Outer Right: Action Button */}
+          <div className="flex-1 flex items-center justify-end">
+            <a
+              href="#booking"
+              className="btn rounded-full bg-[#8e6e4f] hover:bg-[#a27e5b] text-white py-2.5 px-5 text-xs font-dinar font-semibold uppercase tracking-wider transition-all shadow-sm hover:shadow-md flex items-center gap-2 group"
+            >
+              <Calendar className="w-3.5 h-3.5 text-[#e1c38c]" />
+              <span className="hidden sm:inline">Book Visit</span>
+              <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
+            </a>
           </div>
-        </div>
-
-        {/* Outer Right: Action Button */}
-        <div className="flex-1 flex items-center justify-end">
-          <a
-            href="#booking"
-            className="btn rounded-full bg-[#8e6e4f] hover:bg-[#a27e5b] text-white py-2.5 px-5 text-xs font-dinar font-semibold uppercase tracking-wider transition-all shadow-sm hover:shadow-md flex items-center gap-2 group"
-          >
-            <Calendar className="w-3.5 h-3.5 text-[#e1c38c]" />
-            <span className="hidden sm:inline">Book Visit</span>
-            <ArrowRight className="w-3 h-3 group-hover:translate-x-0.5 transition-transform" />
-          </a>
-        </div>
         </div>
       </header>
 
