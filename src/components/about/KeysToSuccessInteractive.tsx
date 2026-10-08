@@ -59,6 +59,20 @@ export function KeysToSuccessInteractive({
     formulaItems = DEFAULT_PILLARS
   }
 
+  // Defensive deduplication by title (case/whitespace insensitive)
+  const seenFormula = new Set<string>()
+  formulaItems = formulaItems
+    .map((item) => (typeof item === 'string' ? item.trim() : ''))
+    .filter((item) => {
+      if (!item) return false
+      const key = item.toLowerCase()
+      if (seenFormula.has(key)) return false
+      seenFormula.add(key)
+      return true
+    })
+
+  const formatNum = (n: number) => (n < 10 ? `0${n}` : `${n}`)
+
   return (
     <div className="w-full space-y-12">
       {/* Desktop Convergence Architecture (hidden on screens < 1024px) */}
@@ -88,7 +102,7 @@ export function KeysToSuccessInteractive({
                         : 'bg-white/10 text-[#e1c38c] group-hover:bg-[#e1c38c]/20'
                     }`}
                   >
-                    0{idx + 1}
+                    {formatNum(idx + 1)}
                   </span>
                   <span
                     className={`font-americana font-bold text-lg transition-colors ${
@@ -199,7 +213,7 @@ export function KeysToSuccessInteractive({
               className="p-4 rounded-2xl bg-white/[0.05] border border-[#e1c38c]/20 flex items-center gap-3.5"
             >
               <span className="font-mono text-xs font-bold w-7 h-7 rounded-lg bg-[#e1c38c]/20 text-[#e1c38c] flex items-center justify-center flex-shrink-0">
-                0{idx + 1}
+                {formatNum(idx + 1)}
               </span>
               <span className="font-americana font-bold text-base text-white">
                 {item}

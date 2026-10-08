@@ -46,9 +46,18 @@ function getReasonIcon(iconName?: string | null, idx: number = 0) {
 }
 
 export function ExperienceSection({ whyChooseTitle, pillars }: ExperienceSectionProps) {
-  const hasReasons = Boolean(pillars && pillars.length > 0)
+  const uniquePillars = React.useMemo(() => {
+    if (!pillars || pillars.length === 0) return []
+    const seen = new Set<string>()
+    return pillars.filter((item) => {
+      const k = (item?.title || '').trim().toLowerCase()
+      if (!k || seen.has(k)) return false
+      seen.add(k)
+      return true
+    })
+  }, [pillars])
 
-  if (!hasReasons) {
+  if (uniquePillars.length === 0) {
     return null
   }
 
@@ -114,7 +123,7 @@ export function ExperienceSection({ whyChooseTitle, pillars }: ExperienceSection
 
         {/* 4 Reasons Grid with Keys to Our Success Gradients */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-8">
-          {pillars?.map((item, idx) => {
+          {uniquePillars.map((item, idx) => {
             const sequenceStr = String(idx + 1).padStart(2, '0')
             return (
               <motion.div

@@ -7,7 +7,12 @@ import { ExperienceSection } from '@/components/sections/ExperienceSection'
 import { TrustStatsSection } from '@/components/sections/TrustStatsSection'
 import { BeforeAfterSection } from '@/components/sections/BeforeAfterSection'
 import { BookingSection } from '@/components/sections/BookingSection'
-import { getHomeContent, getAboutContent, getServices, getTransformations } from '@/repositories/clinic'
+import {
+  getHomeContent,
+  getAboutContent,
+  getServices,
+  getTransformations,
+} from '@/repositories/clinic'
 
 export const metadata: Metadata = {
   alternates: {
@@ -23,9 +28,10 @@ export default async function HomePage() {
     getTransformations({ limit: 6, page: 1, featuredOnly: true }),
   ])
 
-  const aboutImageUrl = typeof aboutContent?.storyImage === 'object' && aboutContent?.storyImage?.url
-    ? aboutContent.storyImage.url
-    : undefined
+  const aboutImageUrl =
+    typeof aboutContent?.storyImage === 'object' && aboutContent?.storyImage?.url
+      ? aboutContent.storyImage.url
+      : undefined
 
   return (
     <>
@@ -65,4 +71,3 @@ export default async function HomePage() {
     </>
   )
 }
-

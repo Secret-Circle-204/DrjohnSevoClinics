@@ -30,11 +30,20 @@ function getStatIcon(iconKey?: string | null) {
 }
 
 export function TrustStatsSection({ stats }: TrustStatsSectionProps) {
-  if (!stats || stats.length === 0) {
+  const displayStats = React.useMemo(() => {
+    if (!stats || stats.length === 0) return []
+    const seen = new Set<string>()
+    return stats.filter((stat) => {
+      const k = (stat?.label || '').trim().toLowerCase()
+      if (!k || seen.has(k)) return false
+      seen.add(k)
+      return true
+    })
+  }, [stats])
+
+  if (displayStats.length === 0) {
     return null
   }
-
-  const displayStats = stats
 
   return (
     <section className="relative section surface-deep-abstract text-white overflow-hidden py-14">

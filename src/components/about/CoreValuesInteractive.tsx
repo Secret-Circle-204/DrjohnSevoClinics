@@ -13,14 +13,29 @@ interface CoreValuesInteractiveProps {
 }
 
 export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
+  // Defensive deduplication by title
+  const uniqueValues = React.useMemo(() => {
+    if (!values || values.length === 0) return []
+    const seen = new Set<string>()
+    return values.filter((val) => {
+      if (!val || !val.title) return false
+      const key = val.title.trim().toLowerCase()
+      if (seen.has(key)) return false
+      seen.add(key)
+      return true
+    })
+  }, [values])
+
   const [activeIndex, setActiveIndex] = useState(0)
   const [mobileExpandedIndex, setMobileExpandedIndex] = useState<number | null>(0)
 
-  if (!values || values.length === 0) {
+  if (uniqueValues.length === 0) {
     return null
   }
 
-  const activeValue = values[activeIndex] || values[0]
+  const formatNum = (n: number) => (n < 10 ? `0${n}` : `${n}`)
+  const safeActiveIndex = activeIndex >= uniqueValues.length ? 0 : activeIndex
+  const activeValue = uniqueValues[safeActiveIndex] || uniqueValues[0]
 
   return (
     <div className="w-full">
@@ -30,13 +45,13 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
         <div className="lg:col-span-7 bg-white rounded-3xl p-10 sm:p-14 border border-[rgba(54,48,47,0.1)] shadow-xl relative overflow-hidden flex flex-col justify-between min-h-[420px]">
           {/* Subtle Decorative Background Number */}
           <div className="absolute top-4 right-8 font-americana text-[140px] font-bold text-[#b1957b]/10 select-none pointer-events-none leading-none">
-            0{activeIndex + 1}
+            {formatNum(safeActiveIndex + 1)}
           </div>
 
           <div className="relative z-10 space-y-6">
             <div className="flex items-center gap-3">
               <span className="font-mono text-xs font-bold text-[#b58a48] tracking-widest uppercase px-3 py-1 rounded-full bg-[#b58a48]/10 border border-[#b58a48]/20">
-                Principle 0{activeIndex + 1} of 0{values.length}
+                Principle {formatNum(safeActiveIndex + 1)} of {formatNum(uniqueValues.length)}
               </span>
               <div className="h-px flex-1 bg-gradient-to-r from-[#b58a48]/30 to-transparent" />
             </div>
@@ -55,18 +70,18 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
           <div className="relative z-10 pt-8 border-t border-[rgba(54,48,47,0.08)] flex items-center justify-between text-xs font-castelar tracking-widest text-[#8e6e4f] uppercase">
             <span className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-[#b58a48]" />
-              <span>Principle 0{activeIndex + 1}</span>
+              <span>Principle {formatNum(safeActiveIndex + 1)}</span>
             </span>
             <span className="text-[#36302f]/40 font-mono">
-              [ 0{activeIndex + 1} / 0{values.length} ]
+              [ {formatNum(safeActiveIndex + 1)} / {formatNum(uniqueValues.length)} ]
             </span>
           </div>
         </div>
 
         {/* Value Selector Vertical Rail (5 cols) */}
         <div className="lg:col-span-5 flex flex-col justify-between gap-2.5">
-          {values.map((val, idx) => {
-            const isActive = activeIndex === idx
+          {uniqueValues.map((val, idx) => {
+            const isActive = safeActiveIndex === idx
             return (
               <button
                 key={`${val.title}-${idx}`}
@@ -87,7 +102,7 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
                         : 'bg-[#b58a48]/10 text-[#8e6e4f] group-hover:bg-[#b58a48]/20'
                     }`}
                   >
-                    0{idx + 1}
+                    {formatNum(idx + 1)}
                   </span>
                   <span
                     className={`font-dinar font-bold text-lg sm:text-xl truncate transition-colors ${
@@ -112,7 +127,7 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
 
       {/* Mobile & Tablet Editorial Accordion Layout (hidden on lg and up) */}
       <div className="lg:hidden space-y-3">
-        {values.map((val, idx) => {
+        {uniqueValues.map((val, idx) => {
           const isExpanded = mobileExpandedIndex === idx
           return (
             <div
@@ -134,7 +149,7 @@ export function CoreValuesInteractive({ values }: CoreValuesInteractiveProps) {
                       isExpanded ? 'bg-[#b58a48] text-white' : 'bg-[#b58a48]/10 text-[#8e6e4f]'
                     }`}
                   >
-                    0{idx + 1}
+                    {formatNum(idx + 1)}
                   </span>
                   <span className="font-dinar font-bold text-lg text-[#36302f]">
                     {val.title}

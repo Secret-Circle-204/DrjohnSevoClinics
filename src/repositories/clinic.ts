@@ -18,10 +18,30 @@ export interface PaginatedResult<T> {
 export async function getHomeContent(): Promise<Home | null> {
   const payload = await getPayload({ config: configPromise })
   try {
-    return await payload.findGlobal({
+    const data = await payload.findGlobal({
       slug: 'home',
       depth: 1,
     })
+    if (!data) return null
+    if (Array.isArray(data.whyChooseItems)) {
+      const seen = new Set<string>()
+      data.whyChooseItems = data.whyChooseItems.filter((item) => {
+        const k = (item?.title || '').trim().toLowerCase()
+        if (!k || seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+    }
+    if (Array.isArray(data.trustStats)) {
+      const seen = new Set<string>()
+      data.trustStats = data.trustStats.filter((item) => {
+        const k = (item?.label || '').trim().toLowerCase()
+        if (!k || seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+    }
+    return data
   } catch {
     return null
   }
@@ -33,10 +53,39 @@ export async function getHomeContent(): Promise<Home | null> {
 export async function getAboutContent(): Promise<About | null> {
   const payload = await getPayload({ config: configPromise })
   try {
-    return await payload.findGlobal({
+    const data = await payload.findGlobal({
       slug: 'about',
       depth: 1,
     })
+    if (!data) return null
+    if (Array.isArray(data.coreValues)) {
+      const seen = new Set<string>()
+      data.coreValues = data.coreValues.filter((item) => {
+        const k = (item?.title || '').trim().toLowerCase()
+        if (!k || seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+    }
+    if (Array.isArray(data.keysToSuccessPillars)) {
+      const seen = new Set<string>()
+      data.keysToSuccessPillars = data.keysToSuccessPillars.filter((item) => {
+        const k = (item?.title || '').trim().toLowerCase()
+        if (!k || seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+    }
+    if (Array.isArray(data.clinicalStrengths)) {
+      const seen = new Set<string>()
+      data.clinicalStrengths = data.clinicalStrengths.filter((item) => {
+        const k = (item?.title || '').trim().toLowerCase()
+        if (!k || seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+    }
+    return data
   } catch {
     return null
   }

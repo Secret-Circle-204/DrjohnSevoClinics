@@ -16,6 +16,7 @@ export const Media: CollectionConfig = {
   upload: {
     mimeTypes: ['image/*'],
   },
+
   fields: [
     {
       name: 'alt',
@@ -42,7 +43,8 @@ export const Media: CollectionConfig = {
       ],
       admin: {
         position: 'sidebar',
-        description: 'Access visibility. Private files are guarded server-side against public access.',
+        description:
+          'Access visibility. Private files are guarded server-side against public access.',
       },
     },
   ],

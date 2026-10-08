@@ -19,6 +19,7 @@ export const Services: CollectionConfig = {
       () => {
         try {
           revalidatePath('/')
+          revalidatePath('/services')
         } catch {
           // Safe outside Next.js request context
         }
@@ -28,6 +29,7 @@ export const Services: CollectionConfig = {
       () => {
         try {
           revalidatePath('/')
+          revalidatePath('/services')
         } catch {
           // Safe outside Next.js request context
         }
