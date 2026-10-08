@@ -97,10 +97,30 @@ export async function getAboutContent(): Promise<About | null> {
 export async function getClinicInfo(): Promise<ClinicInfo | null> {
   const payload = await getPayload({ config: configPromise })
   try {
-    return await payload.findGlobal({
+    const data = await payload.findGlobal({
       slug: 'clinic-info',
       depth: 0,
     })
+    if (!data) return null
+    if (Array.isArray(data.phoneNumbers)) {
+      const seen = new Set<string>()
+      data.phoneNumbers = data.phoneNumbers.filter((p) => {
+        const k = (p?.number || '').trim().replace(/\s+/g, '')
+        if (!k || seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+    }
+    if (Array.isArray(data.openingHours)) {
+      const seen = new Set<string>()
+      data.openingHours = data.openingHours.filter((h) => {
+        const k = `${h?.days || ''}-${h?.hours || ''}`.trim().toLowerCase()
+        if (!k || seen.has(k)) return false
+        seen.add(k)
+        return true
+      })
+    }
+    return data
   } catch {
     return null
   }
