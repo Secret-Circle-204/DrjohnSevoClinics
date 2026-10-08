@@ -37,6 +37,12 @@ interface ServiceDetailPageProps {
 
 function getMediaUrl(media?: number | Media | null): string | null {
   if (typeof media === 'object' && media?.url) {
+    if (media.url.startsWith('http://') || media.url.startsWith('https://')) {
+      return media.url
+    }
+    if (media.url.startsWith('/api/media/file/')) {
+      return null
+    }
     return media.url
   }
   return null
